@@ -1,0 +1,62 @@
+{
+    "codename": "d_event_manager",
+    "version": "1.0.0",
+    "name": "Event Manager",
+    "description": "Manage your events and add Event support to old OC versions",
+    "index": "module/d_event_manager",
+    "readme": "system/mbooth/readme/d_event_manager.md",
+    "author": {
+        "name": "Shopunity",
+        "email": "info@shopunity.com",
+        "url": "https://shopunity.net/"
+    },
+    "opencart_version": [
+        "2.0.0.0",
+        "2.0.1.1",
+        "2.0.1.1",
+        "2.0.2.0",
+        "2.0.3.1",
+        "2.1.0.1",
+        "2.1.0.2",
+        "2.2.0.0",
+        "2.3.0.2"
+    ],
+    "mbooth_version": "^4.0.0",
+    "type": "module",
+    "license": {
+        "type": "free",
+        "url": "https://shopunity.net/licenses/free"
+    },
+    "install": {
+        "url": "extension/module/install&extension=d_event_manager",
+        "xml": "system/mbooth/install/d_event_manager.xml",
+        "php": "system/mbooth/install/d_event_manager.php",
+        "sql": "system/mbooth/install/d_event_manager.sql"
+    },
+    "uninstall": {
+        "url": "extension/module/uninstall&extension=d_event_manager"
+    },
+    "support": {
+        "email": "support@shopunity.com",
+        "url": "https://shopunity.net/"
+    },
+    "required": {
+        "d_shopunity": ">=3.0.41"
+    },
+    "files": [
+        "system/mbooth/extension/d_event_manager.json",
+
+        "admin/controller/module/d_event_manager.php",
+        "admin/model/module/d_event_manager.php",
+        "admin/language/english/module/d_event_manager.php",
+        "admin/view/template/module/d_event_manager.tpl",
+
+        "system/config/d_event_manager.php"
+    ],
+    "changelog": [
+        {
+            "varsion":"1.0.0",
+            "change": "First release"
+        }
+    ]
+}
