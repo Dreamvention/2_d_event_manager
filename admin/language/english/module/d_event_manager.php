@@ -81,8 +81,8 @@ $_['button_support_email']      = 'support';
 
 //instruction
 $_['tab_instruction']           = 'Instructions';
-$_['text_instruction']			= '
-<div class="row">
+$_['text_instruction']			= '';
+$_['text_instruction_old']          = '<div class="row">
 	<div class="col-md-6">
 	<h2>Lorem Ipsum is simply</h2>
 	<p><img src="'.HTTPS_SERVER.'view/image/d_event_manager/d_event_manager_1.png" class="img-thumbnail img-responsive" /></p>

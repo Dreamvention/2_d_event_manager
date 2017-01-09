@@ -155,25 +155,31 @@ class ModelModuleDEventManager extends Model {
 	}
 
 	public function installDatabase(){
-		$this->db->query("IF NOT EXISTS( SELECT NULL
-			FROM INFORMATION_SCHEMA.COLUMNS
-			WHERE table_name = '" . DB_PREFIX . "event'
-			AND table_schema = '".DB_DATABASE."'
-			AND column_name = 'status')  THEN
+		
+		$this->db->query("CREATE TABLE IF NOT EXISTS `oc_event` (
+		  `event_id` int(11) NOT NULL AUTO_INCREMENT,
+		  `code` varchar(32) NOT NULL,
+		  `trigger` text NOT NULL,
+		  `action` text NOT NULL,
+		  `status` tinyint(1) NOT NULL,
+		  `date_added` datetime NOT NULL,
+		  PRIMARY KEY (`event_id`)
+		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
-				ALTER TABLE `" . DB_PREFIX . "event` ADD `status` int(1) NOT NULL default '1';
 
-			END IF;");
+		$result = $this->db->query("SELECT * FROM INFORMATION_SCHEMA.COLUMNS WHERE TABLE_SCHEMA = '".DB_DATABASE."' AND TABLE_NAME = '" . DB_PREFIX . "event' ORDER BY ORDINAL_POSITION")->rows; 
+		$columns = array();
+		foreach($result as $column){
+			$columns[] = $column['COLUMN_NAME'];
+		}
 
-		$this->db->query("IF NOT EXISTS( SELECT NULL
-			FROM INFORMATION_SCHEMA.COLUMNS
-			WHERE table_name = '" . DB_PREFIX . "event'
-			AND table_schema = '".DB_DATABASE."'
-			AND column_name = 'date_added')  THEN
+		if(!in_array('status', $columns)){
+			 $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD status int( 1 ) NOT NULL default '1'");
+		}
 
-				ALTER TABLE `" . DB_PREFIX . "event` ADD `date_added` datetime NOT NULL;
-
-			END IF;");	
+		if(!in_array('date_added', $columns)){
+			 $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD `date_added` datetime NOT NULL");
+		}
 
 	}
 

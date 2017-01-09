@@ -593,6 +593,19 @@ class ControllerModuleDEventManager extends Controller {
 		$this->load->model('module/d_event_manager');
 		$this->model_module_d_event_manager->installDatabase();
 
+		$this->model_module_d_event_manager->deleteEvent($this->codename);
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', $this->route.'/view_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', $this->route.'/view_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', $this->route.'/controller_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', $this->route.'/controller_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', $this->route.'/model_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', $this->route.'/model_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/*/common/header/before', $this->route.'/language_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/*/common/header/after', $this->route.'/language_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'system/config/admin/before', $this->route.'/config_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'system/config/admin/after', $this->route.'/config_after');
+	
+
 		// if($this->d_shopunity){
 		// 	$this->load->model('d_shopunity/vqmod');
 		// 	$this->model_d_shopunity_vqmod->setVqmod('a_vqmod_d_event_manager.xml', 1);
@@ -608,6 +621,74 @@ class ControllerModuleDEventManager extends Controller {
 			// $this->model_module_d_event_manager->setVqmod('a_vqmod_d_event_manager.xml', 0);  
 		}
 	}
+
+	public function controller_before(&$route, &$data){
+		$setting = $this->config->get('d_event_manager');
+		$setting['controller_before'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function controller_after(&$route, &$data, &$output){
+		$setting = $this->config->get('d_event_manager');
+		$setting['controller_after'] = true;
+		$this->config->set('d_event_manager', $setting);
+
+		FB::log($setting);
+	}
+
+	public function model_before(&$route){
+		$setting = $this->config->get('d_event_manager');
+		$setting['model_before'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function model_after(&$route, &$data){
+		$setting = $this->config->get('d_event_manager');
+		$setting['model_after'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+
+	public function view_before(&$route, &$data){
+		$setting = $this->config->get('d_event_manager');
+		$setting['view_before'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function view_after(&$route, &$data, &$output){
+		$setting = $this->config->get('d_event_manager');
+		$setting['view_after'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function language_before(&$route){
+		FB::log('language_before');
+		$setting = $this->config->get('d_event_manager');
+		$setting['language_before'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function language_after(&$route){
+		FB::log('language_after');
+		$setting = $this->config->get('d_event_manager');
+		$setting['language_after'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function config_before(&$route){
+		FB::log('config_before');
+		$setting = $this->config->get('d_event_manager');
+		$setting['config_before'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
+	public function config_after(&$route, &$data, &$output){
+		FB::log('config_after');
+		$setting = $this->config->get('d_event_manager');
+		$setting['config_after'] = true;
+		$this->config->set('d_event_manager', $setting);
+	}
+
 
    	/**
 
