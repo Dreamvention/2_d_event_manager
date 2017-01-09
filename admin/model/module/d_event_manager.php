@@ -77,6 +77,38 @@ class ModelModuleDEventManager extends Model {
 		return $query->rows;
 	}
 
+	public function getTotalEvents($data = array()) {
+		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "event");
+
+		$implode = array();
+
+		if (!empty($data['filter_code'])) {
+			$implode[] = "`code` LIKE '%" . $this->db->escape($data['filter_code']) . "%'";
+		}
+
+		if (!empty($data['filter_trigger'])) {
+			$implode[] = "`trigger` LIKE '%" . $this->db->escape($data['filter_trigger']) . "%'";
+		}
+
+		if (!empty($data['filter_event_action'])) {
+			$implode[] = "`action` LIKE '%" . $this->db->escape($data['filter_event_action']) . "%'";
+		}
+
+		if (isset($data['filter_status']) && !is_null($data['filter_status'])) {
+			$implode[] = "`status` = '" . (int)$data['filter_status'] . "'";
+		}
+
+		if (!empty($data['filter_date_added'])) {
+			$implode[] = "DATE(`date_added`) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
+		}
+
+		if ($implode) {
+			$sql .= " WHERE " . implode(" AND ", $implode);
+		}
+		
+		return $query->row['total'];
+	}
+
 	public function getEventById($event_id) {
 		$event = $this->db->query("SELECT * FROM `" . DB_PREFIX . "event` WHERE `event_id` = '" . $this->db->escape($event_id) ."'");
 		

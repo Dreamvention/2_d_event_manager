@@ -316,7 +316,7 @@ class ControllerModuleDEventManager extends Controller {
 			'limit'                    => $this->config->get('config_limit_admin')
 		);
 
-		$customer_total = $this->model_module_d_event_manager->getTotalCustomers($filter_data);
+		$event_total = $this->model_module_d_event_manager->getTotalEvents($filter_data);
 
 		$results = $this->model_module_d_event_manager->getEvents($filter_data);
 
@@ -362,12 +362,18 @@ class ControllerModuleDEventManager extends Controller {
 		unset($url_params['page']);
 		$url = ((!empty($url_params)) ? '&' : '' ) . http_build_query($url_params);
 		$pagination = new Pagination();
-		$pagination->total = $customer_total;
+		$pagination->total = $event_total;
 		$pagination->page = $page;
 		$pagination->limit = $this->config->get('config_limit_admin');
 		$pagination->url = $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
 		$data['pagination'] = $pagination->render();
-		$data['results'] = sprintf($this->language->get('text_pagination'), ($customer_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, ((($page - 1) * $this->config->get('config_limit_admin')) > ($customer_total - $this->config->get('config_limit_admin'))) ? $customer_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), $customer_total, ceil($customer_total / $this->config->get('config_limit_admin')));
+		$data['results'] = sprintf(
+			$this->language->get('text_pagination'), 
+			($event_total) ? (($page - 1) * $this->config->get('config_limit_admin')) + 1 : 0, 
+			((($page - 1) * $this->config->get('config_limit_admin')) > ($event_total - $this->config->get('config_limit_admin'))) ? $event_total : ((($page - 1) * $this->config->get('config_limit_admin')) + $this->config->get('config_limit_admin')), 
+			$event_total, 
+			ceil($event_total / $this->config->get('config_limit_admin'))
+		);
 
 
 
