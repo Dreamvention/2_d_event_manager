@@ -97,8 +97,8 @@
 										</div>
 										<div class="col-sm-3">
 											<div class="form-group">
-												<label class="control-label" for="input-event-action"><?php echo $entry_event_action; ?></label>
-												<input type="text" name="filter_event_action" value="<?php echo $filter_event_action; ?>" placeholder="<?php echo $entry_event_action; ?>" id="input-event-action" class="form-control"	data-item="event_action"/>
+												<label class="control-label" for="input-event-action"><?php echo $entry_action; ?></label>
+												<input type="text" name="filter_action" value="<?php echo $filter_action; ?>" placeholder="<?php echo $entry_action; ?>" id="input-event-action" class="form-control"	data-item="action"/>
 											</div>
 										</div>
 										<div class="col-sm-3">
@@ -143,10 +143,10 @@
 													<?php } ?>
 												</td>
 												<td class="text-left">
-													<?php if ($sort == 'event_action') { ?>
-														<a href="<?php echo $sort_event_action; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_event_action; ?></a>
+													<?php if ($sort == 'action') { ?>
+														<a href="<?php echo $sort_action; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_action; ?></a>
 													<?php } else { ?>
-														<a href="<?php echo $sort_event_action; ?>"><?php echo $column_event_action; ?></a>
+														<a href="<?php echo $sort_action; ?>"><?php echo $column_action; ?></a>
 													<?php } ?>
 												</td>
 												<td class="text-left">
@@ -169,7 +169,7 @@
 											<tbody>
 											<?php if ($events) { ?>
 												<?php foreach ($events as $event) { ?>
-												<tr id="event_id_<?php echo $event['event_id']; ?>">
+												<tr id="event_id_<?php echo $event['event_id']; ?>" <?php echo ($event['status']) ? 'class="enabled"' : '';?>>
 													<td class="text-center">
 														<?php if (in_array($event['event_id'], $selected)) { ?>
 															<input type="checkbox" name="selected[]" value="<?php echo $event['event_id']; ?>" checked="checked" />
@@ -181,14 +181,14 @@
 													<td class="text-left"><?php echo $event['trigger']; ?></td>
 													<td class="text-left"><?php echo $event['action']; ?></td>
 													<td class="text-left">
-														<span class="label label-success disable" <?php echo (!$event['status']) ? 'style="display:none"' : '';?> ><?php echo $text_enabled; ?></span>
-														<span class="label label-danger enable" <?php echo ($event['status']) ? 'style="display:none"' : '';?> ><?php echo $text_disabled; ?></span>
+														<span class="label label-success disable" ><?php echo $text_enabled; ?></span>
+														<span class="label label-danger enable" ><?php echo $text_disabled; ?></span>
 													</td>
 													<td class="text-left"><?php echo $event['date_added']; ?></td>
 													<td class="text-right">
-														<a href="<?php echo $event['enable']; ?>" data-toggle="tooltip" title="<?php echo $button_enable; ?>" data-event_id="<?php echo $event['event_id']; ?>" class="btn btn-success action enable" <?php echo ($event['status']) ? 'style="display:none"' : '';?> ><i class="fa fa-thumbs-o-up"></i></a>
-														<a href="<?php echo $event['disable']; ?>" data-toggle="tooltip" title="<?php echo $button_disable; ?>" data-event_id="<?php echo $event['event_id']; ?>" class="btn btn-danger action disable" <?php echo (!$event['status']) ? 'style="display:none"' : '';?>><i class="fa fa-thumbs-o-down"></i></a>
-														<a href="<?php echo $event['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary"><i class="fa fa-pencil"></i></a></td>
+														<a href="<?php echo $event['enable']; ?>" data-toggle="tooltip" title="<?php echo $button_enable; ?>" data-event_id="<?php echo $event['event_id']; ?>" class="btn btn-success action enable"><i class="fa fa-thumbs-o-up"></i></a>
+														<a href="<?php echo $event['disable']; ?>" data-toggle="tooltip" title="<?php echo $button_disable; ?>" data-event_id="<?php echo $event['event_id']; ?>" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
+														<a href="<?php echo $event['edit']; ?>" data-toggle="tooltip" title="<?php echo $button_edit; ?>" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
 													</tr>
 												<?php } ?>
 											<?php } else { ?>
@@ -380,6 +380,91 @@
 			</div>
 	</div>
 </div>
+<template id="event_item">
+	<tr id="event_id_<?php echo $event['event_id']; ?>" class="{{text_status}} flash">
+		<td class="text-center"><input type="checkbox" name="selected[]" value="{{event_id}}" /></td>
+		<td class="text-left">{{code}}</td>
+		<td class="text-left">{{trigger}}</td>
+		<td class="text-left">{{action}}</td>
+		<td class="text-left">
+			<span class="label label-success disable"><?php echo $text_enabled; ?></span>
+			<span class="label label-danger enable"><?php echo $text_disabled; ?></span>
+		</td>
+		<td class="text-left">{{date_added}}</td>
+		<td class="text-right">
+			<a href="{{enable}}" data-toggle="tooltip" title="<?php echo $button_enable; ?>" data-event_id="{{event_id}}" class="btn btn-success action enable" ><i class="fa fa-thumbs-o-up"></i></a>
+			<a href="{{disable}}" data-toggle="tooltip" title="<?php echo $button_disable; ?>" data-event_id="{{event_id}}" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
+			<a href="{{edit}}" data-toggle="tooltip" title="<?php echo $button_edit; ?>" data-event_id="{{event_id}}" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
+		</tr>
+</template>
+<template id="modal">
+	<div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h4 class="modal-title">Edit event <b>{{code}}</b> </h4>
+	      </div>
+	      <div class="modal-body">
+	        <form id="event_form" class="form-horizontal">
+	        	<div class="form-group">
+					<label class="col-sm-2 control-label" for="input_text"><?php echo $entry_code; ?></label>
+					<div class="col-sm-10">
+						<input type="text" name="code" value="{{code}}" placeholder="<?php echo $entry_code; ?>" id="input-width" class="form-control" />
+					</div>
+				</div><!-- //text -->
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="input_text"><?php echo $entry_trigger; ?></label>
+					<div class="col-sm-10">
+						<input type="text" name="trigger" value="{{trigger}}" placeholder="<?php echo $entry_trigger; ?>" id="input-width" class="form-control" />
+					</div>
+				</div><!-- //text -->
+				<div class="form-group">
+					<label class="col-sm-2 control-label" for="input_action"><?php echo $entry_action; ?></label>
+					<div class="col-sm-10">
+						<input type="text" name="action" value="{{action}}" placeholder="<?php echo $entry_action; ?>" id="input-width" class="form-control" />
+					</div>
+				</div><!-- //text -->
+				
+	        </form>
+	      </div>
+	      <div class="modal-footer">
+	        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+	        <a type="button" class="btn btn-primary save" href="{{save}}" data-event_id="{{event_id}}">Save changes</a>
+	      </div>
+	    </div><!-- /.modal-content -->
+	  </div><!-- /.modal-dialog -->
+	</div><!-- /.modal -->
+</template>
+<style>
+	.disable{
+		display: none;
+	}
+	.enabled .disable{
+		display: inline;
+	}
+	.enabled .enable{
+		display: none
+	}
+
+	@-webkit-keyframes flash {
+	   
+	    50% {
+	        background-color: rgba(0,100,0,0.1);
+	    }
+	   
+	    100% {
+	        background-color: rgba(0,100,0,0);
+	    }
+	}
+	    
+	.flash {
+	    -webkit-animation-name: flash;
+	    -webkit-animation-duration: 2000ms;
+	    -webkit-animation-iteration-count: 1;
+	    -webkit-animation-timing-function: ease-in-out;
+	}    
+</style>
 <script type="text/javascript"><!--
 	// sorting fields
 
@@ -529,7 +614,7 @@ $('#button-filter').on('click', function() {
 	location = url;
 });
 
-$('input[name=\'filter_code\'], input[name=\'filter_trigger\'], input[name=\'filter_event_action\']').autocomplete({
+$('input[name=\'filter_code\'], input[name=\'filter_trigger\'], input[name=\'filter_action\']').autocomplete({
 	'source': function(request, response) {
 		that = this;
 		$.ajax({
@@ -574,6 +659,65 @@ $(document).on('click', '.action', function() {
 	return false;
 });
 
+$(document).on('click', '.edit', function() {
+	var that = this;
+	var $event_id = $(that).data('event_id');
+	$('#myModal').remove();
+
+	$.ajax({
+		url: $(that).attr('href'),
+		type: 'get',
+		data: '',
+		dataType: 'json',
+		success: function(json) {
+			var html = $('#modal').html();
+
+			//templating like handlebars
+		    var re = /{{([^}}]+)?}}/g, match;
+		    while(match = re.exec(html)) {
+		        html = html.replace(match[0], json[match[1]])
+		    }
+
+			$('body').append(html);
+			$('#myModal').modal('show')
+		}
+	});
+	
+	return false;
+});
+
+$(document).on('click', '.save', function() {
+	var that = this;
+	var $event_id = $(that).data('event_id');
+	var $data = $('#event_form').serialize();
+
+	$.ajax({
+		url: $(that).attr('href'),
+		type: 'post',
+		data: $data,
+		dataType: 'json',
+		success: function(json) {
+			console.log(json);
+			$('#myModal').modal('hide');
+			if(json['status'] == 1) {
+				json['text_status'] = 'enabled';
+			}else{
+				json['text_status'] = '';
+			}
+			var html = $('#event_item').html();
+
+			//templating like handlebars
+		    var re = /{{([^}}]+)?}}/g, match;
+		    while(match = re.exec(html)) {
+		        html = html.replace(match[0], json[match[1]])
+		    }
+			$('#event_id_'+$event_id).replaceWith(html);
+
+		}
+	});
+	
+	return false;
+});
 
 //--></script>
 <?php echo $footer; ?>

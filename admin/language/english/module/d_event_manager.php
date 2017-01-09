@@ -12,13 +12,12 @@ $_['text_module']               = 'Modules';
 //customer
 $_['entry_code']                = 'Code';
 $_['entry_trigger']             = 'Trigger';
-$_['entry_event_action']        = 'Action';
+$_['entry_action']              = 'Action';
 $_['entry_status']              = 'Status';
 $_['entry_date_added']          = 'Date Added';
 
 $_['column_code']               = 'Code';
 $_['column_trigger']            = 'Trigger';
-$_['column_event_action']       = 'Action';
 $_['column_status']             = 'Status';
 $_['column_date_added']         = 'Date Added';
 $_['column_action']             = 'Action';

@@ -24,8 +24,8 @@ class ModelModuleDEventManager extends Model {
 			$implode[] = "`trigger` LIKE '%" . $this->db->escape($data['filter_trigger']) . "%'";
 		}
 
-		if (!empty($data['filter_event_action'])) {
-			$implode[] = "`action` LIKE '%" . $this->db->escape($data['filter_event_action']) . "%'";
+		if (!empty($data['filter_action'])) {
+			$implode[] = "`action` LIKE '%" . $this->db->escape($data['filter_action']) . "%'";
 		}
 
 		if (isset($data['filter_status']) && !is_null($data['filter_status'])) {
@@ -90,8 +90,8 @@ class ModelModuleDEventManager extends Model {
 			$implode[] = "`trigger` LIKE '%" . $this->db->escape($data['filter_trigger']) . "%'";
 		}
 
-		if (!empty($data['filter_event_action'])) {
-			$implode[] = "`action` LIKE '%" . $this->db->escape($data['filter_event_action']) . "%'";
+		if (!empty($data['filter_action'])) {
+			$implode[] = "`action` LIKE '%" . $this->db->escape($data['filter_action']) . "%'";
 		}
 
 		if (isset($data['filter_status']) && !is_null($data['filter_status'])) {
@@ -105,14 +105,43 @@ class ModelModuleDEventManager extends Model {
 		if ($implode) {
 			$sql .= " WHERE " . implode(" AND ", $implode);
 		}
-		
+
 		return $query->row['total'];
+	}
+
+	public function updateEvent($event_id, $data){
+		FB::log($data);
+		$this->db->query("UPDATE " . DB_PREFIX . "event SET 
+			`code` = '" . $this->db->escape($data['code'])."',
+			`trigger` = '" . $this->db->escape($data['trigger'])."',
+			`action` = '" . $this->db->escape($data['action'])."',
+			`status` = '". (int)$data['status']."'
+			WHERE event_id = '" . (int)$event_id . "'");
+
+		return $this->getEventById($event_id);
+	}
+
+	public function addEvent($code, $trigger, $action, $status = 1) {
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "event` SET `code` = '" . $this->db->escape($code) . "', `trigger` = '" . $this->db->escape($trigger) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `date_added` = now()");
+	
+		return $this->db->getLastId();
+	}
+
+	public function deleteEvent($code) {
+		//if you have several events under one code - they will all be deleted. 
+		//please use deleteEventById.
+		$this->load->model('extension/event');
+		return $this->model_extension_event->deleteEvent($code);
+	}
+
+	public function deleteEventById($event_id) {
+		$this->db->query("DELETE FROM `" . DB_PREFIX . "event` WHERE `event_id` = '" . (int)$event_id . "'");
 	}
 
 	public function getEventById($event_id) {
 		$event = $this->db->query("SELECT * FROM `" . DB_PREFIX . "event` WHERE `event_id` = '" . $this->db->escape($event_id) ."'");
 		
-		return $event->rows;
+		return $event->row;
 	}
 
 	public function enableEvent($event_id) {
@@ -125,68 +154,27 @@ class ModelModuleDEventManager extends Model {
 		return $this->model_extension_event->disableEvent($event_id);	
 	}
 
+	public function installDatabase(){
+		$this->db->query("IF NOT EXISTS( SELECT NULL
+			FROM INFORMATION_SCHEMA.COLUMNS
+			WHERE table_name = '" . DB_PREFIX . "event'
+			AND table_schema = '".DB_DATABASE."'
+			AND column_name = 'status')  THEN
 
-	public function getCustomers($data = array()) {
-		if(VERSION >= '2.1.0.1'){
-			$this->load->model('customer/customer');
-			return $this->model_customer_customer->getCustomers($data);
-		}else{
-			$this->load->model('sale/customer');
-			return $this->model_sale_customer->getCustomers($data);
-		}
-		
-	}
+				ALTER TABLE `" . DB_PREFIX . "event` ADD `status` int(1) NOT NULL default '1';
 
-	public function getTotalCustomers($data = array()) {
-		if(VERSION >= '2.1.0.1'){
-			$this->load->model('customer/customer');
-			return $this->model_customer_customer->getTotalCustomers($data);
-		}else{
-			$this->load->model('sale/customer');
-			return $this->model_sale_customer->getTotalCustomers($data);
-		}
-	}
+			END IF;");
 
-	public function getTotalLoginAttempts($email) {
-		if(VERSION >= '2.1.0.1'){
-			$this->load->model('customer/customer');
-			return $this->model_customer_customer->getTotalLoginAttempts($email);
-		}else{
-			$this->load->model('sale/customer');
-			return $this->model_sale_customer->getTotalLoginAttempts($email);
-		}
-	}
+		$this->db->query("IF NOT EXISTS( SELECT NULL
+			FROM INFORMATION_SCHEMA.COLUMNS
+			WHERE table_name = '" . DB_PREFIX . "event'
+			AND table_schema = '".DB_DATABASE."'
+			AND column_name = 'date_added')  THEN
 
-	public function getCustomerGroups($data = array()) {
-		if(VERSION >= '2.1.0.1'){
-			$this->load->model('customer/customer_group');
-			return $this->model_customer_customer_group->getCustomerGroups($data);
-		}else{
-			$this->load->model('sale/customer_group');
-			return $this->model_sale_customer_group->getCustomerGroups($data);
-		}
-	}
+				ALTER TABLE `" . DB_PREFIX . "event` ADD `date_added` datetime NOT NULL;
 
-	/*
-	*	Return list of stores.
-	*/
-	public function getStores(){
-		$this->load->model('setting/store');
-		$stores = $this->model_setting_store->getStores();
-		$result = array();
-		if($stores){
-			$result[] = array(
-				'store_id' => 0, 
-				'name' => $this->config->get('config_name')
-				);
-			foreach ($stores as $store) {
-				$result[] = array(
-					'store_id' => $store['store_id'],
-					'name' => $store['name']	
-					);
-			}	
-		}
-		return $result;
+			END IF;");	
+
 	}
 
 	/**
@@ -198,29 +186,8 @@ class ModelModuleDEventManager extends Model {
 	/*
 	*	Format the link to work with ajax requests
 	*/
-	public function ajax($link){
-		return str_replace('&amp;', '&', $link);
-	}
-
-
-	/*
-	*	Vqmod: turn on or off
-	*/
-
-	public function setVqmod($xml, $action = 1){
-		$dir_vqmod =  str_replace("system", "vqmod/xml", DIR_SYSTEM);
-		$on  = $dir_vqmod.$xml;
-		$off = $dir_vqmod.$xml.'_';
-		if($action){
-			if (file_exists($off)) { 
-				return rename($off, $on);
-			}
-		}else{
-			if (file_exists($on)) { 
-				return rename($on, $off);
-			}
-		}
-		return false;
+	public function ajax($route, $url = '', $ssl = true){
+		return str_replace('&amp;', '&', $this->url->link($route, $url, $ssl));
 	}
 
 	/*
