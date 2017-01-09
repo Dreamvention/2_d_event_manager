@@ -1,0 +1,36 @@
+<modification>
+    <id>d_event_manager</id>
+    <version>1.0.0</version>
+    <vqmver>2.1.1</vqmver>
+    <author>Dreamvention.com</author>
+	<file name="system/engine/loader.php">
+		<operation error="skip" info="add event support">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/before', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 1
+			$this->registry->get('event')->trigger('config/' . $route . '/before', array(&$route));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/after', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 2
+			$this->registry->get('event')->trigger('config/' . $route . '/after', array(&$route, &$output));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/before', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 3
+			$this->registry->get('event')->trigger('language/' . $route . '/before', array(&$route));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/after', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 4
+			$this->registry->get('event')->trigger('language/' . $route . '/after', array(&$route, &$output));
+			]]></add>
+		</operation>
+	</file>
+</modification>
