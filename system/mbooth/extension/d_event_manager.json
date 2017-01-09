@@ -45,6 +45,7 @@
     },
     "files": [
         "system/mbooth/extension/d_event_manager.json",
+        "system/mbooth/install/d_event_manager.xml",
 
         "admin/controller/module/d_event_manager.php",
         "admin/model/module/d_event_manager.php",
@@ -52,6 +53,7 @@
         "admin/view/template/module/d_event_manager.tpl",
 
         "system/config/d_event_manager.php"
+
     ],
     "changelog": [
         {

@@ -2,9 +2,7 @@
 /*
  *	location: admin/controller
  */
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+
 class ControllerModuleDEventManager extends Controller {
 
 	private $codename = 'd_event_manager';
@@ -54,6 +52,7 @@ class ControllerModuleDEventManager extends Controller {
 
 
 		$this->load->language($this->route);
+		$this->load->config($this->codename);
 		$this->load->model('module/d_event_manager');
 		$this->load->model('setting/setting');
 		$this->load->model('extension/module');
@@ -435,7 +434,7 @@ class ControllerModuleDEventManager extends Controller {
 			return false;
 		}
 
-		$this->language->load($this->route);
+		$this->load->language($this->route);
 		
 		if (!$this->user->hasPermission($permission, $this->route)) {
 			$this->error['warning'] = $this->language->get('error_permission');
@@ -594,16 +593,16 @@ class ControllerModuleDEventManager extends Controller {
 		$this->model_module_d_event_manager->installDatabase();
 
 		$this->model_module_d_event_manager->deleteEvent($this->codename);
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', $this->route.'/view_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', $this->route.'/view_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', $this->route.'/controller_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', $this->route.'/controller_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', $this->route.'/model_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', $this->route.'/model_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/*/common/header/before', $this->route.'/language_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/*/common/header/after', $this->route.'/language_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'system/config/admin/before', $this->route.'/config_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'system/config/admin/after', $this->route.'/config_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', 'module/d_event_manager/view_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', 'module/d_event_manager/view_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', 'module/d_event_manager/controller_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', 'module/d_event_manager/controller_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', 'module/d_event_manager/model_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', 'module/d_event_manager/model_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/before', 'module/d_event_manager/language_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/after', 'module/d_event_manager/language_after');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/before', 'module/d_event_manager/config_before');
+		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/after', 'module/d_event_manager/config_after');
 	
 
 		// if($this->d_shopunity){
@@ -662,28 +661,24 @@ class ControllerModuleDEventManager extends Controller {
 	}
 
 	public function language_before(&$route){
-		FB::log('language_before');
 		$setting = $this->config->get('d_event_manager');
 		$setting['language_before'] = true;
 		$this->config->set('d_event_manager', $setting);
 	}
 
 	public function language_after(&$route){
-		FB::log('language_after');
 		$setting = $this->config->get('d_event_manager');
 		$setting['language_after'] = true;
 		$this->config->set('d_event_manager', $setting);
 	}
 
 	public function config_before(&$route){
-		FB::log('config_before');
 		$setting = $this->config->get('d_event_manager');
 		$setting['config_before'] = true;
 		$this->config->set('d_event_manager', $setting);
 	}
 
-	public function config_after(&$route, &$data, &$output){
-		FB::log('config_after');
+	public function config_after(&$route, &$output){
 		$setting = $this->config->get('d_event_manager');
 		$setting['config_after'] = true;
 		$this->config->set('d_event_manager', $setting);

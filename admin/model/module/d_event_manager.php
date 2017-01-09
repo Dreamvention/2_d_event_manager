@@ -145,13 +145,22 @@ class ModelModuleDEventManager extends Model {
 	}
 
 	public function enableEvent($event_id) {
-		$this->load->model('extension/event');
-		return $this->model_extension_event->enableEvent($event_id);	
+		if(VERSION > '2.3.0.0'){
+			$this->load->model('extension/event');
+			return $this->model_extension_event->enableEvent($event_id);	
+		}else{
+			$this->db->query("UPDATE " . DB_PREFIX . "event SET `status` = '1' WHERE event_id = '" . (int)$event_id . "'");
+		}
+		
 	}
-
+	
 	public function disableEvent($event_id) {
-		$this->load->model('extension/event');
-		return $this->model_extension_event->disableEvent($event_id);	
+		if(VERSION > '2.3.0.0'){
+			$this->load->model('extension/event');
+			return $this->model_extension_event->disableEvent($event_id);
+		}else{
+			$this->db->query("UPDATE " . DB_PREFIX . "event SET `status` = '0' WHERE event_id = '" . (int)$event_id . "'");
+		}
 	}
 
 	public function installDatabase(){
