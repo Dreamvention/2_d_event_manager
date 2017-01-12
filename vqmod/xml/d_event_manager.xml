@@ -3,14 +3,22 @@
     <version>1.0.0</version>
     <vqmver>2.1.1</vqmver>
     <author>Dreamvention.com</author>
+    <file name="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.2.0.0">
+			<search position="after"><![CDATA[public function __construct($registry) {]]></search>
+			<add><![CDATA[
+	//d_event_manager.xml loader
+	$this->load = new d_event_manager\Loader($this, $registry);
+			]]></add>
+		</operation>
+	</file>
 	<file name="system/engine/loader.php">
 		<operation error="skip" info="add event support 2.2.0.0">
 			<search position="replace"><![CDATA[public function controller($route, $args = array()) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml controller
 	public function controller($route, $args = array()) {
-		$load = new d_event_manager\Loader($this, $this->registry);
-		return $load->controller($route, $args);
+		return $this->load->controller($route, $args);
 	}
 	
 	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
@@ -24,8 +32,7 @@
 			<add><![CDATA[
 	//d_event_manager.xml model
 	public function model($model) {
-		$load = new d_event_manager\Loader($this, $this->registry);
-		return $load->model($model);
+		return $this->load->model($model);
 	}
 	
 	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
@@ -37,9 +44,8 @@
 			<add><![CDATA[
 	//d_event_manager.xml proxy
 	$proxy = new d_event_manager\Proxy();
-	$load = new d_event_manager\Loader($this, $this->registry);
 	foreach (get_class_methods($class) as $method) {
-		$proxy->{$method} = $load->callback($this->registry, $model . '/' . $method);
+		$proxy->{$method} = $this->load->callback($this->registry, $model . '/' . $method);
 	}
 
 	$this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
@@ -52,8 +58,7 @@
 			<add><![CDATA[
 	//d_event_manager.xml view
 	public function view($route, $args = array()) {
-		$load = new d_event_manager\Loader($this, $this->registry);
-		return $load->view($route, $args);
+		return $this->load->view($route, $args);
 	}
 	
 	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
@@ -67,8 +72,7 @@
 			<add><![CDATA[
 	//d_event_manager.xml controller
 	public function config($route) {
-		$load = new d_event_manager\Loader($this, $this->registry);
-		return $load->config($route);
+		return $this->load->config($route);
 	}
 	
 	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
@@ -82,8 +86,7 @@
 			<add><![CDATA[
 	//d_event_manager.xml controller
 	public function language($route, $args = array()) {
-		$load = new d_event_manager\Loader($this, $this->registry);
-		return $load->language($route, $args);
+		return $this->load->language($route, $args);
 	}
 	
 	//this is the original language method which is called by the d_event_menager\Loader -> language method
