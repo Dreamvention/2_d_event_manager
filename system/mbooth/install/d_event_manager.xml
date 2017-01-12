@@ -62,6 +62,20 @@
 		</operation>
 	</file>
 	<file path="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.1.0.0 - controller has $data instead or $args">
+			<search><![CDATA[public function controller($route, $data = array()) {]]></search>
+			<add position="replace"><![CDATA[
+	//d_event_manager.xml controller
+	public function controller($route, $args = array()) {
+		return $this->load->controller($route, $args);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _controller($route, $data = array()) {
+			]]></add>
+		</operation>
+	</file>
+	<file path="system/engine/loader.php">
 		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search><![CDATA[public function model($model) {]]></search>
 			<add position="replace"><![CDATA[
@@ -74,6 +88,22 @@
 	public function _model($model) {
 			]]></add>
 		</operation>
+	</file>
+	<file path="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.1.0.0 - model has an extra $data arg">
+			<search><![CDATA[public function model($model, $data = array()) {]]></search>
+			<add position="replace"><![CDATA[
+	//d_event_manager.xml model
+	public function model($model) {
+		return $this->load->model($model);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _model($model) {
+			]]></add>
+		</operation>
+	</file>
+	<file path="system/engine/loader.php">
 		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
 			<add position="replace"><![CDATA[

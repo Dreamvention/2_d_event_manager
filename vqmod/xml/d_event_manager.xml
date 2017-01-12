@@ -25,10 +25,34 @@
 	public function _controller($route, $args = array()) {
 			]]></add>
 		</operation>
+		<operation error="skip" info="add event support 2.1.0.0 - controller has $data instead or $args">
+			<search position="replace"><![CDATA[public function controller($route, $data = array()) {]]></search>
+			<add><![CDATA[
+	//d_event_manager.xml controller
+	public function controller($route, $args = array()) {
+		return $this->load->controller($route, $args);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _controller($route, $data = array()) {
+			]]></add>
+		</operation>
 	</file>
 	<file name="system/engine/loader.php">
 		<operation error="skip" info="add event support 2.2.0.0">
 			<search position="replace"><![CDATA[public function model($model) {]]></search>
+			<add><![CDATA[
+	//d_event_manager.xml model
+	public function model($model) {
+		return $this->load->model($model);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _model($model) {
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support 2.1.0.0 - model has an extra $data arg">
+			<search position="replace"><![CDATA[public function model($model, $data = array()) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml model
 	public function model($model) {
