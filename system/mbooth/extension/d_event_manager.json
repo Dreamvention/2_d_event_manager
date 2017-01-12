@@ -55,6 +55,9 @@
         "system/config/d_event_manager.php"
 
     ],
+    "dirs":[
+        "system/library/d_event_manager"
+    ],
     "changelog": [
         {
             "varsion":"1.0.0",

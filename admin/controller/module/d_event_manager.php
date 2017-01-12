@@ -605,32 +605,35 @@ class ControllerModuleDEventManager extends Controller {
 		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/after', 'module/d_event_manager/config_after');
 	
 
-		// if($this->d_shopunity){
-		// 	$this->load->model('d_shopunity/vqmod');
-		// 	$this->model_d_shopunity_vqmod->setVqmod('a_vqmod_d_event_manager.xml', 1);
+		if($this->d_shopunity){
+			$this->load->model('d_shopunity/ocmod');
+			$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
 
 		// 	$this->load->model('d_shopunity/mbooth');
 		// 	$this->model_d_shopunity_mbooth->installDependencies($this->codename);  
-		// }
+		}
 	}
 
 	public function uninstall() {
 		if($this->d_shopunity){
-			// $this->load->model('d_shopunity/vqmod');
-			// $this->model_module_d_event_manager->setVqmod('a_vqmod_d_event_manager.xml', 0);  
+			$this->load->model('d_shopunity/ocmod');
+			$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
 		}
 	}
 
-	public function controller_before(&$route, &$data){
+	public function controller_before(&$route, &$data, &$output){
+		
 		$setting = $this->config->get('d_event_manager');
 		$setting['controller_before'] = true;
 		$this->config->set('d_event_manager', $setting);
 	}
 
 	public function controller_after(&$route, &$data, &$output){
+		
 		$setting = $this->config->get('d_event_manager');
 		$setting['controller_after'] = true;
 		$this->config->set('d_event_manager', $setting);
+
 
 		FB::log($setting);
 	}
@@ -660,13 +663,13 @@ class ControllerModuleDEventManager extends Controller {
 		$this->config->set('d_event_manager', $setting);
 	}
 
-	public function language_before(&$route){
+	public function language_before(&$route, &$output){
 		$setting = $this->config->get('d_event_manager');
 		$setting['language_before'] = true;
 		$this->config->set('d_event_manager', $setting);
 	}
 
-	public function language_after(&$route){
+	public function language_after(&$route, &$output){
 		$setting = $this->config->get('d_event_manager');
 		$setting['language_after'] = true;
 		$this->config->set('d_event_manager', $setting);
@@ -678,7 +681,7 @@ class ControllerModuleDEventManager extends Controller {
 		$this->config->set('d_event_manager', $setting);
 	}
 
-	public function config_after(&$route, &$output){
+	public function config_after(&$route){
 		$setting = $this->config->get('d_event_manager');
 		$setting['config_after'] = true;
 		$this->config->set('d_event_manager', $setting);
