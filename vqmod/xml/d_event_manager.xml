@@ -5,304 +5,90 @@
     <author>Dreamvention.com</author>
 	<file name="system/engine/loader.php">
 		<operation error="skip" info="add event support 2.2.0.0">
-			<search position="replace"><![CDATA[$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data));]]></search>
+			<search position="replace"><![CDATA[public function controller($route, $args = array()) {]]></search>
 			<add><![CDATA[
-			//d_event_manager.xml 1
-			$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data, $output));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.2.0.0">
-			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/before', $route);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 2
-			$this->registry->get('event')->trigger('config/' . $route . '/before', array(&$route));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.2.0.0">
-			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/after', $route);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 3
-			$this->registry->get('event')->trigger('config/' . $route . '/after', array(&$route, &$output));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.2.0.0">
-			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/before', $route);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 4
-			$this->registry->get('event')->trigger('language/' . $route . '/before', array(&$route));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.2.0.0">
-			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/after', $route);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 5
-			$this->registry->get('event')->trigger('language/' . $route . '/after', array(&$route, &$output));
+	//d_event_manager.xml controller
+	public function controller($route, $args = array()) {
+		$load = new d_event_manager\Loader($this, $this->registry);
+		return $load->controller($route, $args);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _controller($route, $args = array()) {
 			]]></add>
 		</operation>
 	</file>
 	<file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="after"><![CDATA[public function controller($route, $data = array()) {]]></search>
+		<operation error="skip" info="add event support 2.2.0.0">
+			<search position="replace"><![CDATA[public function model($model) {]]></search>
 			<add><![CDATA[
-			//d_event_manager.xml 5
-			$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
-		
-			$output = null;
-			
-			// Trigger the pre events
-			$result = $this->registry->get('event')->em_trigger('controller/' . $route . '/before', array(&$route, &$data, &$output));
-		
+	//d_event_manager.xml model
+	public function model($model) {
+		$load = new d_event_manager\Loader($this, $this->registry);
+		return $load->model($model);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _model($model) {
 			]]></add>
 		</operation>
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="before" index="1"><![CDATA[return $output;]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 6
-			// Trigger the post events
-			$result = $this->registry->get('event')->em_trigger('controller/' . $route . '/after', array(&$route, &$data, &$output));
-			]]></add>
-		</operation>
-
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="after"><![CDATA[public function model($model, $data = array()) {]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 7
-			// Sanitize the call
-			$model = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$model);
-			
-			// Trigger the pre events
-			$this->registry->get('event')->em_trigger('model/' . $model . '/before', array(&$model));
-		
-		
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0">
+		<operation error="skip" info="add event support 2.2.0.0">
 			<search position="replace"><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
 			<add><![CDATA[
-			//d_event_manager.xml 8
-			$proxy = new d_event_manager\Proxy();
-				
-			foreach (get_class_methods($class) as $method) {
-				$proxy->{$method} = $this->em_callback($this->registry, $model . '/' . $method);
-			}
-			
-			$this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
-
-			// Trigger the post events
-			$this->registry->get('event')->em_trigger('model/' . $model . '/after', array(&$model));
-			]]></add>
-		</operation>
-
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="after"><![CDATA[public function view($template, $data = array()) {]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 9
-			$output = null;
-			
-			// Sanitize the call
-			$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$template);
-			//remove tpl
-			if (substr($route, -3) == 'tpl') {
-				$route = substr($route, 0, -3);
-			}
-			//remove twig
-			if (substr($route, -4) == 'twig') {
-				$route = substr($route, 0, -4);
-			}
-			// Trigger the pre events
-			$result = $this->registry->get('event')->em_trigger('view/' . $route . '/before', array(&$route, &$data, &$output));
-			
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="before"><![CDATA[return $output;]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 10
-			// Trigger the post events
-			$result = $this->registry->get('event')->em_trigger('view/' . $route . '/after', array(&$route, &$data, &$output));
-			
-			if ($result) {
-				return $result;
-			}
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="before"><![CDATA[$this->registry->get('config')->load($config);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 11
-			$this->registry->get('event')->em_trigger('config/' . $config . '/before', array(&$config));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="after"><![CDATA[$this->registry->get('config')->load($config);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 12
-			$this->registry->get('event')->em_trigger('config/' . $config . '/after', array(&$config));
-			]]></add>
-		</operation>
-
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="replace"><![CDATA[return $this->registry->get('language')->load($language);]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 13
-			$output = null;
-		
-			$this->registry->get('event')->em_trigger('language/' . $language . '/before', array(&$language, &$output));
-			
-			$output = $this->registry->get('language')->load($language);
-			
-			$this->registry->get('event')->em_trigger('language/' . $language . '/after', array(&$language, &$output));
-			
-			return $output;
-			]]></add>
-		</operation>
-		
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="before"><![CDATA[public function __construct($registry) {]]></search>
-			<add><![CDATA[
-	//d_event_manager.xml em_callback
-	protected function em_callback($registry, $route) {
-		return function($args) use($registry, &$route) {
-			static $model = array(); 			
-			
-			$output = null;
-			
-			// Trigger the pre events
-			$result = $registry->get('event')->em_trigger('model/' . $route . '/before', array(&$route, &$args, &$output));
-			
-			if ($result) {
-				return $result;
-			}
-			
-			// Store the model object
-			if (!isset($model[$route])) {
-				$file = DIR_APPLICATION . 'model/' .  substr($route, 0, strrpos($route, '/')) . '.php';
-				$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', substr($route, 0, strrpos($route, '/')));
-
-				if (is_file($file)) {
-					include_once(\VQMod::modCheck($file));
-				
-					$model[$route] = new $class($registry);
-				} else {
-					throw new \Exception('Error: Could not load model ' . substr($route, 0, strrpos($route, '/')) . '!');
-				}
-			}
-
-			$method = substr($route, strrpos($route, '/') + 1);
-			
-			$callable = array($model[$route], $method);
-
-			if (is_callable($callable)) {
-				$output = call_user_func_array($callable, $args);
-			} else {
-				throw new \Exception('Error: Could not call model/' . $route . '!');
-			}
-			
-			// Trigger the post events
-			$result = $registry->get('event')->em_trigger('model/' . $route . '/after', array(&$route, &$args, &$output));
-			
-			if ($result) {
-				return $result;
-			}
-						
-			return $output;
-		};
+	//d_event_manager.xml proxy
+	$proxy = new d_event_manager\Proxy();
+	$load = new d_event_manager\Loader($this, $this->registry);
+	foreach (get_class_methods($class) as $method) {
+		$proxy->{$method} = $load->callback($this->registry, $model . '/' . $method);
 	}
-	///d_event_manager.xml em_callback
+
+	$this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
 	]]></add>
 		</operation>
 	</file>
- 	<file name="system/engine/event.php">
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="before"><![CDATA[public function __construct($registry) {]]></search>
+	<file name="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.2.0.0">
+			<search position="replace"><![CDATA[public function view($template, $data = array()) {]]></search>
 			<add><![CDATA[
-	protected $em_data = array();
-	
-	public function em_register_all(){
-		$query = $this->registry->get('db')->query("SELECT * FROM `" . DB_PREFIX . "event` WHERE `trigger` LIKE 'admin/%' AND `status` = '1' ORDER BY `event_id` ASC");
-		
-		foreach ($query->rows as $result) {
-			$this->em_register(substr($result['trigger'], strpos($result['trigger'], '/') + 1), new Action($result['action']));
-		}
-	}
-
-	public function em_register($trigger, Action $action) {
-		$this->em_data[$trigger][] = $action;
+	//d_event_manager.xml view
+	public function view($route, $args = array()) {
+		$load = new d_event_manager\Loader($this, $this->registry);
+		return $load->view($route, $args);
 	}
 	
-	public function em_trigger($event, array $args = array()) {
-		foreach ($this->em_data as $trigger => $actions) {
-			if (preg_match('/^' . str_replace(array('\*', '\?'), array('.*', '.'), preg_quote($trigger, '/')) . '/', $event)) {
-				foreach ($actions as $action) {
-					$result = $action->em_execute($this->registry, $args);
-
-					if (!is_null($result) && !($result instanceof Exception)) {
-						return $result;
-					}
-				}
-			}
-		}
-	}
-
-	public function em_unregister($trigger, $route = '') {
-		if ($route) {
-			foreach ($this->em_data[$trigger] as $key => $action) {
-				if ($action->getId() == $route) {
-					unset($this->em_data[$trigger][$key]);
-				}
-			}
-		} else {
-			unset($this->em_data[$trigger]);
-		}
-	}
-
-	public function em_removeAction($trigger, $route) {
-		foreach ($this->em_data[$trigger] as $key => $action) {
-			if ($action->getId() == $route) {
-				unset($this->em_data[$trigger][$key]);
-			}
-		}
-	}
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="after"><![CDATA[$this->registry = $registry;]]></search>
-			<add><![CDATA[
-			//d_event_manager.xml 6
-			$this->em_register_all();
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _view($template, $data = array()) {
 			]]></add>
 		</operation>
 	</file>
-	<file name="system/engine/action.php">
-		<operation error="skip" info="add event support 2.1.0.0">
-			<search position="after"><![CDATA[private $args = array();]]></search>
+	<file name="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.2.0.0">
+			<search position="replace"><![CDATA[public function config($config) {]]></search>
 			<add><![CDATA[
-	public function em_execute($registry, array $args = array()) {
-		// Stop any magical methods being called
-		if (substr($this->method, 0, 2) == '__') {
-			return new \Exception('Error: Calls to magic methods are not allowed!');
-		}
-
-		$file = $this->file;		
-		$class = $this->class;
-		
-		// Initialize the class
-		if (is_file($file)) {
-			include_once($file);
-		
-			$controller = new $class($registry);
-		} else {
-			return new \Exception('Error: Could not call ' . $class . '/' . $this->method . '!');
-		}
-		
-		$reflection = new ReflectionClass($class);
-		
-		if ($reflection->hasMethod($this->method) && $reflection->getMethod($this->method)->getNumberOfRequiredParameters() <= count($args)) {
-			return call_user_func_array(array($controller, $this->method), $args);
-		} else {
-			return new \Exception('Error: Could not call ' . $class . '/' . $this->method . '!');
-		}
-	}]]></add>
+	//d_event_manager.xml controller
+	public function config($route) {
+		$load = new d_event_manager\Loader($this, $this->registry);
+		return $load->config($route);
+	}
+	
+	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+	public function _config($config) {
+			]]></add>
+		</operation>
+	</file>
+	<file name="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.2.0.0">
+			<search position="replace"><![CDATA[public function language($language) {]]></search>
+			<add><![CDATA[
+	//d_event_manager.xml controller
+	public function language($route, $args = array()) {
+		$load = new d_event_manager\Loader($this, $this->registry);
+		return $load->language($route, $args);
+	}
+	
+	//this is the original language method which is called by the d_event_menager\Loader -> language method
+	public function _language($language) {
+			]]></add>
 		</operation>
 	</file>
 </modification>

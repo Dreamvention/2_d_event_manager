@@ -622,14 +622,14 @@ class ControllerModuleDEventManager extends Controller {
 	}
 
 	public function controller_before(&$route, &$data, &$output){
-		
+		FB::log('controller_before');
 		$setting = $this->config->get('d_event_manager');
 		$setting['controller_before'] = true;
 		$this->config->set('d_event_manager', $setting);
 	}
 
 	public function controller_after(&$route, &$data, &$output){
-		
+		FB::log('controller_after');
 		$setting = $this->config->get('d_event_manager');
 		$setting['controller_after'] = true;
 		$this->config->set('d_event_manager', $setting);
