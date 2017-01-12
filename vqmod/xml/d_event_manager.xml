@@ -4,7 +4,44 @@
     <vqmver>2.1.1</vqmver>
     <author>Dreamvention.com</author>
     <file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.2.0.0">
+    	<operation error="skip" info="add event support for 2.2.0.0">
+			<search position="replace"><![CDATA[$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data));]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 1
+			$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data, &$output));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support for 2.2.0.0">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/before', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 2
+			$this->registry->get('event')->trigger('config/' . $route . '/before', array(&$route));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support for 2.2.0.0">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/after', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 3
+			$this->registry->get('event')->trigger('config/' . $route . '/after', array(&$route, &$output));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support for 2.2.0.0">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/before', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 4
+			$this->registry->get('event')->trigger('language/' . $route . '/before', array(&$route));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support for 2.2.0.0">
+			<search position="replace"><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/after', $route);]]></search>
+			<add><![CDATA[
+			//d_event_manager.xml 5
+			$this->registry->get('event')->trigger('language/' . $route . '/after', array(&$route, &$output));
+			]]></add>
+		</operation>
+	</file>
+    <file name="system/engine/loader.php">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="after"><![CDATA[public function __construct($registry) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml loader
@@ -13,7 +50,7 @@
 		</operation>
 	</file>
 	<file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.2.0.0">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="replace"><![CDATA[public function controller($route, $args = array()) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml controller
@@ -39,7 +76,7 @@
 		</operation>
 	</file>
 	<file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.2.0.0">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="replace"><![CDATA[public function model($model) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml model
@@ -63,7 +100,7 @@
 	public function _model($model) {
 			]]></add>
 		</operation>
-		<operation error="skip" info="add event support 2.2.0.0">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="replace"><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml proxy
@@ -77,7 +114,7 @@
 		</operation>
 	</file>
 	<file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.2.0.0">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="replace"><![CDATA[public function view($template, $data = array()) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml view
@@ -91,7 +128,7 @@
 		</operation>
 	</file>
 	<file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.2.0.0">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="replace"><![CDATA[public function config($config) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml controller
@@ -105,7 +142,7 @@
 		</operation>
 	</file>
 	<file name="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.2.0.0">
+		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search position="replace"><![CDATA[public function language($language) {]]></search>
 			<add><![CDATA[
 	//d_event_manager.xml controller

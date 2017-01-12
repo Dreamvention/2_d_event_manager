@@ -11,19 +11,25 @@ final class Loader {
 		$this->event = new Event($registry);
 	}
 	public function controller($route, $data = array()){
-		$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
-		
-		$output = null;
-		
-		// Trigger the pre events
-		$result = $this->event->trigger('controller/' . $route . '/before', array(&$route, &$data, &$output));
-		
 
-		$output = $this->class->_controller($route, $data);
+		if(VERSION < '2.2.0.0'){
+			$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
+			
+			$output = null;
+			
+			// Trigger the pre events
+			$result = $this->event->trigger('controller/' . $route . '/before', array(&$route, &$data, &$output));
+			
 
-		// Trigger the post events
-		$result = $this->event->trigger('controller/' . $route . '/after', array(&$route, &$data, &$output));
-		
+			$output = $this->class->_controller($route, $data);
+
+			// Trigger the post events
+			$result = $this->event->trigger('controller/' . $route . '/after', array(&$route, &$data, &$output));
+			
+		}else{
+			$output = $this->class->_controller($route, $data);
+		}
+
 		if ($output instanceof Exception) {
 			return false;
 		}
@@ -32,19 +38,23 @@ final class Loader {
 	}
 
 	public function model($route, $data = array()){
-		$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
-		
-		$output = null;
-		
-		// Trigger the pre events
-		$result = $this->event->trigger('model/' . $route . '/before', array(&$route));
+		if(VERSION < '2.2.0.0'){
+			$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$route);
+			
+			$output = null;
+			
+			// Trigger the pre events
+			$result = $this->event->trigger('model/' . $route . '/before', array(&$route));
 
-		//, $data = array()???
-		$output = $this->class->_model($route);
+			//, $data = array()???
+			$output = $this->class->_model($route);
 
-		// Trigger the post events
-		$result = $this->event->trigger('model/' . $route . '/after', array(&$route));
-		
+			// Trigger the post events
+			$result = $this->event->trigger('model/' . $route . '/after', array(&$route));
+		}else{
+			$output = $this->class->_model($route);
+		}
+
 		if ($output instanceof Exception) {
 			return false;
 		}
@@ -53,27 +63,31 @@ final class Loader {
 	}
 	
 	public function view($template, $data = array()){
-		$output = null;
-		
-		// Sanitize the call
-		$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$template);
-		//remove tpl
-		if (substr($route, -3) == 'tpl') {
-			$route = substr($route, 0, -3);
-		}
-		//remove twig
-		if (substr($route, -4) == 'twig') {
-			$route = substr($route, 0, -4);
-		}
-		// Trigger the pre events
-		$result = $this->event->trigger('view/' . $route . '/before', array(&$route, &$data, &$output));
-		
-		//, $data = array()???
-		$output = $this->class->_view($template, $data);
+		if(VERSION < '2.2.0.0'){
+			$output = null;
+			
+			// Sanitize the call
+			$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$template);
+			//remove tpl
+			if (substr($route, -3) == 'tpl') {
+				$route = substr($route, 0, -3);
+			}
+			//remove twig
+			if (substr($route, -4) == 'twig') {
+				$route = substr($route, 0, -4);
+			}
+			// Trigger the pre events
+			$result = $this->event->trigger('view/' . $route . '/before', array(&$route, &$data, &$output));
+			
+			//, $data = array()???
+			$output = $this->class->_view($template, $data);
 
-		// Trigger the post events
-		$result = $this->event->trigger('view/' . $route . '/after', array(&$route, &$data, &$output));
-		
+			// Trigger the post events
+			$result = $this->event->trigger('view/' . $route . '/after', array(&$route, &$data, &$output));
+		}else{
+			$output = $this->class->_view($template, $data);
+		}
+
 		if ($result) {
 			return $result;
 		}
@@ -85,22 +99,29 @@ final class Loader {
 	
 	public function config($route) {
 
-		$this->event->trigger('config/' . $route . '/before', array(&$route));
-		
-		$output = $this->class->_config($route);
-		
-		$this->event->trigger('config/' . $route . '/after', array(&$route, &$output));
+		if(VERSION < '2.2.0.0'){
+			$this->event->trigger('config/' . $route . '/before', array(&$route));
+			
+			$output = $this->class->_config($route);
+			
+			$this->event->trigger('config/' . $route . '/after', array(&$route, &$output));
+		}else{
+			$output = $this->class->_config($route);
+		}
 	}
 
 	public function language($route) {
-		$output = null;
-		
-		$this->event->trigger('language/' . $route . '/before', array(&$route, &$output));
-		
-		$output = $this->class->_language($route);
-		
-		$this->event->trigger('language/' . $route . '/after', array(&$route, &$output));
-		
+		if(VERSION < '2.2.0.0'){
+			$output = null;
+			
+			$this->event->trigger('language/' . $route . '/before', array(&$route, &$output));
+			
+			$output = $this->class->_language($route);
+			
+			$this->event->trigger('language/' . $route . '/after', array(&$route, &$output));
+		}else{
+			$output = $this->class->_language($route);
+		}
 		return $output;
 	}
 	
