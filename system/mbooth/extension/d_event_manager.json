@@ -29,9 +29,7 @@
     },
     "install": {
         "url": "extension/module/install&extension=d_event_manager",
-        "xml": "system/mbooth/install/d_event_manager.xml",
-        "php": "system/mbooth/install/d_event_manager.php",
-        "sql": "system/mbooth/install/d_event_manager.sql"
+        "xml": "system/mbooth/install/d_event_manager.xml"
     },
     "uninstall": {
         "url": "extension/module/uninstall&extension=d_event_manager"

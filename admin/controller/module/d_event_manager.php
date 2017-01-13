@@ -69,22 +69,9 @@ class ControllerModuleDEventManager extends Controller {
 
 		// styles and scripts
 		$this->document->addStyle('view/stylesheet/shopunity/bootstrap.css');
-		// sortable
-		$this->document->addScript('view/javascript/shopunity/rubaxa-sortable/Sortable.js');
-		$this->document->addStyle('view/stylesheet/shopunity/rubaxa-sortable/Sortable.css');
-		$this->document->addScript('view/javascript/shopunity/tinysort/jquery.tinysort.min.js');
-		
-		$this->document->addScript('view/javascript/shopunity/bootstrap-colorpicker/bootstrap-colorpicker.min.js');
-		$this->document->addStyle('view/stylesheet/shopunity/bootstrap-colorpicker/bootstrap-colorpicker.min.css');
 
 		$this->document->addScript('view/javascript/shopunity/bootstrap-switch/bootstrap-switch.min.js');
 		$this->document->addStyle('view/stylesheet/shopunity/bootstrap-switch/bootstrap-switch.css');
-
-		if(VERSION >= '2.3.0.0'){
-			$this->document->addScript('view/javascript/summernote/summernote.js');
-			$this->document->addScript('view/javascript/summernote/opencart.js');
-			$this->document->addStyle('view/javascript/summernote/summernote.css');
-		}
 		
 		// Add more styles, links or scripts to the project is necessary
 		$url_params = array();
