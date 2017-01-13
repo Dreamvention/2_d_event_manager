@@ -13,7 +13,7 @@ class Event {
 
 	public function __construct($registry) {
 		
-		if(VERSION < '2.1.0.0'){
+		if(VERSION < '2.2.0.0'){
 			$db = new \DB(DB_DRIVER, DB_HOSTNAME, DB_USERNAME, DB_PASSWORD, DB_DATABASE);
 			$registry->set('db', $db);
 		}
