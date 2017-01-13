@@ -106,14 +106,18 @@
 		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
 			<add position="replace"><![CDATA[
-	//d_event_manager.xml proxy
-	$proxy = new d_event_manager\Proxy();
-	foreach (get_class_methods($class) as $method) {
-		$proxy->{$method} = $this->load->callback($this->registry, $model . '/' . $method);
-	}
+		//d_event_manager.xml proxy
+		if(strpos($class, 'total') === false){
+			$proxy = new d_event_manager\Proxy();
+			foreach (get_class_methods($class) as $method) {
+				$proxy->{$method} = $this->load->callback($this->registry, $model . '/' . $method);
+			}
 
-	$this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
-	]]></add>
+			$this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
+		}else{
+			$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
+		}
+			]]></add>
 		</operation>
 	</file>
 	<file path="system/engine/loader.php">
