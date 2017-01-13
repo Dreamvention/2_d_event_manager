@@ -619,7 +619,8 @@ class ControllerModuleDEventManager extends Controller {
 
 	public function install_test(){
 		if(!$this->validate()){
-			return false;
+			$this->session->data['error'] = $this->language->get('error_permission');
+			$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
 		}
 
 		$this->load->model('d_shopunity/ocmod');
@@ -650,7 +651,8 @@ class ControllerModuleDEventManager extends Controller {
 	public function uninstall_test(){
 
 		if(!$this->validate()){
-			return false;
+			$this->session->data['error'] = $this->language->get('error_permission');
+			$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
 		}
 
 		$this->load->model('module/d_event_manager');
