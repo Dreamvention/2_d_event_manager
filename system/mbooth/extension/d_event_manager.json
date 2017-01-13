@@ -50,6 +50,7 @@
         "admin/controller/module/d_event_manager.php",
         "admin/model/module/d_event_manager.php",
         "admin/language/english/module/d_event_manager.php",
+        "admin/language/en-gb/module/d_event_manager.php",
         "admin/view/template/module/d_event_manager.tpl",
 
         "system/config/d_event_manager.php"

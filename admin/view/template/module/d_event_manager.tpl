@@ -210,6 +210,7 @@
 							<div class="tab-body">
 								<form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
 								
+								<?php if(VERSION < '2.3.0.0') { ?>
 								<div class="form-group">
 									<label class="col-sm-2 control-label" for="input_compatibility"><?php echo $entry_compatibility; ?></label>
 									<div class="col-sm-10">										
@@ -217,11 +218,15 @@
 										<input type="checkbox" name="compatibility" class="switcher" data-label-text="<?php echo $text_enabled; ?>"id="input_compatibility" <?php echo ($compatibility) ? 'checked="checked"':'';?> value="1" />
 									</div>
 								</div><!-- //compatibility -->
-
+								<?php } ?>
 								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_test"><?php echo $entry_test; ?></label>
+									<label class="col-sm-2 control-label" for="input_test"><?php echo $entry_test_toggle; ?></label>
 									<div class="col-sm-10">
-										<a class="btn btn-primary" href="<?php echo $install_test?>"><?php echo $text_install; ?></a> <a class="btn btn-danger" href="<?php echo $uninstall_test; ?>"><?php echo $text_uninstall; ?></a>
+										<?php if(!$tests){?>
+										<a class="btn btn-primary" href="<?php echo $install_test?>"><?php echo $text_install; ?></a> 
+										<?php }else{ ?>
+										<a class="btn btn-danger" href="<?php echo $uninstall_test; ?>"><?php echo $text_uninstall; ?></a>
+										<?php } ?>
 									</div>
 								</div><!-- //text -->
 								<?php if($tests){?>

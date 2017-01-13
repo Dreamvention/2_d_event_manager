@@ -191,6 +191,7 @@ class ControllerModuleDEventManager extends Controller {
 		
 		// Entry
 		$data['entry_compatibility'] = $this->language->get('entry_compatibility');
+		$data['entry_test_toggle'] = $this->language->get('entry_test_toggle');
 		$data['entry_test'] = $this->language->get('entry_test');
 		$data['text_install'] = $this->language->get('text_install');
 		$data['text_uninstall'] = $this->language->get('text_uninstall');
@@ -628,6 +629,7 @@ class ControllerModuleDEventManager extends Controller {
 
 	public function install_test(){
 		$this->load->model('d_shopunity/ocmod');
+		$this->load->language($this->route);
 		if(VERSION > '2.3.0.0' || $this->model_d_shopunity_ocmod->getModificationByName('Event Manager')){
 			$this->load->model('module/d_event_manager');
 			$this->model_module_d_event_manager->installDatabase();
@@ -646,13 +648,14 @@ class ControllerModuleDEventManager extends Controller {
 			
 			$this->session->data['success'] = $this->language->get('text_success');
 		}else{
-			$this->session->data['error'] = $this->language->get('text_success');
+			$this->session->data['error'] = $this->language->get('error_failed_test_install');
 		}
 		$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
 		
 	}
 	public function uninstall_test(){
 		$this->load->model('module/d_event_manager');
+		$this->load->language($this->route);
 		$this->model_module_d_event_manager->deleteEvent($this->codename);
 
 		$this->session->data['success'] = $this->language->get('text_success');
@@ -663,6 +666,7 @@ class ControllerModuleDEventManager extends Controller {
 	public function install_compatibility(){
 
 		$this->load->model('d_shopunity/ocmod');
+		$this->load->language($this->route);
 		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
 		$this->model_d_shopunity_ocmod->refreshCache();
 
