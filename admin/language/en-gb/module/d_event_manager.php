@@ -42,7 +42,7 @@ $_['text_radio_0']              = 'No';
 $_['entry_compatibility']	    = 'Activate compatibility for 2.2.0.0 and bellow';
 $_['help_compatibility']        = '<h4>Model Total are not supported</h4><p>Because Model/Total uses references, and proxy/callback can not support references, events for this model will not work. For the rest of the models the events do work.</p>';
 $_['entry_test_toggle']         = 'Test the status of events';
-$_['entry_test']				= 'List of avalible tests';
+$_['entry_test']				= 'List of available tests';
 $_['text_install']				= 'Install';
 $_['text_uninstall']			= 'Uninstall';
 

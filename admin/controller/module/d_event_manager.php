@@ -468,20 +468,15 @@ class ControllerModuleDEventManager extends Controller {
 			return false;
 		}
 
-		if(empty($this->request->post[$this->codename.'_setting']['select'])){
-			$this->error['select'] = $this->language->get('error_select');
-			return false;
-		}
-
-		if(empty($this->request->post[$this->codename.'_setting']['text'])){
-			$this->error['text'] = $this->language->get('error_text');
-			return false;
-		}
-
 		return true;
 	}
 
 	public function enable() {
+
+		if(!$this->validate()){
+			return false;
+		}
+
 		$event_id = false;
 		$event = array();
 
@@ -507,6 +502,10 @@ class ControllerModuleDEventManager extends Controller {
 	}
 
 	public function disable() {
+		if(!$this->validate()){
+			return false;
+		}
+
 		$event_id = false;
 		$event = array();
 
@@ -566,6 +565,10 @@ class ControllerModuleDEventManager extends Controller {
 	}
 
 	public function save(){
+		if(!$this->validate()){
+			return false;
+		}
+
 		$event_id = false;
 		$event = array();
 
@@ -615,6 +618,10 @@ class ControllerModuleDEventManager extends Controller {
 	}
 
 	public function install_test(){
+		if(!$this->validate()){
+			return false;
+		}
+
 		$this->load->model('d_shopunity/ocmod');
 		$this->load->language($this->route);
 		if(VERSION > '2.3.0.0' || $this->model_d_shopunity_ocmod->getModificationByName('Event Manager')){
@@ -641,6 +648,11 @@ class ControllerModuleDEventManager extends Controller {
 		
 	}
 	public function uninstall_test(){
+
+		if(!$this->validate()){
+			return false;
+		}
+
 		$this->load->model('module/d_event_manager');
 		$this->load->language($this->route);
 		$this->model_module_d_event_manager->deleteEvent($this->codename);
@@ -651,6 +663,11 @@ class ControllerModuleDEventManager extends Controller {
 
 
 	public function install_compatibility(){
+
+		if(!$this->validate()){
+			$this->session->data['error'] = $this->language->get('error_permission');
+			$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+		}
 
 		$this->load->model('d_shopunity/ocmod');
 		$this->load->language($this->route);
@@ -664,6 +681,11 @@ class ControllerModuleDEventManager extends Controller {
 
 	public function uninstall_compatibility(){
 
+		if(!$this->validate()){
+			$this->session->data['error'] = $this->language->get('error_permission');
+			$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+		}
+
 		$this->load->model('d_shopunity/ocmod');
 		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
 		$this->model_d_shopunity_ocmod->refreshCache();
@@ -673,6 +695,10 @@ class ControllerModuleDEventManager extends Controller {
 
 
 	public function install() {
+		if(!$this->validate()){
+			return false;
+		}
+
 		$this->load->model('module/d_event_manager');
 		$this->model_module_d_event_manager->installDatabase();
 
@@ -685,6 +711,10 @@ class ControllerModuleDEventManager extends Controller {
 	}
 
 	public function uninstall() {
+		if(!$this->validate()){
+			return false;
+		}
+		
 		$this->load->model('module/d_event_manager');
 		$this->model_module_d_event_manager->deleteEvent($this->codename);
 	}
