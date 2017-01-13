@@ -712,7 +712,19 @@ class ControllerModuleDEventManager extends Controller {
 		$setting = $this->config->get('d_event_manager');
 		$setting['controller_after'] = true;
 		$this->config->set('d_event_manager', $setting);
+		$output.= '
+			<script> 
+				var d_event_manager = '.json_encode($setting).'; 
+				$(function () {
 
+					jQuery.each(d_event_manager, function(i, val) {
+						if(val){
+							$("." + i).removeClass("failed");
+						}
+						
+					});
+				});
+			</script>';
 		//FB::log($setting);
 	}
 

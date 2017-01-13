@@ -232,9 +232,12 @@
 								<?php if($tests){?>
 								<div class="form-group">
 									<label class="col-sm-2 control-label" for="input_test"><?php echo $entry_test; ?></label>
-									<div class="col-sm-10">
+									<div class="col-sm-10 tests">
 										<?php foreach($tests as $test => $result){ ?>
-											<div class="alert <?php if($result) { ?>alert-success<?php }else{?> alert-danger<?php } ?>"><?php echo $test ?> <div class="pull-right"><span class="label <?php if($result) { ?>label-success<?php }else{?> label-danger<?php } ?>"><?php if($result) { ?>passed<?php }else{?>not passed<?php } ?></span></div></div>
+										<div class="<?php echo $test; ?> failed">
+											<div class="alert alert-success"><?php echo $test ?> <div class="pull-right"><span class="label label-success">passed</span></div></div>
+											<div class="alert alert-danger"><?php echo $test ?> <div class="pull-right"><span class="label label-danger">failed</span></div></div>
+										</div>
 										<?php } ?>
 									</div>
 								</div><!-- //test -->
@@ -360,13 +363,22 @@
 	    -webkit-animation-duration: 2000ms;
 	    -webkit-animation-iteration-count: 1;
 	    -webkit-animation-timing-function: ease-in-out;
-	}    
+	}  
+	.tests .alert-danger{
+		display: none
+	}
+	.failed .alert-success{
+		display: none
+	}
+	.failed .alert-danger{
+		display: block
+	}  
 </style>
 <script type="text/javascript"><!--
 	// sorting fields
-
 	
 	$(function () {
+
 	//checkbox
 	$(".switcher[type='checkbox']").bootstrapSwitch({
 		'onColor': 'success',
