@@ -57,6 +57,7 @@ $_['error_select']				= 'Select required!';
 $_['error_text']                = 'Text required!';
 
 //setting
+$_['tab_event']                 = 'Events';
 $_['tab_setting']               = 'Settings';
 
 //update

@@ -57,6 +57,7 @@ class ControllerModuleDEventManager extends Controller {
 		$this->load->model('setting/setting');
 		$this->load->model('extension/module');
 		$this->load->model('d_shopunity/setting');
+		$this->load->model('d_shopunity/ocmod');
 
 		//save post
 		if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
@@ -146,7 +147,7 @@ class ControllerModuleDEventManager extends Controller {
 		$data['d_shopunity'] = $this->d_shopunity;
 
 		// Customer
-		$data['tab_customer'] = $this->language->get('tab_customer');
+		$data['tab_event'] = $this->language->get('tab_event');
 
 		$data['text_list'] = $this->language->get('text_list');
 		$data['text_enabled'] = $this->language->get('text_enabled');
@@ -189,6 +190,11 @@ class ControllerModuleDEventManager extends Controller {
 		$data['button_remove'] = $this->language->get('button_remove');
 		
 		// Entry
+		$data['entry_compatibility'] = $this->language->get('entry_compatibility');
+		$data['entry_test'] = $this->language->get('entry_test');
+		$data['text_install'] = $this->language->get('text_install');
+		$data['text_uninstall'] = $this->language->get('text_uninstall');
+
 		$data['entry_status'] = $this->language->get('entry_status');
 		$data['entry_config_files'] = $this->language->get('entry_config_files');
 		$data['entry_select'] = $this->language->get('entry_select');
@@ -213,6 +219,11 @@ class ControllerModuleDEventManager extends Controller {
 		//action
 		$data['module_link'] = $this->url->link($this->route, 'token=' . $this->session->data['token'], 'SSL');
 		$data['action'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['install_test'] = $this->url->link($this->route.'/install_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['uninstall_test'] = $this->url->link($this->route.'/uninstall_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['install_compatibility'] = $this->model_module_d_event_manager->ajax($this->route.'/install_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['uninstall_compatibility'] = $this->model_module_d_event_manager->ajax($this->route.'/uninstall_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		
 		if(VERSION >= '2.3.0.0'){	
 			$data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
 		}else{
@@ -236,6 +247,16 @@ class ControllerModuleDEventManager extends Controller {
 		$data['text_instruction'] = $this->language->get('text_instruction');
 
 
+		if (isset($this->session->data['success'])) {
+			$data['success'] = $this->session->data['success'];
+			unset($this->session->data['success']);
+		} 
+
+		if (isset($this->session->data['error'])) {
+			$data['error']['warning'] = $this->session->data['error'];
+			unset($this->session->data['error']);
+		} 
+
 		if (isset($this->request->post[$this->codename.'_status'])) {
 			$data[$this->codename.'_status'] = $this->request->post[$this->codename.'_status'];
 		} else {
@@ -255,7 +276,25 @@ class ControllerModuleDEventManager extends Controller {
 		//get setting
 		$data['setting'] = $this->model_d_shopunity_setting->getSetting($this->codename);
 
+		$data['compatibility'] = $this->model_d_shopunity_ocmod->getModificationByName('Event Manager');
 
+		$data['tests'] = array();
+
+		if($this->config->get('d_event_manager')){
+			$data['tests'] = array(
+				'controller_before' => false,
+				'controller_after' => false,
+				'model_before' => false,
+				'model_after' => false,
+				'view_before' => false,
+				'view_after' => false,
+				'config_before' => false,
+				'config_after' => false,
+				'language_before' => false,
+				'language_after' => false);
+			$data['tests'] = array_merge($data['tests'], $this->config->get('d_event_manager'));
+		}
+		
 		//select
 		$data['selects'] = array('option_1', 'option_2', 'option_3');
 
@@ -587,38 +626,76 @@ class ControllerModuleDEventManager extends Controller {
 		$this->response->setOutput(json_encode($json));
 	}
 
+	public function install_test(){
+		$this->load->model('d_shopunity/ocmod');
+		if(VERSION > '2.3.0.0' || $this->model_d_shopunity_ocmod->getModificationByName('Event Manager')){
+			$this->load->model('module/d_event_manager');
+			$this->model_module_d_event_manager->installDatabase();
+
+			$this->model_module_d_event_manager->deleteEvent($this->codename);
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', 'module/d_event_manager/view_before');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', 'module/d_event_manager/view_after');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', 'module/d_event_manager/controller_before');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', 'module/d_event_manager/controller_after');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', 'module/d_event_manager/model_before');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', 'module/d_event_manager/model_after');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/before', 'module/d_event_manager/language_before');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/after', 'module/d_event_manager/language_after');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/before', 'module/d_event_manager/config_before');
+			$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/after', 'module/d_event_manager/config_after');
+			
+			$this->session->data['success'] = $this->language->get('text_success');
+		}else{
+			$this->session->data['error'] = $this->language->get('text_success');
+		}
+		$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+		
+	}
+	public function uninstall_test(){
+		$this->load->model('module/d_event_manager');
+		$this->model_module_d_event_manager->deleteEvent($this->codename);
+
+		$this->session->data['success'] = $this->language->get('text_success');
+		$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+	}
+
+
+	public function install_compatibility(){
+
+		$this->load->model('d_shopunity/ocmod');
+		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
+		$this->model_d_shopunity_ocmod->refreshCache();
+
+		$this->session->data['success'] = $this->language->get('text_success');
+		$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+		
+	}
+
+	public function uninstall_compatibility(){
+
+		$this->load->model('d_shopunity/ocmod');
+		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
+		$this->model_d_shopunity_ocmod->refreshCache();
+
+		$this->uninstall_test();
+	}
+
 
 	public function install() {
 		$this->load->model('module/d_event_manager');
 		$this->model_module_d_event_manager->installDatabase();
 
-		$this->model_module_d_event_manager->deleteEvent($this->codename);
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', 'module/d_event_manager/view_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', 'module/d_event_manager/view_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', 'module/d_event_manager/controller_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', 'module/d_event_manager/controller_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', 'module/d_event_manager/model_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', 'module/d_event_manager/model_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/before', 'module/d_event_manager/language_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/after', 'module/d_event_manager/language_after');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/before', 'module/d_event_manager/config_before');
-		$this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/after', 'module/d_event_manager/config_after');
-	
+		//$this->installTest();
 
 		if($this->d_shopunity){
-			$this->load->model('d_shopunity/ocmod');
-			$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
-
-		// 	$this->load->model('d_shopunity/mbooth');
-		// 	$this->model_d_shopunity_mbooth->installDependencies($this->codename);  
+			$this->load->model('d_shopunity/mbooth');
+			$this->model_d_shopunity_mbooth->installDependencies($this->codename);  
 		}
 	}
 
 	public function uninstall() {
-		if($this->d_shopunity){
-			$this->load->model('d_shopunity/ocmod');
-			$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
-		}
+		$this->load->model('module/d_event_manager');
+		$this->model_module_d_event_manager->deleteEvent($this->codename);
 	}
 
 	public function controller_before(&$route, &$data, &$output){

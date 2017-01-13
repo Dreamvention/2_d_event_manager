@@ -49,17 +49,17 @@
 			</div>
 			<div class="panel-body">
 				
-					<!-- <ul	class="nav nav-tabs">
-						<li class="active"><a href="#tab_customer" data-toggle="tab">
-							<span class="fa fa-user"></span> 
-							<?php echo $tab_customer; ?>
+					 <ul class="nav nav-tabs">
+						<li class="active"><a href="#tab_event" data-toggle="tab">
+							<span class="fa fa-plug"></span> 
+							<?php echo $tab_event; ?>
 						</a></li>
 
 						<li><a href="#tab_setting" data-toggle="tab">
 							<span class="fa fa-cog"></span> 
 							<?php echo $tab_setting; ?>
 						</a></li>
-						<?php if(isset($setting['debug'])){?>
+						<!-- <?php if(isset($setting['debug'])){?>
 						<li><a href="#tab_debug" data-toggle="tab">
 							<span class="fa fa-bug"></span> 
 							<?php echo $tab_debug; ?>
@@ -74,11 +74,11 @@
 						<li><a href="#tab_instruction" data-toggle="tab">
 							<span class="fa fa-graduation-cap"></span> 
 							<?php echo $tab_instruction; ?>
-						</a></li> 
-					</ul>-->
+						</a></li>  -->
+					</ul>
 
 					<div class="tab-content">
-						<div class="tab-pane active" id="tab_customer" >
+						<div class="tab-pane active" id="tab_event" >
 							<div class="tab-body">
 								<div id="filter" class="well">
 									<div class="row">
@@ -211,137 +211,29 @@
 								<form action="<?php echo $action; ?>" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
 								
 								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_status"><?php echo $entry_status; ?></label>
+									<label class="col-sm-2 control-label" for="input_compatibility"><?php echo $entry_compatibility; ?></label>
 									<div class="col-sm-10">										
-										<input type="hidden" name="<?php echo $id;?>_status" value="0" />
-										<input type="checkbox" name="<?php echo $id;?>_status" class="switcher" data-label-text="<?php echo $text_enabled; ?>"id="input_status" <?php echo (${$id.'_status'}) ? 'checked="checked"':'';?> value="1" />
+										<input type="hidden" name="compatibility" value="0" />
+										<input type="checkbox" name="compatibility" class="switcher" data-label-text="<?php echo $text_enabled; ?>"id="input_compatibility" <?php echo ($compatibility) ? 'checked="checked"':'';?> value="1" />
 									</div>
-								</div><!-- //status -->
+								</div><!-- //compatibility -->
 
 								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_select"><?php echo $entry_select; ?></label>
+									<label class="col-sm-2 control-label" for="input_test"><?php echo $entry_test; ?></label>
 									<div class="col-sm-10">
-										<select name="<?php echo $id;?>_setting[select]" id="input_select" class="form-control">
-											<?php foreach ($selects as $select) { ?>
-											<option value="<?php echo $select; ?>" <?php if ($setting['select'] == $select) { ?> selected="selected" <?php } ?>><?php echo $select; ?></option>
-											<?php } ?>
-										</select>
-										<?php if (!empty($error['select'])) { ?>
-										<div class="text-danger"><?php echo $error['select']; ?></div>
-										<?php } ?>
-									</div>
-								</div><!-- //select -->
-
-
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_text"><?php echo $entry_text; ?></label>
-									<div class="col-sm-10">
-										<input type="text" name="<?php echo $id;?>_setting[text]" value="<?php echo $setting['text']; ?>" placeholder="<?php echo $entry_text; ?>" id="input-width" class="form-control" />
-										<?php if (!empty($error['text'])) { ?>
-										<div class="text-danger"><?php echo $error['text']; ?></div>
-										<?php } ?>
+										<a class="btn btn-primary" href="<?php echo $install_test?>"><?php echo $text_install; ?></a> <a class="btn btn-danger" href="<?php echo $uninstall_test; ?>"><?php echo $text_uninstall; ?></a>
 									</div>
 								</div><!-- //text -->
-
+								<?php if($tests){?>
 								<div class="form-group">
-									<label class="col-sm-2 control-label"><?php echo $entry_radio; ?></label>
+									<label class="col-sm-2 control-label" for="input_test"><?php echo $entry_test; ?></label>
 									<div class="col-sm-10">
-										
-										<div class="btn-group" data-toggle="buttons">
-											<?php foreach ($radios as $radio) { ?>
-											<label class="btn btn-success <?php if ($setting['radio'] == $radio) { ?> active <?php } ?>">
-												<input type="radio" name="<?php echo $id;?>_setting[radio]" value="<?php echo $radio; ?>" <?php if ($setting['radio'] == $radio) { ?> checked="checked" <?php } ?> />
-												<?php echo ${'text_radio_'.$radio}; ?>
-											</label>
-											<?php } ?>
-										</div>
+										<?php foreach($tests as $test => $result){ ?>
+											<div class="alert <?php if($result) { ?>alert-success<?php }else{?> alert-danger<?php } ?>"><?php echo $test ?> <div class="pull-right"><span class="label <?php if($result) { ?>label-success<?php }else{?> label-danger<?php } ?>"><?php if($result) { ?>passed<?php }else{?>not passed<?php } ?></span></div></div>
+										<?php } ?>
 									</div>
-								</div><!-- //radio -->
-
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_checkbox"><?php echo $entry_checkbox; ?></label>
-									<div class="col-sm-10">										
-										<input type="hidden" name="<?php echo $id;?>_setting[checkbox]" value="0" />
-										<input type="checkbox" class="switcher" data-label-text="<?php echo $text_enabled; ?>"id="input_checkbox" name="<?php echo $id;?>_setting[checkbox]" <?php echo ($setting['checkbox'])? 'checked="checked"':'';?> value="1" />
-									</div>
-								</div><!-- //checkbox -->
-
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_checkbox"><?php echo $entry_color; ?></label>
-									<div class="col-sm-2">
-										<div class="input-group color-picker">
-											<input type="text" name="<?php echo $id;?>_setting[color]" class=" form-control" value="<?php echo $setting['color']; ?>">
-											<span class="input-group-addon"><i></i></span>
-										</div>
-									</div>
-								</div><!-- //colorpicker -->
-
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_image"><?php echo $entry_image; ?></label>
-									<div class="col-sm-10">
-										<a href="" id="thumb_image" data-toggle="image" class="img-thumbnail">
-											<img src="<?php echo $image; ?>" alt="" title="" data-placeholder="<?php echo $placeholder; ?>" />
-										</a>
-										<input type="hidden" name="<?php echo $id;?>_setting[image]" value="<?php echo $setting['image']; ?>" id="input-logo" />
-									</div>
-								</div><!-- //image -->
-
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_textarea"><?php echo $entry_textarea; ?></label>
-									<div class="col-sm-10">
-										<textarea class="summernote" name="<?php echo $id;?>_setting[textarea]" placeholder="<?php echo $entry_textarea; ?>" id="input_textarea"><?php echo isset($setting['textarea']) ? $setting['textarea'] : ''; ?></textarea>
-									</div>
-								</div><!-- //textarea -->
-
-								<div class="form-group">
-									<label class="col-sm-2 control-label" ><?php echo $entry_field; ?></label>
-									<div class="col-sm-10">
-										
-										<div id="field" class="sortable form-inline ">
-											<?php foreach($setting['field'] as $field) { ?>
-											<div class="list-group-item" data-sort-order="<?php echo $field['sort_order']; ?>">
-												<span class="drag-handle"><span class="fa fa-bars fa-fw"></span>&nbsp; </span> 
-												<input type="hidden" name="<?php echo $id;?>_setting[field][<?php echo $field['id']; ?>][enabled]" value="0" />
-												<label for="<?php echo $id;?>_setting_field_<?php echo $field['id']; ?>_enabled" class="m-b-none">
-													<input type="checkbox"	data-size="mini" class="switcher" name="<?php echo $id;?>_setting[field][<?php echo $field['id']; ?>][enabled]" <?php echo ($field['enabled'])? 'checked="checked"':'';?> value="1" id="<?php echo $id;?>_setting_field_<?php echo $field['id']; ?>_enabled" />
-													<?php echo ${'text_'.$field['id']}; ?>
-												</label>
-												<input type="hidden" name="<?php echo $id;?>_setting[field][<?php echo $field['id']; ?>][sort_order]" class="sort-value" value="<?php echo $field['sort_order']; ?>" />
-												<label class="m-b-none m-l-md"><?php echo $entry_type; ?></label>
-												<input type="text" class="form-control" name="<?php echo $id;?>_setting[field][<?php echo $field['id']; ?>][type]" value="<?php echo $field['type']; ?>" />
-												<input type="hidden" name="<?php echo $id;?>_setting[field][<?php echo $field['id']; ?>][id]" value="<?php echo $field['id']; ?>" />
-												
-											</div>
-											<?php } ?>
-										</div>
-										
-									</div>
-								</div><!-- //field -->
-
-								<?php if(isset($setting['debug'])){?>
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_debug"><?php echo $entry_debug; ?></label>
-									<div class="col-sm-10">
-										<input type="hidden" name="<?php echo $id;?>_setting[debug]" value="0" />
-										<input type="checkbox" data-label-text="<?php echo $text_enabled; ?>" class="switcher" id="input_debug" name="<?php echo $id;?>_setting[debug]" <?php echo ($setting['debug'])? 'checked="checked"':'';?> value="1" />
-									</div>
-								</div>
+								</div><!-- //test -->
 								<?php } ?>
-								<!-- //debug -->
-
-								<?php if ($config_files) { ?>
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="select_config"><?php echo $entry_config_files; ?></label>
-									<div class="col-sm-10">
-										<select id="select_config" name="<?php echo $id;?>_setting[config]"	class="form-control">
-											<?php foreach ($config_files as $config_file) { ?>
-											<option value="<?php echo $config_file; ?>" <?php echo ($config_file == $config)? 'selected="selected"' : ''; ?>><?php echo $config_file; ?></option>
-											<?php } ?>
-										</select>
-									</div>
-								</div>
-								<?php } ?>
-								<!-- //config -->
 								</form>
 							</div>
 						</div>
@@ -468,35 +360,23 @@
 <script type="text/javascript"><!--
 	// sorting fields
 
-
+	
 	$(function () {
 	//checkbox
 	$(".switcher[type='checkbox']").bootstrapSwitch({
 		'onColor': 'success',
 		'onText': '<?php echo $text_yes; ?>',
 		'offText': '<?php echo $text_no; ?>',
-	});
-
-	//colorpicker
-	 $('.color-picker').colorpicker();
-
-	//textarea
-	$('.summernote').summernote({height: 300});
-
-	//sort field
-	$('#field > .list-group-item').tsort({attr:'data-sort-order'});
-	Sortable.create(field, {
-		group: "sorting",
-		sort: true,
-		animation: 150,
-		handle: ".drag-handle",
-		onUpdate: function (event){
-			$('#field').find('.list-group-item').each(function (i, row) {
-				console.log(i)
-				$(row).find('.sort-value').val(i)
-			})
+		onSwitchChange: function(event, state){
+			if(state){
+				window.location.href = '<?php echo $install_compatibility; ?>'
+			}else{
+				window.location.href = '<?php echo $uninstall_compatibility; ?>'
+			}
 		}
-	});
+		
+	})
+
 
 	$('body').on('change', '#select_config', function(){
 		console.log('#select_config changed')
