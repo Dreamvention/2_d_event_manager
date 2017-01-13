@@ -55,7 +55,6 @@ class ControllerModuleDEventManager extends Controller {
 		$this->load->config($this->codename);
 		$this->load->model('module/d_event_manager');
 		$this->load->model('setting/setting');
-		$this->load->model('extension/module');
 		$this->load->model('d_shopunity/setting');
 		$this->load->model('d_shopunity/ocmod');
 
@@ -191,6 +190,7 @@ class ControllerModuleDEventManager extends Controller {
 		
 		// Entry
 		$data['entry_compatibility'] = $this->language->get('entry_compatibility');
+		$data['help_compatibility'] = $this->language->get('help_compatibility');
 		$data['entry_test_toggle'] = $this->language->get('entry_test_toggle');
 		$data['entry_test'] = $this->language->get('entry_test');
 		$data['text_install'] = $this->language->get('text_install');

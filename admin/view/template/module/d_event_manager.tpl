@@ -216,7 +216,11 @@
 									<div class="col-sm-10">										
 										<input type="hidden" name="compatibility" value="0" />
 										<input type="checkbox" name="compatibility" class="switcher" data-label-text="<?php echo $text_enabled; ?>"id="input_compatibility" <?php echo ($compatibility) ? 'checked="checked"':'';?> value="1" />
+										
+										<div class="bs-callout bs-callout-info m-t"><?php echo $help_compatibility; ?></div>
 									</div>
+
+
 								</div><!-- //compatibility -->
 								<?php } ?>
 								<div class="form-group">
