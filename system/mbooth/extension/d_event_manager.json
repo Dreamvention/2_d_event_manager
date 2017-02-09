@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.0.1",
+    "version": "1.0.2",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "index": "module/d_event_manager",
@@ -58,6 +58,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "varsion":"1.0.2",
+            "change": "Hot fix: location catalog & admin, output validated in view."
+        },
         {
             "varsion":"1.0.1",
             "change": "Hot fix"

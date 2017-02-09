@@ -24,7 +24,12 @@ class Event {
 
 	public function register_all(){
 		if(VERSION < '2.2.0.0'){
-			$query = $this->registry->get('db')->query("SELECT * FROM `" . DB_PREFIX . "event` WHERE `trigger` LIKE 'admin/%' AND `status` = '1' ORDER BY `event_id` ASC");
+			$location = 'catalog';
+			if(defined('HTTP_CATALOG')){
+				$location = 'admin';
+			}
+			
+			$query = $this->registry->get('db')->query("SELECT * FROM `" . DB_PREFIX . "event` WHERE `trigger` LIKE '".$location."/%' AND `status` = '1' ORDER BY `event_id` ASC");
 			
 			foreach ($query->rows as $result) {
 				$this->register(substr($result['trigger'], strpos($result['trigger'], '/') + 1), new Action($result['action']));

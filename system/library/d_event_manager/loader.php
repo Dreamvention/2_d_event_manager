@@ -76,11 +76,28 @@ final class Loader {
 			if (substr($route, -4) == 'twig') {
 				$route = substr($route, 0, -4);
 			}
+
+			$parts = explode('template/', $route);
+			if(isset($parts['1'])){
+				$route = $parts['1'];
+			}
+
 			// Trigger the pre events
 			$result = $this->event->trigger('view/' . $route . '/before', array(&$route, &$data, &$output));
-			
-			//, $data = array()???
-			$output = $this->class->_view($template, $data);
+
+			if(!$output){
+				//, $data = array()???
+				$output = $this->class->_view($template, $data);
+			}
+
+			$route = preg_replace('/[^a-zA-Z0-9_\/]/', '', (string)$template);
+			if (substr($route, -3) == 'tpl') {
+				$route = substr($route, 0, -3);
+			}
+			//remove twig
+			if (substr($route, -4) == 'twig') {
+				$route = substr($route, 0, -4);
+			}
 
 			// Trigger the post events
 			$result = $this->event->trigger('view/' . $route . '/after', array(&$route, &$data, &$output));
