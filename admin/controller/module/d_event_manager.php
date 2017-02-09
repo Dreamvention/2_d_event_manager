@@ -676,6 +676,9 @@ class ControllerModuleDEventManager extends Controller {
 		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
 		$this->model_d_shopunity_ocmod->refreshCache();
 
+		$this->load->model('module/d_event_manager');
+		$this->model_module_d_event_manager->installDatabase();
+
 		$this->session->data['success'] = $this->language->get('text_success');
 		$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
 		
