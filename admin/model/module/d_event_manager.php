@@ -78,7 +78,7 @@ class ModelModuleDEventManager extends Model {
 	}
 
 	public function getTotalEvents($data = array()) {
-		$query = $this->db->query("SELECT COUNT(*) AS total FROM " . DB_PREFIX . "event");
+		$sql = "SELECT COUNT(*) AS total FROM " . DB_PREFIX . "event";
 
 		$implode = array();
 
@@ -105,6 +105,8 @@ class ModelModuleDEventManager extends Model {
 		if ($implode) {
 			$sql .= " WHERE " . implode(" AND ", $implode);
 		}
+
+		$query = $this->db->query($sql);
 
 		return $query->row['total'];
 	}
