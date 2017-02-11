@@ -20,7 +20,9 @@
 				</select>
 				<?php } ?>
 				<button id="save_and_stay" data-toggle="tooltip" title="<?php echo $button_save_and_stay; ?>" class="btn btn-success"><i class="fa fa-save"></i></button>
-				<button type="submit" form="form" data-toggle="tooltip" title="<?php echo $button_save; ?>" class="btn btn-primary"><i class="fa fa-save"></i></button> -->
+				 -->
+				<a data-toggle="tooltip" title="<?php echo $button_create; ?>" class="btn btn-primary create"><i class="fa fa-plus"></i></a>
+				<a data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger delete"><i class="fa fa-trash-o"></i></a>
 				<a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a>
 			</div>
 			<h1><?php echo $heading_title; ?> <?php echo $version; ?></h1>
@@ -122,12 +124,12 @@
 										</div>
 									</div>
 								</div>
-								<form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form-customer">
+								<form action="<?php echo $delete; ?>" method="post" enctype="multipart/form-data" id="form-event">
 									<div class="table-responsive">
 										<table class="table table-bordered table-hover">
 											<thead>
 											<tr>
-												<td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'selected\']').prop('checked', this.checked);" /></td>
+												<td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'event_id\']').prop('checked', this.checked);" /></td>
 												<td class="text-left">
 													<?php if ($sort == 'code') { ?>
 														<a href="<?php echo $sort_code; ?>" class="<?php echo strtolower($order); ?>"><?php echo $column_code; ?></a>
@@ -172,9 +174,9 @@
 												<tr id="event_id_<?php echo $event['event_id']; ?>" <?php echo ($event['status']) ? 'class="enabled"' : '';?>>
 													<td class="text-center">
 														<?php if (in_array($event['event_id'], $selected)) { ?>
-															<input type="checkbox" name="selected[]" value="<?php echo $event['event_id']; ?>" checked="checked" />
+															<input type="checkbox" name="event_id[]" value="<?php echo $event['event_id']; ?>" checked="checked" />
 														<?php } else { ?>
-															<input type="checkbox" name="selected[]" value="<?php echo $event['event_id']; ?>" />
+															<input type="checkbox" name="event_id[]" value="<?php echo $event['event_id']; ?>" />
 														<?php } ?>
 													</td>
 													<td class="text-left"><?php echo $event['code']; ?></td>
@@ -286,7 +288,7 @@
 </div>
 <template id="event_item">
 	<tr id="event_id_<?php echo $event['event_id']; ?>" class="{{text_status}} flash">
-		<td class="text-center"><input type="checkbox" name="selected[]" value="{{event_id}}" /></td>
+		<td class="text-center"><input type="checkbox" name="event_id[]" value="{{event_id}}" /></td>
 		<td class="text-left">{{code}}</td>
 		<td class="text-left">{{trigger}}</td>
 		<td class="text-left">{{action}}</td>
@@ -340,6 +342,7 @@
 	  </div><!-- /.modal-dialog -->
 	</div><!-- /.modal -->
 </template>
+
 <style>
 	.disable{
 		display: none;
@@ -559,6 +562,55 @@ $(document).on('click', '.action', function() {
 	
 	return false;
 });
+$(document).on('click', '.create', function(){
+	var that = this;
+	$('#myModal').remove();
+	var html = $('#modal').html();
+	var json = {
+		event_id: 0,
+		code: '',
+		trigger: '',
+		action: '',
+		save: '<?php echo $create; ?>'
+	}
+
+	//templating like handlebars
+    var re = /{{([^}}]+)?}}/g, match;
+    while(match = re.exec(html)) {
+        html = html.replace(match[0], json[match[1]])
+    }
+
+	$('body').append(html);
+	$('#myModal').modal('show')
+	
+	return false;
+
+})
+
+$(document).on('click', '.delete', function(){
+	var that = this;
+
+	var data = $('#form-event').serialize();
+
+	$.ajax({
+		url: '<?php echo $delete; ?>',
+		type: 'post',
+		data: data,
+		dataType: 'json',
+		success: function(json) {
+			if(json['deleted']){
+				location.reload();
+			}else{
+				console.log('error!');
+			}
+		}
+	});
+
+	
+	return false;
+
+})
+
 
 $(document).on('click', '.edit', function() {
 	var that = this;
@@ -612,7 +664,14 @@ $(document).on('click', '.save', function() {
 		    while(match = re.exec(html)) {
 		        html = html.replace(match[0], json[match[1]])
 		    }
-			$('#event_id_'+$event_id).replaceWith(html);
+
+		    if($event_id == 0){
+		    	$('#form-event tbody').prepend(html);
+		    }else{
+		    	$('#event_id_'+$event_id).replaceWith(html);
+		    }
+
+			
 
 		}
 	});

@@ -170,6 +170,7 @@ class ControllerModuleDEventManager extends Controller {
 		// Button
 		$data['button_save'] = $this->language->get('button_save');
 		$data['button_save_and_stay'] = $this->language->get('button_save_and_stay');
+		$data['button_create'] = $this->language->get('button_create');
 		$data['button_cancel'] = $this->language->get('button_cancel');
 		$data['button_clear'] = $this->language->get('button_clear');
 		$data['button_add'] = $this->language->get('button_add');
@@ -207,6 +208,8 @@ class ControllerModuleDEventManager extends Controller {
 		//action
 		$data['module_link'] = $this->url->link($this->route, 'token=' . $this->session->data['token'], 'SSL');
 		$data['action'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['create'] = $this->model_module_d_event_manager->ajax($this->route.'/create', 'token=' . $this->session->data['token'] . $url, 'SSL');
+		$data['delete'] = $this->model_module_d_event_manager->ajax($this->route.'/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$data['install_test'] = $this->url->link($this->route.'/install_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$data['uninstall_test'] = $this->url->link($this->route.'/uninstall_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
 		$data['install_compatibility'] = $this->model_module_d_event_manager->ajax($this->route.'/install_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
@@ -328,9 +331,6 @@ class ControllerModuleDEventManager extends Controller {
 		$sort = (isset($this->request->get['sort'])) ? $this->request->get['sort'] : 'code';
 		$order = (isset($this->request->get['order'])) ? $this->request->get['order'] : 'ASC';
 		$page = (isset($this->request->get['page'])) ? $this->request->get['page'] : 1;
-
-		$data['add'] = $this->url->link($this->route.'/add', 'token=' . $this->session->data['token'] . $url, 'SSL');
-		$data['delete'] = $this->url->link($this->route.'/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
 
 		$data['events'] = array();
 
@@ -558,6 +558,74 @@ class ControllerModuleDEventManager extends Controller {
 			);
 		}else{
 			$json = false;
+		}
+
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function create(){
+		if(!$this->validate()){
+			return false;
+		}
+
+		$event_id = false;
+		$event = array();
+
+		$this->load->model('module/d_event_manager');
+
+		if( isset($this->request->post['code'])
+		&& isset($this->request->post['trigger'])
+		&& isset($this->request->post['action'])){
+			
+			$event['code'] = $this->request->post['code'];
+			$event['trigger'] = $this->request->post['trigger'];
+			$event['action'] = $this->request->post['action'];
+			$event['status'] = 1;
+			$event['event_id'] = $this->model_module_d_event_manager->addEvent($event['code'], $event['trigger'], $event['action'] , $event['status']);
+		}
+
+		if($event){
+			$enable = $this->model_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+			$disable = $this->model_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+
+			$json = array(
+				'event_id'		=> $event['event_id'],
+				'code'			=> $event['code'],
+				'trigger'		=> $event['trigger'],
+				'action'		=> $event['action'],
+				'status'		=> $event['status'],
+				'date_added'	=> date($this->language->get('date_format_short'), time()),
+				'enable'		=> $enable,
+				'disable'		=> $disable,
+				'edit'			=> $this->url->link($this->route.'/edit', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL'),
+				'save'			=> $this->url->link($this->route.'/save', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL')
+			);
+
+			$json['saved'] = true;
+		}else{
+			$json['saved'] = false;
+		}
+		$this->response->addHeader('Content-Type: application/json');
+		$this->response->setOutput(json_encode($json));
+	}
+
+	public function delete(){
+		if(!$this->validate()){
+			return false;
+		}
+
+		$json = array();
+
+		$this->load->model('module/d_event_manager');
+
+		if( isset($this->request->post['event_id'])){
+			foreach($this->request->post['event_id'] as $event_id){
+				$this->model_module_d_event_manager->deleteEventById($event_id);
+			}
+			$json['deleted'] = true;
+		}else{
+			$json['deleted'] = false;
 		}
 
 		$this->response->addHeader('Content-Type: application/json');

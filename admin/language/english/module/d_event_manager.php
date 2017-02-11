@@ -48,6 +48,8 @@ $_['text_uninstall']			= 'Uninstall';
 
 //button
 $_['button_save_and_stay']		= 'Save and stay';
+$_['button_create']             = 'Create new event';
+
 
 //success
 $_['success_modifed']			= 'Success: You have modified module eBay featured!';
