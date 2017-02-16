@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "index": "module/d_event_manager",
@@ -58,6 +58,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "varsion":"1.0.4",
+            "change": "Hot fix: remove FB."
+        },
         {
             "varsion":"1.0.3",
             "change": "Hot fix: admin filter bug."

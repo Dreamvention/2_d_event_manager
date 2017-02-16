@@ -815,7 +815,6 @@ class ControllerModuleDEventManager extends Controller {
 					});
 				});
 			</script>';
-		//FB::log($setting);
 	}
 
 	public function model_before(&$route){

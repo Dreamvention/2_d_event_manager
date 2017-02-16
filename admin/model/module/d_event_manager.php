@@ -112,7 +112,7 @@ class ModelModuleDEventManager extends Model {
 	}
 
 	public function updateEvent($event_id, $data){
-		FB::log($data);
+
 		$this->db->query("UPDATE " . DB_PREFIX . "event SET 
 			`code` = '" . $this->db->escape($data['code'])."',
 			`trigger` = '" . $this->db->escape($data['trigger'])."',
