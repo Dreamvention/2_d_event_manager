@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modification>
-	<name>Event Manager</name>
+	<name>d_event_manager</name>
 	<code>d_event_manager</code>
 	<description>Add support for events to versions before 2.3.0.0 </description>
 	<version>3.0.0</version>

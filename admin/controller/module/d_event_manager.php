@@ -267,7 +267,7 @@ class ControllerModuleDEventManager extends Controller {
 		//get setting
 		$data['setting'] = $this->model_d_shopunity_setting->getSetting($this->codename);
 
-		$data['compatibility'] = $this->model_d_shopunity_ocmod->getModificationByName('Event Manager');
+		$data['compatibility'] = $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager');
 
 		$data['tests'] = array();
 
