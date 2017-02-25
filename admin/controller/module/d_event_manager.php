@@ -693,7 +693,7 @@ class ControllerModuleDEventManager extends Controller {
 
 		$this->load->model('d_shopunity/ocmod');
 		$this->load->language($this->route);
-		if(VERSION > '2.3.0.0' || $this->model_d_shopunity_ocmod->getModificationByName('Event Manager')){
+		if(VERSION > '2.3.0.0' || $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager')){
 			$this->load->model('module/d_event_manager');
 			$this->model_module_d_event_manager->installDatabase();
 
