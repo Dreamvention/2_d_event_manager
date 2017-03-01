@@ -287,17 +287,17 @@
 	</div>
 </div>
 <template id="event_item">
-	<tr id="event_id_<?php echo $event['event_id']; ?>" class="{{text_status}} flash">
-		<td class="text-center"><input type="checkbox" name="event_id[]" value="{{event_id}}" /></td>
-		<td class="text-left">{{code}}</td>
-		<td class="text-left">{{trigger}}</td>
-		<td class="text-left">{{action}}</td>
-		<td class="text-left">
+	<tr id="event_id_<?php echo $event['event_id']; ?>" class="{{text_status}}">
+		<td class="text-center flash"><input type="checkbox" name="event_id[]" value="{{event_id}}" /></td>
+		<td class="text-left flash">{{code}}</td>
+		<td class="text-left flash">{{trigger}}</td>
+		<td class="text-left flash">{{action}}</td>
+		<td class="text-left flash">
 			<span class="label label-success disable"><?php echo $text_enabled; ?></span>
 			<span class="label label-danger enable"><?php echo $text_disabled; ?></span>
 		</td>
-		<td class="text-left">{{date_added}}</td>
-		<td class="text-right">
+		<td class="text-left flash">{{date_added}}</td>
+		<td class="text-right flash">
 			<a href="{{enable}}" data-toggle="tooltip" title="<?php echo $button_enable; ?>" data-event_id="{{event_id}}" class="btn btn-success action enable" ><i class="fa fa-thumbs-o-up"></i></a>
 			<a href="{{disable}}" data-toggle="tooltip" title="<?php echo $button_disable; ?>" data-event_id="{{event_id}}" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
 			<a href="{{edit}}" data-toggle="tooltip" title="<?php echo $button_edit; ?>" data-event_id="{{event_id}}" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
@@ -668,7 +668,8 @@ $(document).on('click', '.save', function() {
 		    if($event_id == 0){
 		    	$('#form-event tbody').prepend(html);
 		    }else{
-		    	$('#event_id_'+$event_id).replaceWith(html);
+		    	console.log(html);
+		    	$('#event_id_'+$event_id).html($(html).html());
 		    }
 
 			
