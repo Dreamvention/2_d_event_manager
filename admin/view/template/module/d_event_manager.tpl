@@ -668,7 +668,6 @@ $(document).on('click', '.save', function() {
 		    if($event_id == 0){
 		    	$('#form-event tbody').prepend(html);
 		    }else{
-		    	console.log(html);
 		    	$('#event_id_'+$event_id).html($(html).html());
 		    }
 
