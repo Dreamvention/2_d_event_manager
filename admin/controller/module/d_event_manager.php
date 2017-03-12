@@ -221,18 +221,6 @@ class ControllerModuleDEventManager extends Controller {
 			$data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
 		}
 		
-		//debug
-		$data['tab_debug'] = $this->language->get('tab_debug');
-		$data['entry_debug'] = $this->language->get('entry_debug');
-		$data['entry_debug_file'] = $this->language->get('entry_debug_file');
-		$data['clear_debug_file'] = str_replace('&amp;', '&', $this->url->link($this->route.'/clear_debug_file', 'token=' . $this->session->data['token'], 'SSL'));
-		
-		//support
-		$data['tab_support'] = $this->language->get('tab_support');
-		$data['text_support'] = $this->language->get('text_support');
-		$data['entry_support'] = $this->language->get('entry_support');
-		$data['button_support_email'] = $this->language->get('button_support_email');				
-		
 		//instruction
 		$data['tab_instruction'] = $this->language->get('tab_instruction');
 		$data['text_instruction'] = $this->language->get('text_instruction');

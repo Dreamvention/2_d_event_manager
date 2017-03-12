@@ -8,19 +8,7 @@
 	<div class="page-header">
 		<div class="container-fluid">
 			<div class="form-inline pull-right">
-				<!-- <?php if(!empty($stores)){ ?>
-				<select class="form-control" onChange="location='<?php echo $module_link; ?>&store_id='+$(this).val()">
-					<?php foreach($stores as $store){ ?>
-					<?php if($store['store_id'] == $store_id){ ?>
-					<option value="<?php echo $store['store_id']; ?>" selected="selected" ><?php echo $store['name']; ?></option>
-					<?php }else{ ?>
-					<option value="<?php echo $store['store_id']; ?>" ><?php echo $store['name']; ?></option>
-					<?php } ?>
-					<?php } ?>
-				</select>
-				<?php } ?>
-				<button id="save_and_stay" data-toggle="tooltip" title="<?php echo $button_save_and_stay; ?>" class="btn btn-success"><i class="fa fa-save"></i></button>
-				 -->
+				
 				<a data-toggle="tooltip" title="<?php echo $button_create; ?>" class="btn btn-primary create"><i class="fa fa-plus"></i></a>
 				<a data-toggle="tooltip" title="<?php echo $button_delete; ?>" class="btn btn-danger delete"><i class="fa fa-trash-o"></i></a>
 				<a href="<?php echo $cancel; ?>" data-toggle="tooltip" title="<?php echo $button_cancel; ?>" class="btn btn-default"><i class="fa fa-reply"></i></a>
@@ -61,22 +49,7 @@
 							<span class="fa fa-cog"></span> 
 							<?php echo $tab_setting; ?>
 						</a></li>
-						<!-- <?php if(isset($setting['debug'])){?>
-						<li><a href="#tab_debug" data-toggle="tab">
-							<span class="fa fa-bug"></span> 
-							<?php echo $tab_debug; ?>
-						</a></li>
-						<?php } ?>
-						<?php if(!empty($setting['support'])){?>
-						<li><a href="#tab_support" data-toggle="tab">
-							<span class="fa fa-support"></span> 
-							<?php echo $tab_support; ?>
-						</a></li>
-						<?php } ?>
-						<li><a href="#tab_instruction" data-toggle="tab">
-							<span class="fa fa-graduation-cap"></span> 
-							<?php echo $tab_instruction; ?>
-						</a></li>  -->
+						
 					</ul>
 
 					<div class="tab-content">
@@ -251,36 +224,6 @@
 								</form>
 							</div>
 						</div>
-						<?php if(isset($setting['debug'])){?>
-						<div class="tab-pane" id="tab_debug" >
-							<div class="tab-body form-horizontal">
-
-								<textarea id="textarea_debug_log" wrap="off" rows="15" readonly="readonly" class="form-control"><?php echo $debug_log; ?></textarea>
-								<br/>
-								<div class="form-group">
-									<label class="col-sm-2 control-label" for="input_debug_file"><?php echo $entry_debug_file; ?></label>
-									<div class="col-sm-10">
-										<input type="text" id="input_debug_file" name="<?php echo $id;?>_setting[debug_file]" value="<?php echo $setting['debug_file']; ?>"	class="form-control"/>
-									</div>
-								</div>
-								<div class="form-group">
-									<div class="col-sm-10 col-sm-offset-2">
-										<a class="btn btn-danger" id="clear_debug_file"><?php echo $button_clear; ?></a>
-									</div>
-								</div>
-
-
-							</div>
-						</div>
-						<?php } ?>
-						<div class="tab-pane" id="tab_support" >
-							<div class="tab-body">
-
-							</div>
-						</div>
-						<div class="tab-pane" id="tab_instruction" >
-							<div class="tab-body"><?php echo $text_instruction; ?></div>
-						</div>
 					</div>
 				</div>
 			</div>
@@ -402,13 +345,6 @@
 	})
 
 
-	$('body').on('change', '#select_config', function(){
-		console.log('#select_config changed')
-		var config = $(this).val();
-		$('body').append('<form action="<?php echo $module_link; ?><?php echo ($stores) ? "&store_id='+$('#store').val() +'" : ''; ?>" id="config_update" method="post" style="display:none;"><input type="text" name="config" value="' + config + '" /></form>');
-		$('#config_update').submit();
-	});
-
 	$('body').on('click', '#save_and_stay', function(){
 
 		$('.summernote').each( function() {
@@ -429,80 +365,6 @@
 			}
 		});	
 	});
-
-	$('body').on('click', '#button_update', function(){ 
-		$.ajax( {
-			url: '<?php echo $update; ?>',
-			type: 'post',
-			dataType: 'json',
-
-			beforeSend: function() {
-				$('#button_update').find('.fa-refresh').addClass('fa-spin');
-			},
-
-			complete: function() {
-				$('#button_update').find('.fa-refresh').removeClass('fa-spin');	 
-			},
-
-			success: function(json) {
-				console.log(json);
-
-				if(json['error']){
-					$('#notification_update').html('<div class="alert alert-danger m-b-none">' + json['error'] + '</div>')
-				}
-
-				if(json['warning']){
-					$html = '';
-
-					if(json['update']){
-						$.each(json['update'] , function(k, v) {
-							$html += '<div>Version: ' +k+ '</div><div>'+ v +'</div>';
-						});
-					}
-					$('#notification_update').html('<div class="alert alert-warning alert-inline">' + json['warning'] + $html + '</div>')
-				}
-
-				if(json['success']){
-					$('#notification_update').html('<div class="alert alert-success alert-inline">' + json['success'] + '</div>')
-				} 
-			},
-			error: function(xhr, ajaxOptions, thrownError) {
-			console.log(thrownError + "\r\n" + xhr.statusText + "\r\n" + xhr.responseText);
-			}
-		});
-	});
-
-	$('body').on('click', '#clear_debug_file', function(){ 
-		$.ajax( {
-			url: '<?php echo $clear_debug_file; ?>',
-			type: 'post',
-			dataType: 'json',
-			data: 'debug_file=<?php echo $debug_file; ?>',
-
-			beforeSend: function() {
-				$('#form').fadeTo('slow', 0.5);
-			},
-
-			complete: function() {
-				$('#form').fadeTo('slow', 1);	 
-			},
-
-			success: function(json) {
-				$('.alert').remove();
-				console.log(json);
-
-				if(json['error']){
-					$('#debug .tab-body').prepend('<div class="alert alert-danger">' + json['error'] + '</div>')
-				}
-
-				if(json['success']){
-					$('#debug .tab-body').prepend('<div class="alert alert-success">' + json['success'] + '</div>')
-					$('#textarea_debug_log').val('');
-				} 
-			}
-		});
-	});
-
 });
 
 //Customer
