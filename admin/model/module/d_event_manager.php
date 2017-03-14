@@ -212,9 +212,18 @@ class ModelModuleDEventManager extends Model {
             return false;
         }
 
-        $this->installDatabase();
-
         $this->load->model('d_shopunity/ocmod');
+        
+        $compatibility = $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager');
+        if($compatibility){
+            if(!empty($compatibility['status'])){
+                return true;
+            }else{
+                $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
+            }
+        }
+
+        $this->installDatabase();
         $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
         $this->model_d_shopunity_ocmod->refreshCache();
 
@@ -233,6 +242,12 @@ class ModelModuleDEventManager extends Model {
         }
 
         $this->load->model('d_shopunity/ocmod');
+
+        $compatibility = $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager');
+        if(!$compatibility){
+            return true;
+        }
+
         $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
         $this->model_d_shopunity_ocmod->refreshCache();
 
