@@ -727,13 +727,10 @@ class ControllerModuleDEventManager extends Controller {
 			$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
 		}
 
-		$this->load->model('d_shopunity/ocmod');
 		$this->load->language($this->route);
-		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
-		$this->model_d_shopunity_ocmod->refreshCache();
 
 		$this->load->model('module/d_event_manager');
-		$this->model_module_d_event_manager->installDatabase();
+		$this->model_module_d_event_manager->installCompatibility();
 
 		$this->session->data['success'] = $this->language->get('text_success');
 		$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
@@ -747,9 +744,8 @@ class ControllerModuleDEventManager extends Controller {
 			$this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
 		}
 
-		$this->load->model('d_shopunity/ocmod');
-		$this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
-		$this->model_d_shopunity_ocmod->refreshCache();
+		$this->load->model('module/d_event_manager');
+		$this->model_module_d_event_manager->uninstallCompatibility();
 
 		$this->uninstall_test();
 	}

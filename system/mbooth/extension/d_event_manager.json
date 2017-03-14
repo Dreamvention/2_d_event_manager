@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.0.7",
+    "version": "1.1.0",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "index": "module/d_event_manager",
@@ -58,6 +58,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "varsion":"1.1.0",
+            "change": "Added model method to install and uninstall compatibility"
+        },
         {
             "varsion":"1.0.7",
             "change": "minor bug fix."

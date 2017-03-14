@@ -201,6 +201,44 @@ class ModelModuleDEventManager extends Model {
 
 	}
 
+    public function installCompatibility(){
+
+        if(VERSION >= '2.3.0.0'){
+            return true;
+        }
+
+        $d_shopunity = (file_exists(DIR_SYSTEM.'mbooth/extension/d_shopunity.json'));
+        if(!$d_shopunity){
+            return false;
+        }
+
+        $this->installDatabase();
+
+        $this->load->model('d_shopunity/ocmod');
+        $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
+        $this->model_d_shopunity_ocmod->refreshCache();
+
+        return true;
+    }
+
+    public function uninstallCompatibility(){
+
+        if(VERSION >= '2.3.0.0'){
+            return true;
+        }
+
+        $d_shopunity = (file_exists(DIR_SYSTEM.'mbooth/extension/d_shopunity.json'));
+        if(!$d_shopunity){
+            return false;
+        }
+
+        $this->load->model('d_shopunity/ocmod');
+        $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
+        $this->model_d_shopunity_ocmod->refreshCache();
+
+        return true;
+    }
+
 	/**
 
 	 Helper functions
