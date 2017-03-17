@@ -69,8 +69,23 @@
 			$this->registry->get('event')->trigger('language/' . $route . '/after', array(&$route, &$output));
 			]]></add>
 		</operation>
+		<operation error="skip" info="add event support for 2.2.0.0">
+			<search><![CDATA[$result = $registry->get('event')->trigger('model/' . $route . '/before', array_merge(array(&$route), $args));]]></search>
+			<add position="replace"><![CDATA[
+			//d_event_manager.xml 6
+			$output = null;
+			$result = $registry->get('event')->trigger('model/' . $route . '/before', array(&$route, &$args, &$output));
+			]]></add>
+		</operation>
+		<operation error="skip" info="add event support for 2.2.0.0">
+			<search><![CDATA[$result = $registry->get('event')->trigger('model/' . $route . '/after', array_merge(array(&$route, &$output), $args));]]></search>
+			<add position="replace"><![CDATA[
+			//d_event_manager.xml 7
+			$result = $registry->get('event')->trigger('model/' . $route . '/after', array(&$route, &$args, &$output));
+			]]></add>
+		</operation>
 	</file>
-    <file path="system/engine/loader.php">
+	<file path="system/engine/loader.php">
 		<operation error="skip" info="add event support 2.1.0.0 and bellow">
 			<search><![CDATA[public function __construct($registry) {]]></search>
 			<add position="after"><![CDATA[

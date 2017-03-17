@@ -47,6 +47,11 @@ class ControllerModuleDEventManager extends Controller {
 			$this->response->redirect($this->url->link($this->route.'/required', 'codename=d_shopunity&token='.$this->session->data['token'], 'SSL'));
 		}
 
+		if(VERSION < '2.3.0.0'){
+			$this->load->model('module/d_event_manager');
+			$this->model_module_d_event_manager->installDatabase();
+		}
+
 		$this->load->model('d_shopunity/mbooth');
 	    $this->model_d_shopunity_mbooth->validateDependencies($this->codename);
 
@@ -348,8 +353,8 @@ class ControllerModuleDEventManager extends Controller {
 				'code'           => $result['code'],
 				'trigger'        => $result['trigger'],
 				'action'         => $result['action'],
-				'status'         => $result['status'],
-				'date_added'     => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+				'status'         => (isset($result['status'])) ? $result['status'] : 1,
+				'date_added'     => (isset($result['date_added'])) ? date($this->language->get('date_format_short'), strtotime($result['date_added'])) : '',
 				'enable'         => $enable,
 				'disable'        => $disable,
 				'edit'           => $this->url->link($this->route.'/edit', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL')
