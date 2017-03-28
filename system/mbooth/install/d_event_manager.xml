@@ -202,24 +202,6 @@
         <operation error="skip" info="add event support 2.1.0.0 and bellow">
             <search><![CDATA[public function __get($key) {]]></search>
             <add position="replace"><![CDATA[
-    //d_event_manager.xml remove megical __get
-    public function get($key) {
-            ]]></add>
-        </operation>
-    </file>
-    <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
-            <search><![CDATA[public function __set($key, $value) {]]></search>
-            <add position="replace"><![CDATA[
-    //d_event_manager.xml remove megical __set
-    public function set($key) {
-            ]]></add>
-        </operation>
-    </file>
-        <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
-            <search><![CDATA[public function __get($key) {]]></search>
-            <add position="replace"><![CDATA[
     //d_event_manager.xml
     public function __get($key){
         return $this->get($key);
