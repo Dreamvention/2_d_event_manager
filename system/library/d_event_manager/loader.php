@@ -161,7 +161,9 @@ final class Loader {
 				$class = 'Model' . preg_replace('/[^a-zA-Z0-9]/', '', substr($route, 0, strrpos($route, '/')));
 
 				if (is_file($file)) {
-					include_once($file);
+                    if(!class_exists($class)) {
+                        include_once($file);
+                    }
 				
 					$model[$route] = new $class($registry);
 				} else {
