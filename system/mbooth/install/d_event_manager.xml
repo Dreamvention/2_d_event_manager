@@ -1,225 +1,245 @@
 <?xml version="1.0" encoding="utf-8"?>
 <modification>
-	<name>d_event_manager</name>
-	<code>d_event_manager</code>
-	<description>Add support for events to versions before 2.3.0.0 </description>
-	<version>3.0.0</version>
-	<author>Dreamvention</author>
-	<link>http://dreamvention.com</link>
-	<file path="system/engine/loader.php">
-    	<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data));]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 1
-			$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data, &$output));
-			]]></add>
-		</operation>
+    <name>d_event_manager</name>
+    <code>d_event_manager</code>
+    <description>Add support for events to versions before 2.3.0.0 </description>
+    <version>3.0.0</version>
+    <author>Dreamvention</author>
+    <link>http://dreamvention.com</link>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data));]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 1
+            $result = $this->registry->get('event')->trigger('controller/' . $route . '/before', array(&$route, &$data, &$output));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$this->registry->get('event')->trigger('view/' . $route . '/before', array(&$route, &$data));]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 1.1
+            $this->registry->get('event')->trigger('view/' . $route . '/before', array(&$route, &$data, &$output));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$template = new Template('basic');]]></search>
+            <add position="before"><![CDATA[
+            //d_event_manager.xml 1.2
+            if(!$output){
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$this->registry->get('event')->trigger('view/' . $route . '/after', array(&$route, &$data, &$output));]]></search>
+            <add position="before"><![CDATA[
+            //d_event_manager.xml 1.3
+            }
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/before', $route);]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 2
+            $this->registry->get('event')->trigger('config/' . $route . '/before', array(&$route));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/after', $route);]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 3
+            $this->registry->get('event')->trigger('config/' . $route . '/after', array(&$route, &$output));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/before', $route);]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 4
+            $this->registry->get('event')->trigger('language/' . $route . '/before', array(&$route, &$output));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/after', $route);]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 5
+            $this->registry->get('event')->trigger('language/' . $route . '/after', array(&$route, &$output));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$result = $registry->get('event')->trigger('model/' . $route . '/before', array_merge(array(&$route), $args));]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 6
+            $output = null;
+            $result = $registry->get('event')->trigger('model/' . $route . '/before', array(&$route, &$args, &$output));
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support for 2.2.0.0">
+            <search><![CDATA[$result = $registry->get('event')->trigger('model/' . $route . '/after', array_merge(array(&$route, &$output), $args));]]></search>
+            <add position="replace"><![CDATA[
+            //d_event_manager.xml 7
+            $result = $registry->get('event')->trigger('model/' . $route . '/after', array(&$route, &$args, &$output));
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function __construct($registry) {]]></search>
+            <add position="after"><![CDATA[
+    //d_event_manager.xml loader
+    $this->load = new d_event_manager\Loader($this, $registry);
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function controller($route, $args = array()) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml controller
+    public function controller($route, $args = array()) {
+        return $this->load->controller($route, $args);
+    }
+    
+    //this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+    public function _controller($route, $args = array()) {
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support 2.1.0.0 - controller has $data instead or $args">
+            <search><![CDATA[public function controller($route, $data = array()) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml controller
+    public function controller($route, $args = array()) {
+        return $this->load->controller($route, $args);
+    }
+    
+    //this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+    public function _controller($route, $data = array()) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function model($model) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml model
+    public function model($model) {
+        return $this->load->model($model);
+    }
+    
+    //this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+    public function _model($model) {
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support 2.1.0.0 - model has an extra $data arg">
+            <search><![CDATA[public function model($model, $data = array()) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml model
+    public function model($model) {
+        return $this->load->model($model);
+    }
+    
+    //this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+    public function _model($model) {
+            ]]></add>
+        </operation>
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
+            <add position="replace"><![CDATA[
+        //d_event_manager.xml proxy
+        if(strpos($class, 'total') === false){
+            $proxy = new d_event_manager\Proxy();
+            foreach (get_class_methods($class) as $method) {
+                $proxy->{$method} = $this->load->callback($this->registry, $model . '/' . $method);
+            }
 
-		
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$this->registry->get('event')->trigger('view/' . $route . '/before', array(&$route, &$data));]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 1.1
-			$this->registry->get('event')->trigger('view/' . $route . '/before', array(&$route, &$data, &$output));
-			]]></add>
-		</operation>
-	
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$template = new Template('basic');]]></search>
-			<add position="before"><![CDATA[
-			//d_event_manager.xml 1.2
-			if(!$output){
-			]]></add>
-		</operation>
-		
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$this->registry->get('event')->trigger('view/' . $route . '/after', array(&$route, &$data, &$output));]]></search>
-			<add position="before"><![CDATA[
-			//d_event_manager.xml 1.3
-			}
-			]]></add>
-		</operation>
+            $this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
+        }else{
+            $this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
+        }
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function view($template, $data = array()) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml view
+    public function view($route, $args = array()) {
+        return $this->load->view($route, $args);
+    }
+    
+    //this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+    public function _view($template, $data = array()) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function config($config) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml controller
+    public function config($route) {
+        return $this->load->config($route);
+    }
+    
+    //this is the original controller method which is called by the d_event_menager\Loader -> contorller method
+    public function _config($config) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function language($language) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml controller
+    public function language($route, $args = array()) {
+        return $this->load->language($route, $args);
+    }
+    
+    //this is the original language method which is called by the d_event_menager\Loader -> language method
+    public function _language($language) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function __get($key) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml remove megical __get
+    public function get($key) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function __set($key, $value) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml remove megical __set
+    public function set($key) {
+            ]]></add>
+        </operation>
+    </file>
+        <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function __get($key) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml
+    public function __get($key){
+        return $this->get($key);
+    }
+    
+    public function get($key) {
+            ]]></add>
+        </operation>
+    </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+            <search><![CDATA[public function __set($key, $value) {]]></search>
+            <add position="replace"><![CDATA[
+    //d_event_manager.xml
+    public function __set($key, $value){
+        return $this->set($key, $value);
+    }
 
-		
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/before', $route);]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 2
-			$this->registry->get('event')->trigger('config/' . $route . '/before', array(&$route));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$this->registry->get('event')->trigger('config/' . $route . '/after', $route);]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 3
-			$this->registry->get('event')->trigger('config/' . $route . '/after', array(&$route, &$output));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/before', $route);]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 4
-			$this->registry->get('event')->trigger('language/' . $route . '/before', array(&$route, &$output));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$this->registry->get('event')->trigger('language/' . $route . '/after', $route);]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 5
-			$this->registry->get('event')->trigger('language/' . $route . '/after', array(&$route, &$output));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$result = $registry->get('event')->trigger('model/' . $route . '/before', array_merge(array(&$route), $args));]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 6
-			$output = null;
-			$result = $registry->get('event')->trigger('model/' . $route . '/before', array(&$route, &$args, &$output));
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support for 2.2.0.0">
-			<search><![CDATA[$result = $registry->get('event')->trigger('model/' . $route . '/after', array_merge(array(&$route, &$output), $args));]]></search>
-			<add position="replace"><![CDATA[
-			//d_event_manager.xml 7
-			$result = $registry->get('event')->trigger('model/' . $route . '/after', array(&$route, &$args, &$output));
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function __construct($registry) {]]></search>
-			<add position="after"><![CDATA[
-	//d_event_manager.xml loader
-	$this->load = new d_event_manager\Loader($this, $registry);
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function controller($route, $args = array()) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml controller
-	public function controller($route, $args = array()) {
-		return $this->load->controller($route, $args);
-	}
-	
-	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
-	public function _controller($route, $args = array()) {
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0 - controller has $data instead or $args">
-			<search><![CDATA[public function controller($route, $data = array()) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml controller
-	public function controller($route, $args = array()) {
-		return $this->load->controller($route, $args);
-	}
-	
-	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
-	public function _controller($route, $data = array()) {
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function model($model) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml model
-	public function model($model) {
-		return $this->load->model($model);
-	}
-	
-	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
-	public function _model($model) {
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0 - model has an extra $data arg">
-			<search><![CDATA[public function model($model, $data = array()) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml model
-	public function model($model) {
-		return $this->load->model($model);
-	}
-	
-	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
-	public function _model($model) {
-			]]></add>
-		</operation>
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
-			<add position="replace"><![CDATA[
-		//d_event_manager.xml proxy
-		if(strpos($class, 'total') === false){
-			$proxy = new d_event_manager\Proxy();
-			foreach (get_class_methods($class) as $method) {
-				$proxy->{$method} = $this->load->callback($this->registry, $model . '/' . $method);
-			}
-
-			$this->registry->set('model_' . str_replace(array('/', '-', '.'), array('_', '', ''), (string)$model), $proxy);
-		}else{
-			$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));
-		}
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function view($template, $data = array()) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml view
-	public function view($route, $args = array()) {
-		return $this->load->view($route, $args);
-	}
-	
-	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
-	public function _view($template, $data = array()) {
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function config($config) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml controller
-	public function config($route) {
-		return $this->load->config($route);
-	}
-	
-	//this is the original controller method which is called by the d_event_menager\Loader -> contorller method
-	public function _config($config) {
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function language($language) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml controller
-	public function language($route, $args = array()) {
-		return $this->load->language($route, $args);
-	}
-	
-	//this is the original language method which is called by the d_event_menager\Loader -> language method
-	public function _language($language) {
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function __get($key) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml remove megical __get
-	public function get($key) {
-			]]></add>
-		</operation>
-	</file>
-	<file path="system/engine/loader.php">
-		<operation error="skip" info="add event support 2.1.0.0 and bellow">
-			<search><![CDATA[public function __set($key, $value) {]]></search>
-			<add position="replace"><![CDATA[
-	//d_event_manager.xml remove megical __set
-	public function set($key) {
-			]]></add>
-		</operation>
-	</file>
+    public function set($key, $value) {
+            ]]></add>
+        </operation>
+    </file>
 </modification>
