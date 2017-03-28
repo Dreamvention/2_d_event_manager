@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.1.1",
+    "version": "1.1.2",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "index": "module/d_event_manager",
@@ -44,6 +44,8 @@
     "files": [
         "system/mbooth/extension/d_event_manager.json",
         "system/mbooth/install/d_event_manager.xml",
+        "system/d_event_manager.ocmod.xml",
+        "vqmod/xml/a_vqmod_d_event_manager.xml",
 
         "admin/controller/module/d_event_manager.php",
         "admin/model/module/d_event_manager.php",
@@ -58,6 +60,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "varsion":"1.1.2",
+            "change": "Fixes for old themes"
+        },
         {
             "varsion":"1.1.1",
             "change": "Backwards comaptibility fixes"
