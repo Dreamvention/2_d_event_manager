@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<modification>
+    <name>d_event_manager_startup</name>
+    <code>d_event_manager_startup</code>
+    <version>1.0</version>
+    <author>Dreamvention</author>
+    <link>http://www.opencart.com</link>
+    <file path="system/library/d_event_manager/*.php">
+        <operation>
+            <search regex="true">
+                <![CDATA[~(require|include)(_once)?\(([^)]+)~]]>
+            </search>
+            <add position="replace">
+                <![CDATA[$1$2(modification($3)]]>
+            </add>
+        </operation>
+    </file>
+</modification>

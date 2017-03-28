@@ -80,7 +80,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function __construct($registry) {]]></search>
             <add position="after"><![CDATA[
     //d_event_manager.xml loader
@@ -89,7 +89,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function controller($route, $args = array()) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml controller
@@ -115,7 +115,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function model($model) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml model
@@ -139,7 +139,7 @@
     public function _model($model) {
             ]]></add>
         </operation>
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
             <add position="replace"><![CDATA[
         //d_event_manager.xml proxy
@@ -157,7 +157,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function view($template, $data = array()) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml view
@@ -171,7 +171,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function config($config) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml controller
@@ -185,7 +185,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function language($language) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml controller
@@ -199,7 +199,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function __get($key) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml
@@ -212,7 +212,7 @@
         </operation>
     </file>
     <file path="system/engine/loader.php">
-        <operation error="skip" info="add event support 2.1.0.0 and bellow">
+        <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[public function __set($key, $value) {]]></search>
             <add position="replace"><![CDATA[
     //d_event_manager.xml
