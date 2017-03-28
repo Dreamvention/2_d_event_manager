@@ -232,4 +232,12 @@
             ]]></add>
         </operation>
     </file>
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support 2.0.0.0 and below">
+            <search><![CDATA[private $registry;]]></search>
+            <add position="after"><![CDATA[
+    protected $load;
+            ]]></add>
+        </operation>
+    </file>
 </modification>
