@@ -164,22 +164,32 @@
     <file path="system/engine/front.php">
         <operation error="skip" info="add event support 2.1.0.0 and below">
             <search><![CDATA[while ($action) {]]></search>
-            <add position="replace"><![CDATA[
+            <add position="replace" offset="2"><![CDATA[
         //d_event_manager.xml add route controller support on before
-        if (isset($this->registry->get('request')->get['route'])) {
-            $route = $this->registry->get('request')->get['route'];
-        } else {
-            if(defined('HTTP_CATALOG')){
-                $route = 'common/dashboard';
-            }else{
-                $route = 'common/home';
+        if($result){
+            while($result){
+                $result = $this->execute($result);
             }
-            
-        }
+        }else{
+            if (isset($this->registry->get('request')->get['route'])) {
+                $route = $this->registry->get('request')->get['route'];
+            } else {
+                if(defined('HTTP_CATALOG')){
+                    $route = 'common/dashboard';
+                }else{
+                    $route = 'common/home';
+                }
+                
+            }
 
-        $this->registry->get('load')->controller($route);
-        $output = $this->registry->get('response')->getOutput();
-        if (!$output && $action) {
+            $this->registry->get('load')->controller($route);
+            $output = $this->registry->get('response')->getOutput();
+            if (!$output) {
+                while($action){
+                    $action = $this->execute($action);
+                }
+            }
+        }
             ]]></add>
         </operation>
     </file>
