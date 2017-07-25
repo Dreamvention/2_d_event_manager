@@ -1,9 +1,8 @@
 {
     "codename": "d_event_manager",
-    "version": "1.1.4",
+    "version": "1.2.0",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
-    "index": "module/d_event_manager",
     "readme": "system/mbooth/readme/d_event_manager.md",
     "author": {
         "name": "Shopunity",
@@ -21,95 +20,88 @@
         "2.2.0.0",
         "2.3.0.2"
     ],
-    "mbooth_version": "^4.0.0",
-    "type": "module",
+    "type": "library",
     "license": {
         "type": "free",
         "url": "https://shopunity.net/licenses/free"
     },
     "install": {
-        "url": "extension/module/install&extension=d_event_manager",
+        "url": "d_shopunity/extension/install_ocmod&codename=d_event_manager",
         "xml": "system/mbooth/install/d_event_manager.xml"
     },
     "uninstall": {
-        "url": "extension/module/uninstall&extension=d_event_manager"
+        "url": "d_shopunity/extension/uninstall_ocmod&codename=d_event_manager"
     },
     "support": {
         "email": "support@shopunity.com",
         "url": "https://shopunity.net/"
     },
-    "required": {
-        "d_shopunity": ">=3.0.41"
-    },
     "files": [
-        "system/mbooth/extension/d_event_manager.json",
-        "system/mbooth/install/d_event_manager.xml",
+        "system/library/d_shopunity/extension/d_event_manager.json",
+        "system/library/d_shopunity/install/d_event_manager.xml",
         "system/d_event_manager.ocmod.xml",
-        "vqmod/xml/a_vqmod_d_event_manager.xml",
-
-        "admin/controller/module/d_event_manager.php",
+        "admin/model/extension/module/d_event_manager.php",
         "admin/model/module/d_event_manager.php",
-        "admin/language/english/module/d_event_manager.php",
-        "admin/language/en-gb/module/d_event_manager.php",
-        "admin/view/template/module/d_event_manager.tpl",
-
-        "system/config/d_event_manager.php"
-
+        "vqmod/xml/a_vqmod_d_event_manager.xml"
     ],
     "dirs":[
         "system/library/d_event_manager"
     ],
     "changelog": [
         {
-            "varsion":"1.1.4",
+            "version":"1.2.0",
+            "change":"removed admin, new folder structure"
+        },
+        {
+            "version":"1.1.4",
             "change": "Hotfix"
         },
         {
-            "varsion":"1.1.3",
+            "version":"1.1.3",
             "change": "Fix for 2.0.3.x and below"
         },
         {
-            "varsion":"1.1.2",
+            "version":"1.1.2",
             "change": "Fixes for old themes"
         },
         {
-            "varsion":"1.1.1",
+            "version":"1.1.1",
             "change": "Backwards comaptibility fixes"
         },
         {
-            "varsion":"1.1.0",
+            "version":"1.1.0",
             "change": "Added model method to install and uninstall compatibility"
         },
         {
-            "varsion":"1.0.7",
+            "version":"1.0.7",
             "change": "minor bug fix."
         },
         {
-            "varsion":"1.0.6",
+            "version":"1.0.6",
             "change": "hotfix."
         },
         {
-            "varsion":"1.0.5",
+            "version":"1.0.5",
             "change": "Renamed ocmod file name to d_event_manager."
         },
         {
-            "varsion":"1.0.4",
+            "version":"1.0.4",
             "change": "Hot fix: remove FB."
         },
         {
-            "varsion":"1.0.3",
+            "version":"1.0.3",
             "change": "Hot fix: admin filter bug."
         },
         {
-            "varsion":"1.0.2",
+            "version":"1.0.2",
             "change": "Hot fix: location catalog & admin, output validated in view."
         },
         {
-            "varsion":"1.0.1",
+            "version":"1.0.1",
             "change": "Hot fix"
         },
         {
-            "varsion":"1.0.0",
+            "version":"1.0.0",
             "change": "First release"
         }
     ]
