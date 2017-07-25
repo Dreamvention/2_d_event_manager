@@ -2,10 +2,10 @@
 /*
  *  location: admin/controller
  */
-class ControllerModuleDEventManager extends Controller {
+class ControllerExtensionModuleDEventManager extends Controller {
 
     private $codename = 'd_event_manager';
-    private $route = 'module/d_event_manager';
+    private $route = 'extension/module/d_event_manager';
     private $config_file = 'd_event_manager';
     private $extension = array();
     private $store_id = 0;
@@ -15,8 +15,8 @@ class ControllerModuleDEventManager extends Controller {
     public function __construct($registry) {
         parent::__construct($registry);
 
-        $this->d_shopunity = (file_exists(DIR_SYSTEM.'mbooth/extension/d_shopunity.json'));
-        $this->extension = json_decode(file_get_contents(DIR_SYSTEM.'mbooth/extension/'.$this->codename.'.json'), true);
+        $this->d_opencart_patch = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_opencart_patch.json'));
+        $this->extension = json_decode(file_get_contents(DIR_SYSTEM.'library/d_shopunity/extension/'.$this->codename.'.json'), true);
         $this->store_id = (isset($this->request->get['store_id'])) ? $this->request->get['store_id'] : 0;
         if(VERSION >= '2.3.0.0'){
             $this->route = 'extension/'.$this->route;
@@ -47,20 +47,20 @@ class ControllerModuleDEventManager extends Controller {
         }
 
         if(VERSION < '2.3.0.0'){
-            $this->load->model('module/d_event_manager');
-            $this->model_module_d_event_manager->installDatabase();
+            $this->load->model('extension/module/d_event_manager');
+            $this->model_extension_module_d_event_manager->installDatabase();
         }
 
-        $this->load->model('d_shopunity/mbooth');
-        $this->model_d_shopunity_mbooth->validateDependencies($this->codename);
+        $this->load->model('extension/d_opencart_patch/ocmod');
+        $this->model_extension_d_opencart_patch_ocmod->validateDependencies($this->codename);
 
 
         $this->load->language($this->route);
         $this->load->config($this->codename);
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
         $this->load->model('setting/setting');
-        $this->load->model('d_shopunity/setting');
-        $this->load->model('d_shopunity/ocmod');
+        $this->load->model('library/d_shopunity/extension/setting');
+        $this->load->model('extension/d_opencart_patch/ocmod');
 
         //save post
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
@@ -212,12 +212,12 @@ class ControllerModuleDEventManager extends Controller {
         //action
         $data['module_link'] = $this->url->link($this->route, 'token=' . $this->session->data['token'], 'SSL');
         $data['action'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['create'] = $this->model_module_d_event_manager->ajax($this->route.'/create', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['delete'] = $this->model_module_d_event_manager->ajax($this->route.'/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
+        $data['create'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/create', 'token=' . $this->session->data['token'] . $url, 'SSL');
+        $data['delete'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
         $data['install_test'] = $this->url->link($this->route.'/install_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
         $data['uninstall_test'] = $this->url->link($this->route.'/uninstall_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['install_compatibility'] = $this->model_module_d_event_manager->ajax($this->route.'/install_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['uninstall_compatibility'] = $this->model_module_d_event_manager->ajax($this->route.'/uninstall_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
+        $data['install_compatibility'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/install_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
+        $data['uninstall_compatibility'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/uninstall_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
         
         if(VERSION >= '2.3.0.0'){   
             $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
@@ -248,18 +248,18 @@ class ControllerModuleDEventManager extends Controller {
 
             
         //get config 
-        $this->config_file = $this->model_d_shopunity_setting->getConfigFileName($this->codename);
+        $this->config_file = $this->model_extension_d_opencart_patch_setting->getConfigFileName($this->codename);
         $data['config'] = $this->config_file;
-        $data['config_files'] = $this->model_d_shopunity_setting->getConfigFileNames($this->codename);
+        $data['config_files'] = $this->model_extension_d_opencart_patch_setting->getConfigFileNames($this->codename);
 
         //get store
         $data['store_id'] = $this->store_id;
-        $data['stores'] = $this->model_d_shopunity_setting->getStores();
+        $data['stores'] = $this->model_extension_d_opencart_patch_setting->getStores();
 
         //get setting
-        $data['setting'] = $this->model_d_shopunity_setting->getSetting($this->codename);
+        $data['setting'] = $this->model_extension_d_opencart_patch_setting->getSetting($this->codename);
 
-        $data['compatibility'] = $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager');
+        $data['compatibility'] = $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager');
 
         $data['tests'] = array();
 
@@ -304,7 +304,7 @@ class ControllerModuleDEventManager extends Controller {
         //debug
         if(isset($data['setting']['debug'])){
             //get debug file
-            $data['debug_log'] = $this->model_module_d_event_manager->getFileContents(DIR_LOGS.$data['setting']['debug_file']);
+            $data['debug_log'] = $this->model_extension_module_d_event_manager->getFileContents(DIR_LOGS.$data['setting']['debug_file']);
             $data['debug_file'] = $data['setting']['debug_file'];
         }
         
@@ -340,14 +340,14 @@ class ControllerModuleDEventManager extends Controller {
             'limit'                     => $this->config->get('config_limit_admin')
         );
 
-        $event_total = $this->model_module_d_event_manager->getTotalEvents($filter_data);
+        $event_total = $this->model_extension_module_d_event_manager->getTotalEvents($filter_data);
 
-        $results = $this->model_module_d_event_manager->getEvents($filter_data);
+        $results = $this->model_extension_module_d_event_manager->getEvents($filter_data);
 
         foreach ($results as $result) {
             
-            $enable = $this->model_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL');
-            $disable = $this->model_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL');
+            $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL');
+            $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL');
 
             $data['events'][] = array(
                 'event_id'       => $result['event_id'],
@@ -445,7 +445,7 @@ class ControllerModuleDEventManager extends Controller {
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
-        $this->response->setOutput($this->load->view('module/d_event_manager.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/module/d_event_manager.tpl', $data));
     }
 
 
@@ -474,15 +474,15 @@ class ControllerModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
 
         if(isset($this->request->get['event_id'])){
             $event_id = $this->request->get['event_id'];
-            $event = $this->model_module_d_event_manager->getEventById($event_id);
+            $event = $this->model_extension_module_d_event_manager->getEventById($event_id);
         }
 
         if($event){
-            $result = $this->model_module_d_event_manager->enableEvent($event_id);
+            $result = $this->model_extension_module_d_event_manager->enableEvent($event_id);
             $json['enabled'] = true;
 
             
@@ -503,15 +503,15 @@ class ControllerModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
 
         if(isset($this->request->get['event_id'])){
             $event_id = $this->request->get['event_id'];
-            $event = $this->model_module_d_event_manager->getEventById($event_id);
+            $event = $this->model_extension_module_d_event_manager->getEventById($event_id);
         }
 
         if($event){
-            $result = $this->model_module_d_event_manager->disableEvent($event_id);
+            $result = $this->model_extension_module_d_event_manager->disableEvent($event_id);
             $json['enabled'] = false;
 
             
@@ -527,16 +527,16 @@ class ControllerModuleDEventManager extends Controller {
         $event_id = false;
         $result = array();
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
 
         if(isset($this->request->get['event_id'])){
             $event_id = $this->request->get['event_id'];
-            $result = $this->model_module_d_event_manager->getEventById($event_id);
+            $result = $this->model_extension_module_d_event_manager->getEventById($event_id);
         }
 
         if($result){
-            $enable = $this->model_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL');
-            $disable = $this->model_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL');
+            $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL');
+            $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL');
 
             $json = array(
                 'event_id'      => $result['event_id'],
@@ -566,7 +566,7 @@ class ControllerModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
 
         if( isset($this->request->post['code'])
         && isset($this->request->post['trigger'])
@@ -576,12 +576,12 @@ class ControllerModuleDEventManager extends Controller {
             $event['trigger'] = $this->request->post['trigger'];
             $event['action'] = $this->request->post['action'];
             $event['status'] = 1;
-            $event['event_id'] = $this->model_module_d_event_manager->addEvent($event['code'], $event['trigger'], $event['action'] , $event['status']);
+            $event['event_id'] = $this->model_extension_module_d_event_manager->addEvent($event['code'], $event['trigger'], $event['action'] , $event['status']);
         }
 
         if($event){
-            $enable = $this->model_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
-            $disable = $this->model_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+            $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+            $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
 
             $json = array(
                 'event_id'      => $event['event_id'],
@@ -611,11 +611,11 @@ class ControllerModuleDEventManager extends Controller {
 
         $json = array();
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
 
         if( isset($this->request->post['event_id'])){
             foreach($this->request->post['event_id'] as $event_id){
-                $this->model_module_d_event_manager->deleteEventById($event_id);
+                $this->model_extension_module_d_event_manager->deleteEventById($event_id);
             }
             $json['deleted'] = true;
         }else{
@@ -634,14 +634,14 @@ class ControllerModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/extension/module/d_event_manager');
 
         if(isset($this->request->get['event_id']) 
         && isset($this->request->post['code'])
         && isset($this->request->post['trigger'])
         && isset($this->request->post['action'])){
             $event_id = $this->request->get['event_id'];
-            $event = $this->model_module_d_event_manager->getEventById($event_id);
+            $event = $this->model_extension_module_d_event_manager->getEventById($event_id);
             $event['code'] = $this->request->post['code'];
             $event['trigger'] = $this->request->post['trigger'];
             $event['action'] = $this->request->post['action'];
@@ -649,11 +649,11 @@ class ControllerModuleDEventManager extends Controller {
 
         if($event){
 
-            $event = $this->model_module_d_event_manager->updateEvent($event_id, $event);
+            $event = $this->model_extension_module_d_event_manager->updateEvent($event_id, $event);
 
             if($event){
-                $enable = $this->model_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
-                $disable = $this->model_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+                $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+                $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
 
                 $json = array(
                     'event_id'      => $event['event_id'],
@@ -685,27 +685,27 @@ class ControllerModuleDEventManager extends Controller {
             $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
         }
 
-        $this->load->model('d_shopunity/ocmod');
+        $this->load->model('library/d_shopunity/extension/ocmod');
         $this->load->language($this->route);
-        if(VERSION > '2.3.0.0' || $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager')){
-            $this->load->model('module/d_event_manager');
-            $this->model_module_d_event_manager->installDatabase();
+        if(VERSION > '2.3.0.0' || $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager')){
+            $this->load->model('extension/extension/module/d_event_manager');
+            $this->model_extension_module_d_event_manager->installDatabase();
 
-            $this->model_module_d_event_manager->deleteEvent($this->codename);
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/module/d_event_manager/before', 'module/d_event_manager/route_controller_before');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/module/d_event_manager/before', 'module/d_event_manager/route_controller_before');
-            // $this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/module/d_event_manager/after', 'module/d_event_manager/route_controller_after');
-            // $this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/module/d_event_manager/after', 'module/d_event_manager/route_controller_after');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', 'module/d_event_manager/view_before');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', 'module/d_event_manager/view_after');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', 'module/d_event_manager/controller_before');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', 'module/d_event_manager/controller_after');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', 'module/d_event_manager/model_before');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', 'module/d_event_manager/model_after');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/before', 'module/d_event_manager/language_before');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/after', 'module/d_event_manager/language_after');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/before', 'module/d_event_manager/config_before');
-            $this->model_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/after', 'module/d_event_manager/config_after');
+            $this->model_extension_module_d_event_manager->deleteEvent($this->codename);
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/extension/module/d_event_manager/before', 'extension/module/d_event_manager/route_controller_before');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/module/d_event_manager/before', 'extension/module/d_event_manager/route_controller_before');
+            // $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/extension/module/d_event_manager/after', 'extension/module/d_event_manager/route_controller_after');
+            // $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/module/d_event_manager/after', 'extension/module/d_event_manager/route_controller_after');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', 'extension/module/d_event_manager/view_before');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', 'extension/module/d_event_manager/view_after');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', 'extension/module/d_event_manager/controller_before');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/after', 'extension/module/d_event_manager/controller_after');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/before', 'extension/module/d_event_manager/model_before');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/model/setting/store/getStores/after', 'extension/module/d_event_manager/model_after');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/before', 'extension/module/d_event_manager/language_before');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/language/common/header/after', 'extension/module/d_event_manager/language_after');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/before', 'extension/module/d_event_manager/config_before');
+            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/config/d_event_manager/after', 'extension/module/d_event_manager/config_after');
             
             $this->session->data['success'] = $this->language->get('text_success');
         }else{
@@ -721,9 +721,9 @@ class ControllerModuleDEventManager extends Controller {
             $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
         }
 
-        $this->load->model('module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
         $this->load->language($this->route);
-        $this->model_module_d_event_manager->deleteEvent($this->codename);
+        $this->model_extension_module_d_event_manager->deleteEvent($this->codename);
 
         $this->session->data['success'] = $this->language->get('text_success');
         $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
@@ -739,8 +739,8 @@ class ControllerModuleDEventManager extends Controller {
 
         $this->load->language($this->route);
 
-        $this->load->model('module/d_event_manager');
-        $this->model_module_d_event_manager->installCompatibility();
+        $this->load->model('extension/module/d_event_manager');
+        $this->model_extension_module_d_event_manager->installCompatibility();
 
         $this->session->data['success'] = $this->language->get('text_success');
         $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
@@ -754,8 +754,8 @@ class ControllerModuleDEventManager extends Controller {
             $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
         }
 
-        $this->load->model('module/d_event_manager');
-        $this->model_module_d_event_manager->uninstallCompatibility();
+        $this->load->model('extension/module/d_event_manager');
+        $this->model_extension_module_d_event_manager->uninstallCompatibility();
 
         $this->uninstall_test();
     }
@@ -766,14 +766,14 @@ class ControllerModuleDEventManager extends Controller {
             return false;
         }
 
-        $this->load->model('module/d_event_manager');
-        $this->model_module_d_event_manager->installDatabase();
+        $this->load->model('extension/module/d_event_manager');
+        $this->model_extension_module_d_event_manager->installDatabase();
 
         //$this->installTest();
 
         if($this->d_shopunity){
-            $this->load->model('d_shopunity/mbooth');
-            $this->model_d_shopunity_mbooth->installDependencies($this->codename);  
+            $this->load->model('extension/d_opencart_patch/ocmod');
+            $this->model_extension_d_opencart_patch_ocmod->installDependencies($this->codename);  
         }
     }
 
@@ -782,8 +782,8 @@ class ControllerModuleDEventManager extends Controller {
             return false;
         }
         
-        $this->load->model('module/d_event_manager');
-        $this->model_module_d_event_manager->deleteEvent($this->codename);
+        $this->load->model('extension/module/d_event_manager');
+        $this->model_extension_module_d_event_manager->deleteEvent($this->codename);
     }
 
 
@@ -940,9 +940,9 @@ class ControllerModuleDEventManager extends Controller {
                 'limit'        => 5
             );
 
-            $this->load->model('module/d_event_manager');
+            $this->load->model('extension/module/d_event_manager');
 
-            $results = $this->model_module_d_event_manager->getEvents($filter_data);
+            $results = $this->model_extension_module_d_event_manager->getEvents($filter_data);
 
             foreach ($results as $result) {
                 $json[] = array(
