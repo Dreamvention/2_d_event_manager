@@ -36,6 +36,9 @@
         "email": "support@shopunity.com",
         "url": "https://shopunity.net/"
     },
+    "required": {
+        "d_opencart_patch": ">=1.0.0"
+    },
     "files": [
         "system/library/d_shopunity/extension/d_event_manager.json",
         "system/library/d_shopunity/install/d_event_manager.xml",

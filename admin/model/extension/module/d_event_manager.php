@@ -207,25 +207,25 @@ class ModelExtensionModuleDEventManager extends Model {
             return true;
         }
 
-        $d_shopunity = (file_exists(DIR_SYSTEM.'mbooth/extension/d_shopunity.json'));
-        if(!$d_shopunity){
+        $d_opencart_patch = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_opencart_patch.json'));
+        if(!$d_opencart_patch){
             return false;
         }
 
-        $this->load->model('d_shopunity/ocmod');
+        $this->load->model('extension/d_opencart_patch/ocmod');
         
-        $compatibility = $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager');
+        $compatibility = $this->model_extension_d_opencart_parch_ocmod->getModificationByName('d_event_manager');
         if($compatibility){
             if(!empty($compatibility['status'])){
                 return true;
             }else{
-                $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
+                $this->model_extension_d_opencart_parch_ocmod->setOcmod('d_event_manager.xml', 0);
             }
         }
 
         $this->installDatabase();
-        $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 1);
-        $this->model_d_shopunity_ocmod->refreshCache();
+        $this->model_extension_d_opencart_parch_ocmod->setOcmod('d_event_manager.xml', 1);
+        $this->model_extension_d_opencart_parch_ocmod->refreshCache();
 
         return true;
     }
@@ -236,20 +236,20 @@ class ModelExtensionModuleDEventManager extends Model {
             return true;
         }
 
-        $d_shopunity = (file_exists(DIR_SYSTEM.'mbooth/extension/d_shopunity.json'));
-        if(!$d_shopunity){
+        $d_opencart_patch = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_opencart_patch.json'));
+        if(!$d_opencart_patch){
             return false;
         }
 
-        $this->load->model('d_shopunity/ocmod');
+        $this->load->model('extension/d_opencart_patch/ocmod');
 
-        $compatibility = $this->model_d_shopunity_ocmod->getModificationByName('d_event_manager');
+        $compatibility = $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager');
         if(!$compatibility){
             return true;
         }
 
-        $this->model_d_shopunity_ocmod->setOcmod('d_event_manager.xml', 0);
-        $this->model_d_shopunity_ocmod->refreshCache();
+        $this->model_extension_d_opencart_patch_ocmod->setOcmod('d_event_manager.xml', 0);
+        $this->model_extension_d_opencart_patch_ocmod->refreshCache();
 
         return true;
     }
@@ -267,7 +267,10 @@ class ModelExtensionModuleDEventManager extends Model {
 		return str_replace('&amp;', '&', $this->url->link($route, $url, $ssl));
 	}
 
-	/*
+
+
+
+	/*-------------------------------------------------------------------------DEPRICATED
 	*	Get file contents, usualy for debug log files.
 	*/
 
