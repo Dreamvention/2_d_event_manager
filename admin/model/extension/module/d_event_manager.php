@@ -201,6 +201,22 @@ class ModelExtensionModuleDEventManager extends Model {
 
 	}
 
+    public function isCompatible(){
+
+        if(VERSION >= '2.3.0.0'){
+            return true;
+        }
+        
+        $compatibility = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
+        if($compatibility){
+            if(!empty($compatibility['status'])){
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function installCompatibility(){
 
         if(VERSION >= '2.3.0.0'){
@@ -212,20 +228,20 @@ class ModelExtensionModuleDEventManager extends Model {
             return false;
         }
 
-        $this->load->model('extension/d_opencart_patch/ocmod');
+        $this->load->model('extension/d_opencart_patch/modification');
         
-        $compatibility = $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager');
+        $compatibility = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         if($compatibility){
             if(!empty($compatibility['status'])){
                 return true;
             }else{
-                $this->model_extension_d_opencart_patch_ocmod->setOcmod('d_event_manager.xml', 0);
+                $this->model_extension_d_opencart_patch_modification->setModification('d_event_manager.xml', 0);
             }
         }
 
         $this->installDatabase();
-        $this->model_extension_d_opencart_patch_ocmod->setOcmod('d_event_manager.xml', 1);
-        $this->model_extension_d_opencart_patch_ocmod->refreshCache();
+        $this->model_extension_d_opencart_patch_modification->setModification('d_event_manager.xml', 1);
+        $this->model_extension_d_opencart_patch_modification->refreshCache();
 
         return true;
     }
@@ -241,15 +257,15 @@ class ModelExtensionModuleDEventManager extends Model {
             return false;
         }
 
-        $this->load->model('extension/d_opencart_patch/ocmod');
+        $this->load->model('extension/d_opencart_patch/modification');
 
-        $compatibility = $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager');
+        $compatibility = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         if(!$compatibility){
             return true;
         }
 
-        $this->model_extension_d_opencart_patch_ocmod->setOcmod('d_event_manager.xml', 0);
-        $this->model_extension_d_opencart_patch_ocmod->refreshCache();
+        $this->model_extension_d_opencart_patch_modification->setModification('d_event_manager.xml', 0);
+        $this->model_extension_d_opencart_patch_modification->refreshCache();
 
         return true;
     }

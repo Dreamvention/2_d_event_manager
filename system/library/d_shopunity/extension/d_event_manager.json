@@ -3,11 +3,10 @@
     "version": "2.0.0",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
-    "readme": "system/mbooth/readme/d_event_manager.md",
     "author": {
-        "name": "Shopunity",
-        "email": "info@shopunity.com",
-        "url": "https://shopunity.net/"
+        "name": "Dreamvention",
+        "email": "info@dreamvention.com",
+        "url": "https://dreamvention.com"
     },
     "opencart_version": [
         "3.0.0.0",
@@ -21,11 +20,11 @@
         "url": "https://shopunity.net/licenses/free"
     },
     "install": {
-        "url": "d_shopunity/extension/install_ocmod&codename=d_event_manager",
-        "xml": "system/mbooth/install/d_event_manager.xml"
+        "url": "extension/d_shopunity/modification/install&codename=d_event_manager",
+        "xml": "system/library/d_shopunity/install/d_event_manager.xml"
     },
     "uninstall": {
-        "url": "d_shopunity/extension/uninstall_ocmod&codename=d_event_manager"
+        "url": "extension/d_shopunity/modification/uninstall&codename=d_event_manager",
     },
     "support": {
         "email": "support@shopunity.com",
@@ -37,7 +36,6 @@
     "files": [
         "system/library/d_shopunity/extension/d_event_manager.json",
         "system/library/d_shopunity/install/d_event_manager.xml",
-        "system/d_event_manager.ocmod.xml",
         "admin/model/extension/module/d_event_manager.php"
     ],
     "dirs":[
