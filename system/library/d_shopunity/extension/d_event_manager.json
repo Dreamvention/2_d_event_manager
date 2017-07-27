@@ -2,7 +2,7 @@
     "codename": "d_event_manager",
     "version": "2.0.0",
     "name": "Event Manager",
-    "description": "Manage your events and add Event support to old OC versions",
+    "description": "Manage your events and add Event support to old OC versions.",
     "author": {
         "name": "Dreamvention",
         "email": "info@dreamvention.com",
