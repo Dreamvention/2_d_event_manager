@@ -26,13 +26,6 @@
         "type": "free",
         "url": "https://shopunity.net/licenses/free"
     },
-    "install": {
-        "url": "extension/d_shopunity/modification/install&codenamee=d_event_manager",
-        "xml": "system/library/d_shopunity/install/d_event_manager.xml"
-    },
-    "uninstall": {
-        "url": "extension/d_shopunity/modification/uninstall&codename=d_event_manager"
-    },
     "support": {
         "email": "support@shopunity.com",
         "url": "https://shopunity.net/"
