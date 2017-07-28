@@ -41,7 +41,6 @@
         "d_opencart_patch": ">=1.0.0"
     },
     "files": [
-        "system/mbooth/extension/d_event_manager.json",
         "system/library/d_shopunity/extension/d_event_manager.json",
         "system/library/d_shopunity/install/d_event_manager.xml",
         "system/d_event_manager.ocmod.xml",
