@@ -34,6 +34,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename);
         }
 
+        $this->load->language($this->route);
+
         if($this->d_twig_manager){
             $this->load->model('extension/module/d_twig_manager');
             if(!$this->model_extension_module_d_twig_manager->isCompatible()){
@@ -44,7 +46,6 @@ class ControllerExtensionModuleDEventManager extends Controller {
             } 
         }
 
-        $this->load->language($this->route);
         $this->load->config($this->codename);
         $this->load->model('extension/module/d_event_manager');
         $this->load->model('setting/setting');
