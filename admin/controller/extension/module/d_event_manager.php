@@ -38,6 +38,9 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $this->load->model('extension/module/d_twig_manager');
             if(!$this->model_extension_module_d_twig_manager->isCompatible()){
                 $this->model_extension_module_d_twig_manager->installCompatibility(); 
+                $this->session->data['success'] = $this->language->get('success_twig_compatible');
+                $this->load->model('extension/d_opencart_patch/url');
+                $this->response->redirect($this->model_extension_d_opencart_patch_url->link('marketplace/extension', 'type=module'));
             } 
         }
 

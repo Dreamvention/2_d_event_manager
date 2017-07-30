@@ -76,7 +76,7 @@ $_['success_no_update']         = 'Super! You have the latest version.';
 $_['warning_new_update']        = 'Wow! There is a new version available for download.';
 $_['error_update']              = 'Sorry! Something went wrong. If this repeats, contact the support please.';
 $_['error_failed']              = 'Oops! We could not connect to the server. Please try again later.';
-$_['error_twig_not_compatible'] = 'Twig manager is required. Please Install Shopunity Extension and reinstall Event Manager. Goto <a href="https://shopunity.net">Shopunity.net</a>';
+$_['success_twig_compatible']   = 'Twig installed. You can not go to Event Manager';
 //debug
 $_['tab_debug']                 = 'Debug';
 $_['entry_debug']               = 'Debug';
