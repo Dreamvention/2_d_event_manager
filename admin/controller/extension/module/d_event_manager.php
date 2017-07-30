@@ -573,7 +573,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $event['action'] = $this->request->post['action'];
             $event['status'] = 1;
             $event['sort_order'] = 0;
-            $event['event_id'] = $this->model_extension_module_d_event_manager->addEvent($event['code'], $event['trigger'], $event['action'] , $event['status']);
+            $event['event_id'] = $this->model_extension_module_d_event_manager->addEvent($event['code'], $event['trigger'], $event['action'] , $event['status'], $event['sort_order']);
         }
 
         if($event){
