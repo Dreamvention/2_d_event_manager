@@ -52,7 +52,7 @@
         "system/library/d_shopunity/extension/d_event_manager_admin.json",
 
         "admin/controller/extension/module/d_event_manager.php",
-        "admin/language/en-gb/module/d_event_manager.php",
+        "admin/language/en-gb/extension/module/d_event_manager.php",
         "admin/view/template/extension/module/d_event_manager.tpl",
 
         "system/config/d_event_manager.php"
