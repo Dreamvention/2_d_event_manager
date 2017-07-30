@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager_admin",
-    "version": "2.0.0",
+    "version": "1.0.0",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
     "index": "module/d_event_manager",
