@@ -243,6 +243,9 @@ class ModelExtensionModuleDEventManager extends Model {
     public function isCompatible(){
 
         if(VERSION >= '2.3.0.0'){
+            if(VERSION < '3.0.0.0'){
+                $this->installDatabase();
+            }
             return true;
         }
         

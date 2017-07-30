@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.2.1",
+    "version": "1.2.2",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "author": {
@@ -46,6 +46,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "version":"1.2.2",
+            "change":"Bug fixes"
+        },
         {
             "version":"1.2.1",
             "change":"Bug fixes"
