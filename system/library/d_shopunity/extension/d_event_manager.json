@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "2.0.0",
+    "version": "2.0.1",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "author": {
@@ -31,6 +31,10 @@
         "admin/model/extension/module/d_event_manager.php"
     ],
     "changelog": [
+        {
+            "version":"2.0.1",
+            "change":"Bug fixes"
+        },
         {
             "version":"2.0.0",
             "change":"removed admin, new folder structure for 3.x"
