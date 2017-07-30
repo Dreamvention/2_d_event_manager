@@ -3,8 +3,8 @@
     "version": "1.0.0",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
-    "index": "module/d_event_manager",
-    "readme": "system/mbooth/readme/d_event_manager.md",
+    "index": "extension/module/d_event_manager",
+    "readme": "system/mbooth/readme/d_event_manager_admin.md",
     "author": {
         "name": "Shopunity",
         "email": "info@shopunity.com",
@@ -50,10 +50,11 @@
     },
     "files": [
         "system/library/d_shopunity/extension/d_event_manager_admin.json",
+        "system/library/d_shopunity/readme/d_event_manager_admin.md",
 
         "admin/controller/extension/module/d_event_manager.php",
         "admin/language/en-gb/extension/module/d_event_manager.php",
-        "admin/view/template/extension/module/d_event_manager.tpl",
+        "admin/view/template/extension/module/d_event_manager.twig",
 
         "system/config/d_event_manager.php"
 
