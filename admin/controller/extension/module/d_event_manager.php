@@ -16,51 +16,42 @@ class ControllerExtensionModuleDEventManager extends Controller {
         parent::__construct($registry);
 
         $this->d_opencart_patch = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_opencart_patch.json'));
-        $this->extension = json_decode(file_get_contents(DIR_SYSTEM.'library/d_shopunity/extension/'.$this->codename.'.json'), true);
+        $this->d_shopunity = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_shopunity.json'));
+        $this->d_twig_manager = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_twig_manager.json'));
+        $this->extension = json_decode(file_get_contents(DIR_SYSTEM.'library/d_shopunity/extension/d_event_manager.json'), true);
         $this->store_id = (isset($this->request->get['store_id'])) ? $this->request->get['store_id'] : 0;
-        if(VERSION >= '2.3.0.0'){
-            $this->route = 'extension/'.$this->route;
-        }
     }
-
-    public function required(){
-        $this->load->language($this->route);
-
-        $this->document->setTitle($this->language->get('heading_title_main'));
-        $data['heading_title'] = $this->language->get('heading_title_main');
-        $data['text_not_found'] = $this->language->get('text_not_found');
-        $data['breadcrumbs'] = array();
-
-        $data['header'] = $this->load->controller('common/header');
-        $data['column_left'] = $this->load->controller('common/column_left');
-        $data['footer'] = $this->load->controller('common/footer');
-
-        $this->request->get['extension'] = $this->codename;
-        $this->response->setOutput($this->load->view('error/not_found.tpl', $data));
-    }
-
 
     public function index(){
 
-        if(!$this->d_shopunity){
-            $this->response->redirect($this->url->link($this->route.'/required', 'codename=d_shopunity&token='.$this->session->data['token'], 'SSL'));
-        }
-
-        if(VERSION < '2.3.0.0'){
+        if(VERSION < '3.0.0.0'){
             $this->load->model('extension/module/d_event_manager');
             $this->model_extension_module_d_event_manager->installDatabase();
+        }  
+
+        if($this->d_shopunity){
+            $this->load->model('extension/d_shopunity/mbooth');
+            $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename);
         }
 
-        $this->load->model('extension/d_opencart_patch/ocmod');
-        $this->model_extension_d_opencart_patch_ocmod->validateDependencies($this->codename);
-
+        if($this->d_twig_manager){
+            $this->load->model('extension/module/d_twig_manager');
+            if(!$this->model_extension_module_d_twig_manager->isCompatible()){
+                $this->session->data['error'] = $this->language->get('error_twig_not_compatible');
+                $this->response->redirect($this->model_extension_d_opencart_patch_url->link('marketplace/extension'));
+            } 
+        }
 
         $this->load->language($this->route);
         $this->load->config($this->codename);
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
         $this->load->model('setting/setting');
-        $this->load->model('library/d_shopunity/extension/setting');
-        $this->load->model('extension/d_opencart_patch/ocmod');
+        $this->load->model('extension/d_opencart_patch/setting');
+        $this->load->model('extension/d_opencart_patch/modification');
+        $this->load->model('extension/d_opencart_patch/load');
+        $this->load->model('extension/d_opencart_patch/user');
+        $this->load->model('extension/d_opencart_patch/store');
+        $this->load->model('extension/d_opencart_patch/url');
 
         //save post
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
@@ -68,14 +59,13 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $this->model_setting_setting->editSetting($this->codename, $this->request->post, $this->store_id);
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->model_extension_d_opencart_patch_url->link('marketplace/extension'));
         }
 
         // styles and scripts
-        $this->document->addStyle('view/stylesheet/shopunity/bootstrap.css');
-
-        $this->document->addScript('view/javascript/shopunity/bootstrap-switch/bootstrap-switch.min.js');
-        $this->document->addStyle('view/stylesheet/shopunity/bootstrap-switch/bootstrap-switch.css');
+        $this->document->addStyle('view/stylesheet/d_bootstrap_extra/bootstrap.css');
+        $this->document->addScript('view/javascript/d_bootstrap_switch/js/bootstrap-switch.min.js');
+        $this->document->addStyle('view/javascript/d_bootstrap_switch/css/bootstrap-switch.min.css');
         
         // Add more styles, links or scripts to the project is necessary
         $url_params = array();
@@ -133,7 +123,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['id'] = $this->codename;
         $data['route'] = $this->route;
         $data['version'] = $this->extension['version'];
-        $data['token'] =  $this->session->data['token'];
+        $data['token'] =  $this->model_extension_d_opencart_patch_user->getToken();
         $data['d_shopunity'] = $this->d_shopunity;
 
         // Customer
@@ -154,10 +144,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['column_status'] = $this->language->get('column_status');
         $data['column_date_added'] = $this->language->get('column_date_added');
         $data['column_action'] = $this->language->get('column_action');
+        $data['column_sort_order'] = $this->language->get('column_sort_order');
 
         $data['entry_code'] = $this->language->get('entry_code');
         $data['entry_trigger'] = $this->language->get('entry_trigger');
         $data['entry_action'] = $this->language->get('entry_action');
+        $data['entry_sort_order'] = $this->language->get('entry_sort_order');
         $data['entry_status'] = $this->language->get('entry_status');
         $data['entry_date_added'] = $this->language->get('entry_date_added');
 
@@ -210,20 +202,16 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['text_field_3'] = $this->language->get('text_field_3');
 
         //action
-        $data['module_link'] = $this->url->link($this->route, 'token=' . $this->session->data['token'], 'SSL');
-        $data['action'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['create'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/create', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['delete'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/delete', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['install_test'] = $this->url->link($this->route.'/install_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['uninstall_test'] = $this->url->link($this->route.'/uninstall_test', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['install_compatibility'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/install_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        $data['uninstall_compatibility'] = $this->model_extension_module_d_event_manager->ajax($this->route.'/uninstall_compatibility', 'token=' . $this->session->data['token'] . $url, 'SSL');
-        
-        if(VERSION >= '2.3.0.0'){   
-            $data['cancel'] = $this->url->link('extension/extension', 'token=' . $this->session->data['token'] . '&type=module', true);
-        }else{
-            $data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL');
-        }
+        $data['module_link'] = $this->model_extension_d_opencart_patch_url->ajax($this->route);
+        $data['action'] = $this->model_extension_d_opencart_patch_url->link($this->route, $url);
+        $data['create'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/create', $url);
+        $data['delete'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/delete', $url);
+        $data['install_test'] = $this->model_extension_d_opencart_patch_url->link($this->route.'/install_test', $url);
+        $data['uninstall_test'] = $this->model_extension_d_opencart_patch_url->link($this->route.'/uninstall_test', $url);
+        $data['install_compatibility'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/install_compatibility', $url);
+        $data['uninstall_compatibility'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/uninstall_compatibility', $url);
+        $data['autocomplete'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/autocomplete');
+        $data['cancel'] = $this->model_extension_d_opencart_patch_url->link('marketplace/extension', 'type=module');
         
         //instruction
         $data['tab_instruction'] = $this->language->get('tab_instruction');
@@ -248,19 +236,22 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
             
         //get config 
-        $this->config_file = $this->model_extension_d_opencart_patch_setting->getConfigFileName($this->codename);
+        $this->config_file = $this->model_extension_module_d_event_manager->getConfigFileName($this->codename);
         $data['config'] = $this->config_file;
-        $data['config_files'] = $this->model_extension_d_opencart_patch_setting->getConfigFileNames($this->codename);
+        $data['config_files'] = $this->model_extension_module_d_event_manager->getConfigFileNames($this->codename);
 
         //get store
         $data['store_id'] = $this->store_id;
-        $data['stores'] = $this->model_extension_d_opencart_patch_setting->getStores();
+        $data['stores'] = $this->model_extension_d_opencart_patch_store->getAllStores();
 
         //get setting
         $data['setting'] = $this->model_extension_d_opencart_patch_setting->getSetting($this->codename);
 
-        $data['compatibility'] = $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager');
-
+        $data['compatibility'] = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
+        $data['compatibility_required'] = false;
+        if(VERSION < '3.0.0.0'){
+            $data['compatibility_required'] = true;
+        }
         $data['tests'] = array();
 
         if($this->config->get('d_event_manager')){
@@ -346,19 +337,20 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         foreach ($results as $result) {
             
-            $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL');
-            $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL');
+            $enable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/enable','event_id=' . $result['event_id'] . $url);
+            $disable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/disable', 'event_id=' . $result['event_id'] . $url);
 
             $data['events'][] = array(
                 'event_id'       => $result['event_id'],
                 'code'           => $result['code'],
                 'trigger'        => $result['trigger'],
                 'action'         => $result['action'],
+                'sort_order'     => $result['sort_order'],
                 'status'         => (isset($result['status'])) ? $result['status'] : 1,
                 'date_added'     => (isset($result['date_added'])) ? date($this->language->get('date_format_short'), strtotime($result['date_added'])) : '',
                 'enable'         => $enable,
                 'disable'        => $disable,
-                'edit'           => $this->url->link($this->route.'/edit', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] . $url, 'SSL')
+                'edit'           => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $result['event_id'] . $url)
             );
         }
 
@@ -370,11 +362,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
         }
         unset($url_params['sort']);
         $url = ((!empty($url_params)) ? '&' : '' ) . http_build_query($url_params);
-        $data['sort_code'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . '&sort=code' . $url, 'SSL');
-        $data['sort_trigger'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . '&sort=trigger' . $url, 'SSL');
-        $data['sort_action'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . '&sort=action' . $url, 'SSL');
-        $data['sort_status'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . '&sort=status' . $url, 'SSL');
-        $data['sort_date_added'] = $this->url->link($this->route, 'token=' . $this->session->data['token'] . '&sort=date_added' . $url, 'SSL');
+        $data['sort_code'] = $this->model_extension_d_opencart_patch_url->link($this->route, 'sort=code' . $url);
+        $data['sort_trigger'] = $this->model_extension_d_opencart_patch_url->link($this->route, 'sort=sort_trigger' . $url);
+        $data['sort_action'] = $this->model_extension_d_opencart_patch_url->link($this->route, 'sort=sort_action' . $url);
+        $data['sort_status'] = $this->model_extension_d_opencart_patch_url->link($this->route, 'sort=sort_status' . $url);
+        $data['sort_sort_order'] = $this->model_extension_d_opencart_patch_url->link($this->route, 'sort=sort_sort_order' . $url);
+        $data['sort_date_added'] = $this->model_extension_d_opencart_patch_url->link($this->route, 'sort=date_added' . $url);
 
         //pagination
         if (isset($this->request->get['sort'])) {
@@ -389,7 +382,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $pagination->total = $event_total;
         $pagination->page = $page;
         $pagination->limit = $this->config->get('config_limit_admin');
-        $pagination->url = $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url . '&page={page}', 'SSL');
+        $pagination->url = $this->model_extension_d_opencart_patch_url->link($this->route,  $url . '&page={page}');
         $data['pagination'] = $pagination->render();
         $data['results'] = sprintf(
             $this->language->get('text_pagination'), 
@@ -423,17 +416,17 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['breadcrumbs'] = array(); 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/home', 'token=' . $this->session->data['token'], 'SSL')
+            'href' => $this->model_extension_d_opencart_patch_url->link('common/home')
             );
 
         $data['breadcrumbs'][] = array(
             'text'      => $this->language->get('text_module'),
-            'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL')
+            'href'      => $this->model_extension_d_opencart_patch_url->link('marketplace/extension', 'type=module')
             );
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('heading_title_main'),
-            'href' => $this->url->link($this->route, 'token=' . $this->session->data['token'] . $url, 'SSL')
+            'href' => $this->model_extension_d_opencart_patch_url->link($this->route, $url)
             );
 
         // Notification
@@ -445,7 +438,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['column_left'] = $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
 
-        $this->response->setOutput($this->load->view('extension/module/d_event_manager.tpl', $data));
+        $this->response->setOutput($this->model_extension_d_opencart_patch_load->view('extension/module/d_event_manager', $data));
     }
 
 
@@ -474,7 +467,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
 
         if(isset($this->request->get['event_id'])){
             $event_id = $this->request->get['event_id'];
@@ -503,7 +496,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
 
         if(isset($this->request->get['event_id'])){
             $event_id = $this->request->get['event_id'];
@@ -527,7 +520,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $event_id = false;
         $result = array();
 
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
+        $this->load->model('extension/d_opencart_patch/url');
 
         if(isset($this->request->get['event_id'])){
             $event_id = $this->request->get['event_id'];
@@ -535,8 +529,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
         }
 
         if($result){
-            $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL');
-            $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL');
+            $enable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/enable', 'event_id=' . $result['event_id']);
+            $disable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/disable','event_id=' . $result['event_id']);
 
             $json = array(
                 'event_id'      => $result['event_id'],
@@ -544,11 +538,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'trigger'       => $result['trigger'],
                 'action'        => $result['action'],
                 'status'        => $result['status'],
+                'sort_order'    => $result['sort_order'],
                 'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
                 'enable'        => $enable,
                 'disable'       => $disable,
-                'edit'          => $this->url->link($this->route.'/edit', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL'),
-                'save'          => $this->url->link($this->route.'/save', 'token=' . $this->session->data['token'] . '&event_id=' . $result['event_id'] , 'SSL')
+                'edit'          => $this->model_extension_d_opencart_patch_url->ajax($this->route.'/edit', 'event_id=' . $result['event_id']),
+                'save'          => $this->model_extension_d_opencart_patch_url->ajax($this->route.'/save', 'event_id=' . $result['event_id'])
             );
         }else{
             $json = false;
@@ -566,7 +561,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
+        $this->load->model('extension/d_opencart_patch/url');
 
         if( isset($this->request->post['code'])
         && isset($this->request->post['trigger'])
@@ -576,12 +572,13 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $event['trigger'] = $this->request->post['trigger'];
             $event['action'] = $this->request->post['action'];
             $event['status'] = 1;
+            $event['sort_order'] = 0;
             $event['event_id'] = $this->model_extension_module_d_event_manager->addEvent($event['code'], $event['trigger'], $event['action'] , $event['status']);
         }
 
         if($event){
-            $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
-            $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+            $enable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/enable', 'event_id=' . $event['event_id']);
+            $disable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/disable', 'event_id=' . $event['event_id']);
 
             $json = array(
                 'event_id'      => $event['event_id'],
@@ -589,11 +586,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'trigger'       => $event['trigger'],
                 'action'        => $event['action'],
                 'status'        => $event['status'],
+                'sort_order'    => $event['sort_order'],
                 'date_added'    => date($this->language->get('date_format_short'), time()),
                 'enable'        => $enable,
                 'disable'       => $disable,
-                'edit'          => $this->url->link($this->route.'/edit', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL'),
-                'save'          => $this->url->link($this->route.'/save', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL')
+                'edit'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $event['event_id']),
+                'save'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/save', 'event_id=' . $event['event_id'])
             );
 
             $json['saved'] = true;
@@ -611,7 +609,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         $json = array();
 
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
 
         if( isset($this->request->post['event_id'])){
             foreach($this->request->post['event_id'] as $event_id){
@@ -634,7 +632,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $event_id = false;
         $event = array();
 
-        $this->load->model('extension/extension/module/d_event_manager');
+        $this->load->model('extension/module/d_event_manager');
+        $this->load->model('extension/d_opencart_patch/url');
 
         if(isset($this->request->get['event_id']) 
         && isset($this->request->post['code'])
@@ -645,6 +644,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $event['code'] = $this->request->post['code'];
             $event['trigger'] = $this->request->post['trigger'];
             $event['action'] = $this->request->post['action'];
+            $event['sort_order'] = $this->request->post['sort_order'];
         }
 
         if($event){
@@ -652,8 +652,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $event = $this->model_extension_module_d_event_manager->updateEvent($event_id, $event);
 
             if($event){
-                $enable = $this->model_extension_module_d_event_manager->ajax($this->route.'/enable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
-                $disable = $this->model_extension_module_d_event_manager->ajax($this->route.'/disable', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL');
+                $enable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/enable', 'event_id=' . $event['event_id']);
+                $disable = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/disable', 'event_id=' . $event['event_id']);
 
                 $json = array(
                     'event_id'      => $event['event_id'],
@@ -661,11 +661,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
                     'trigger'       => $event['trigger'],
                     'action'        => $event['action'],
                     'status'        => $event['status'],
+                    'sort_order'    => $event['sort_order'],
                     'date_added'    => date($this->language->get('date_format_short'), strtotime($event['date_added'])),
                     'enable'        => $enable,
                     'disable'       => $disable,
-                    'edit'          => $this->url->link($this->route.'/edit', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL'),
-                    'save'          => $this->url->link($this->route.'/save', 'token=' . $this->session->data['token'] . '&event_id=' . $event['event_id'] , 'SSL')
+                    'edit'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $event['event_id']),
+                    'save'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/save', 'event_id=' . $event['event_id'])
                 );
 
                 $json['saved'] = true;
@@ -680,22 +681,22 @@ class ControllerExtensionModuleDEventManager extends Controller {
     }
 
     public function install_test(){
+        $this->load->model('extension/d_opencart_patch/url');
+
         if(!$this->validate()){
             $this->session->data['error'] = $this->language->get('error_permission');
-            $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
         }
 
-        $this->load->model('library/d_shopunity/extension/ocmod');
+        $this->load->model('extension/d_opencart_patch/modification');
+        
         $this->load->language($this->route);
-        if(VERSION > '2.3.0.0' || $this->model_extension_d_opencart_patch_ocmod->getModificationByName('d_event_manager')){
-            $this->load->model('extension/extension/module/d_event_manager');
+        if(VERSION > '2.3.0.0' || $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager')){
+            $this->load->model('extension/module/d_event_manager');
             $this->model_extension_module_d_event_manager->installDatabase();
 
             $this->model_extension_module_d_event_manager->deleteEvent($this->codename);
-            $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/extension/module/d_event_manager/before', 'extension/module/d_event_manager/route_controller_before');
             $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/module/d_event_manager/before', 'extension/module/d_event_manager/route_controller_before');
-            // $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/extension/module/d_event_manager/after', 'extension/module/d_event_manager/route_controller_after');
-            // $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/extension/module/d_event_manager/after', 'extension/module/d_event_manager/route_controller_after');
             $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/before', 'extension/module/d_event_manager/view_before');
             $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/view/common/header/after', 'extension/module/d_event_manager/view_after');
             $this->model_extension_module_d_event_manager->addEvent($this->codename, 'admin/controller/common/header/before', 'extension/module/d_event_manager/controller_before');
@@ -711,14 +712,16 @@ class ControllerExtensionModuleDEventManager extends Controller {
         }else{
             $this->session->data['error'] = $this->language->get('error_failed_test_install');
         }
-        $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+        $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
         
     }
     public function uninstall_test(){
 
+        $this->load->model('extension/d_opencart_patch/url');
+
         if(!$this->validate()){
             $this->session->data['error'] = $this->language->get('error_permission');
-            $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
         }
 
         $this->load->model('extension/module/d_event_manager');
@@ -726,15 +729,17 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $this->model_extension_module_d_event_manager->deleteEvent($this->codename);
 
         $this->session->data['success'] = $this->language->get('text_success');
-        $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+        $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
     }
 
 
     public function install_compatibility(){
 
+        $this->load->model('extension/d_opencart_patch/url');
+
         if(!$this->validate()){
             $this->session->data['error'] = $this->language->get('error_permission');
-            $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
         }
 
         $this->load->language($this->route);
@@ -743,15 +748,17 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $this->model_extension_module_d_event_manager->installCompatibility();
 
         $this->session->data['success'] = $this->language->get('text_success');
-        $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+        $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
         
     }
 
     public function uninstall_compatibility(){
 
+        $this->load->model('extension/d_opencart_patch/url');
+
         if(!$this->validate()){
             $this->session->data['error'] = $this->language->get('error_permission');
-            $this->response->redirect($this->url->link($this->route, 'token='.$this->session->data['token'], 'SSL'));
+            $this->response->redirect($this->model_extension_d_opencart_patch_url->link($this->route));
         }
 
         $this->load->model('extension/module/d_event_manager');
@@ -769,11 +776,14 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $this->load->model('extension/module/d_event_manager');
         $this->model_extension_module_d_event_manager->installDatabase();
 
-        //$this->installTest();
-
         if($this->d_shopunity){
-            $this->load->model('extension/d_opencart_patch/ocmod');
-            $this->model_extension_d_opencart_patch_ocmod->installDependencies($this->codename);  
+            $this->load->model('extension/d_shopunity/mbooth');
+            $this->model_extension_d_shopunity_mbooth->installDependencies($this->codename);  
+        }
+
+        if(file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_twig_manager.json')){
+            $this->load->model('extension/module/d_twig_manager');
+            $this->model_extension_module_d_twig_manager->installCompatibility(); 
         }
     }
 
@@ -788,7 +798,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
 
 
-    public function controller_before(&$route, &$data, &$output){
+    public function controller_before(&$route, &$data){
         $setting = $this->config->get('d_event_manager');
         $setting['controller_before'] = true;
         $this->config->set('d_event_manager', $setting);
@@ -937,6 +947,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'filter_trigger' => $filter_trigger,
                 'filter_action' => $filter_action,
                 'start'        => 0,
+                'unique'       => 1,
                 'limit'        => 5
             );
 

@@ -1,0 +1,549 @@
+{# location: admin/view #}
+
+{{ header }} {{ column_left }} 
+<div id="content">
+    <div class="page-header">
+        <div class="container-fluid">
+            <div class="form-inline pull-right">
+                
+                <a data-toggle="tooltip" title="{{ button_create }}" class="btn btn-primary create"><i class="fa fa-plus"></i></a>
+                <a data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger delete"><i class="fa fa-trash-o"></i></a>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+            </div>
+            <h1>{{ heading_title }} {{ version }}</h1>
+            <ul class="breadcrumb">
+                {% for breadcrumb in breadcrumbs %} 
+                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %} 
+            </ul>
+        </div>
+    </div>
+    <div class="container-fluid">
+        {% if error.warning %} 
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error.warning }} 
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %} 
+        {% if success %} 
+            <div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> {{ success }} 
+                <button type="button" class="close" data-dismiss="alert">&times;</button>
+            </div>
+        {% endif %} 
+        
+        <div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }} </h3>
+            </div>
+            <div class="panel-body">
+                
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_event" data-toggle="tab">
+                        <span class="fa fa-plug"></span> 
+                        {{ tab_event }} 
+                    </a></li>
+
+                    <li><a href="#tab_setting" data-toggle="tab">
+                        <span class="fa fa-cog"></span> 
+                        {{ tab_setting }} 
+                    </a></li>
+                    
+                </ul>
+
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_event" >
+                        <div class="tab-body">
+                            <div id="filter" class="well">
+                                <div class="row">
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="input-code">{{ entry_code }}</label>
+                                            <input type="text" name="filter_code" value="{{ filter_code }}" placeholder="{{ entry_code }}" id="input-code" class="form-control" data-item="code"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="input-trigger">{{ entry_trigger }}</label>
+                                            <input type="text" name="filter_trigger" value="{{ filter_trigger }}" placeholder="{{ entry_trigger }}" id="input-trigger" class="form-control" data-item="trigger"/>
+                                        </div>
+                                        
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="input-event-action">{{ entry_action }}</label>
+                                            <input type="text" name="filter_action" value="{{ filter_action }}" placeholder="{{ entry_action }}" id="input-event-action" class="form-control" data-item="action"/>
+                                        </div>
+                                    </div>
+                                    <div class="col-sm-3">
+                                        <div class="form-group">
+                                            <label class="control-label" for="input-status">{{ entry_status }}</label>
+                                            <select name="filter_status" id="input-status" class="form-control">
+                                                <option value="*"></option>
+                                                {% if filter_status %} 
+                                                    <option value="1" selected="selected">{{ text_enabled }} </option>
+                                                {% else %}   
+                                                    <option value="1">{{ text_enabled }} </option>
+                                                {% endif %}
+                                                {% if not filter_status and filter_status is not null %}
+                                                    <option value="0" selected="selected">{{ text_disabled}} </option>
+                                                {% else %}   
+                                                    <option value="0">{{ text_disabled }} </option>
+                                                {% endif %}
+                                            </select>
+                                        </div>
+                                        <button type="button" id="button-filter" class="btn btn-primary pull-right"><i class="fa fa-search"></i> {{ button_filter }} </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-event">
+                                <div class="table-responsive">
+                                    <table class="table table-bordered table-hover">
+                                        <thead>
+                                        <tr>
+                                            <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'event_id\']').prop('checked', this.checked);" /></td>
+                                            <td class="text-left">
+                                                {% if sort == 'code' %} 
+                                                    <a href="{{ sort_code }}" class="{{ order|lower }}">{{ column_code }} </a>
+                                                {% else %}
+                                                    <a href="{{ sort_code }}">{{ column_code }} </a>
+                                                {% endif %} 
+                                            </td>
+                                            <td class="text-left">
+                                                {% if sort == 'trigger' %} 
+                                                    <a href="{{ sort_trigger }}" class="{{ order|lower }}">{{ column_trigger }} </a>
+                                                {% else %}   
+                                                    <a href="{{ sort_trigger }}">{{ column_trigger }} </a>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-left">
+                                                {% if sort == 'action' %} 
+                                                    <a href="{{ sort_action }}" class="{{ order|lower }}">{{ column_action }} </a>
+                                                {% else %}
+                                                    <a href="{{ sort_action }}">{{ column_action }} </a>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-left">
+                                                {% if sort ==  'status' %} 
+                                                    <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }} </a>
+                                                {% else %}
+                                                    <a href="{{ sort_status }}">{{ column_status }} </a>
+                                                {% endif %}
+                                            </td>
+                                            <td class="text-left">
+                                                {% if sort == 'sort_order' %} 
+                                                    <a href="{{ sort_sort_order }}" class="{{ order|lower }}">{{ column_sort_order }} </a>
+                                                {% else %}
+                                                    <a href="{{ sort_sort_order }}">{{ column_sort_order }} </a>
+                                                {% endif %} 
+                                            </td>
+                                            <td class="text-right">{{ column_action }} </td>
+                                        </tr>
+                                        </thead>
+                                        <tbody>
+                                        {% if events %} 
+                                            {% for event in events %} 
+                                            <tr id="event_id_{{ event.event_id }}" {% if event.status %} class="enabled" {% endif %} ''>
+                                                <td class="text-center">
+                                                    {% if event.event_id in selected|keys %}
+                                                        <input type="checkbox" name="event_id[]" value="{{ event.event_id}}" checked="checked" />
+                                                    {% else %}   
+                                                        <input type="checkbox" name="event_id[]" value="{{ event.event_id }}" />
+                                                    {% endif %} 
+                                                </td>
+                                                <td class="text-left">{{ event.code }} </td>
+                                                <td class="text-left">{{ event.trigger }} </td>
+                                                <td class="text-left">{{ event.action }} </td>
+                                                <td class="text-left">
+                                                    <span class="label label-success disable" >{{ text_enabled }} </span>
+                                                    <span class="label label-danger enable" >{{ text_disabled }} </span>
+                                                </td>
+                                                <td class="text-left">{{ event.sort_order }} </td>
+                                                <td class="text-right">
+                                                    <a href="{{ event.enable }}" data-toggle="tooltip" title="{{ button_enable }}" data-event_id="{{ event.event_id }}" class="btn btn-success action enable"><i class="fa fa-thumbs-o-up"></i></a>
+                                                    <a href="{{ event.disable }}" data-toggle="tooltip" title="{{ button_disable }}" data-event_id="{{ event.event_id }}" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
+                                                    <a href="{{ event.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
+                                                </tr>
+                                             {% endfor %}
+                                         {% else %}   
+                                            <tr>
+                                                <td class="text-center" colspan="8">{{ text_no_results }} </td>
+                                            </tr>
+                                        {% endif %} 
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </form>
+                            <div class="row">
+                                <div class="col-sm-6 text-left">{{ pagination }} </div>
+                                <div class="col-sm-6 text-right">{{ results }} </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="tab-pane" id="tab_setting" >
+                        <div class="tab-body">
+                            <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
+                            
+                            {% if compatibility_required %}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input_compatibility">{{ entry_compatibility}} </label>
+                                    <div class="col-sm-10">                                     
+                                        <input type="hidden" name="compatibility" value="0" />
+                                        <input type="checkbox" name="compatibility" class="switcher" data-label-text="{{ text_enabled }}" id="input_compatibility" {% if compatibility %} checked="checked" {% endif %} value="1" />
+                                        
+                                        <div class="bs-callout bs-callout-info m-t">{{ help_compatibility }} </div>
+                                    </div>
+                                </div><!-- //compatibility -->
+                            {% endif %} 
+
+                            <div class="form-group">
+                                <label class="col-sm-2 control-label" for="input_test">{{ entry_test_toggle }} </label>
+                                <div class="col-sm-10">
+                                    {% if not tests %}
+                                        <a class="btn btn-primary" href="{{ install_test}}">{{ text_install }} </a> 
+                                    {% else %}  
+                                        <a class="btn btn-danger" href="{{ uninstall_test }}">{{ text_uninstall }} </a>
+                                    {% endif %}
+                                </div>
+                            </div><!-- //text -->
+                            {% if tests %}
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input_test">{{ entry_test }} </label>
+                                    <div class="col-sm-10 tests">
+                                        {% for test, result in tests %} 
+                                            <div class="{{ test }}  failed">
+                                                <div class="alert alert-success">{{ test }} <div class="pull-right"><span class="label label-success">passed</span></div></div>
+                                                <div class="alert alert-danger">{{ test }} <div class="pull-right"><span class="label label-danger">failed</span></div></div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                </div><!-- //test -->
+                            {% endif %} 
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<template id="event_item">
+    <tr id="event_id_{{ event.event_id }}" class="[[text_status]]">
+        <td class="text-center flash"><input type="checkbox" name="event_id[]" value="[[event_id]]" /></td>
+        <td class="text-left flash">[[code]]</td>
+        <td class="text-left flash">[[trigger]]</td>
+        <td class="text-left flash">[[action]]</td>
+        <td class="text-left flash">
+            <span class="label label-success disable">{{ text_enabled }} </span>
+            <span class="label label-danger enable">{{ text_disabled }} </span>
+        </td>
+        <td class="text-left flash">[[sort_order]]</td>
+        <td class="text-right flash">
+            <a href="[[enable]]" data-toggle="tooltip" title="{{ button_enable }}" data-event_id="[[event_id]]" class="btn btn-success action enable" ><i class="fa fa-thumbs-o-up"></i></a>
+            <a href="[[disable]]" data-toggle="tooltip" title="{{ button_disable }}" data-event_id="[[event_id]]" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
+            <a href="[[edit]]" data-toggle="tooltip" title="{{ button_edit }}" data-event_id="[[event_id]]" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
+        </tr>
+</template>
+<template id="modal">
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title">Edit event [[code]]</h4>
+          </div>
+          <div class="modal-body">
+            <form id="event_form" class="form-horizontal">
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input_text">{{ entry_code }} </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="code" value="[[code]]" placeholder="{{ entry_code }}" id="input-width" class="form-control" />
+                    </div>
+                </div><!-- //text -->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input_text">{{ entry_trigger }} </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="trigger" value="[[trigger]]" placeholder="{{ entry_trigger }}" id="input-width" class="form-control" />
+                    </div>
+                </div><!-- //text -->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input_action">{{ entry_action }} </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="action" value="[[action]]" placeholder="{{ entry_action }}" id="input-width" class="form-control" />
+                    </div>
+                </div><!-- //text -->
+                <div class="form-group">
+                    <label class="col-sm-2 control-label" for="input_action">{{ entry_sort_order}} </label>
+                    <div class="col-sm-10">
+                        <input type="text" name="sort_order" value="[[sort_order]]" placeholder="{{ entry_sort_order }}" id="input-width" class="form-control" />
+                    </div>
+                </div><!-- //text -->
+                
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            <a type="button" class="btn btn-primary save" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+</template>
+<style>
+    .action{
+        display: inline-block;
+    }
+    .disable{
+        display: none;
+    }
+    .enabled .disable{
+        display: inline-block;
+    }
+    .enabled .enable{
+        display: none
+    }
+
+    @-webkit-keyframes flash {
+       
+        50% {
+            background-color: rgba(0,100,0,0.1);
+        }
+       
+        100% {
+            background-color: rgba(0,100,0,0);
+        }
+    }
+        
+    .flash {
+        -webkit-animation-name: flash;
+        -webkit-animation-duration: 2000ms;
+        -webkit-animation-iteration-count: 1;
+        -webkit-animation-timing-function: ease-in-out;
+    }  
+    .tests .alert-danger{
+        display: none
+    }
+    .failed .alert-success{
+        display: none
+    }
+    .failed .alert-danger{
+        display: block
+    }  
+</style>
+<script type="text/javascript"><!--
+
+    $(function () {
+
+    //checkbox
+    $(".switcher[type='checkbox']").bootstrapSwitch({
+        'onColor': 'success',
+        'onText': '{{ text_yes }}',
+        'offText': '{{ text_no }}',
+        onSwitchChange: function(event, state){
+            if(state){
+                window.location.href = '{{ install_compatibility }}'
+            }else{
+                window.location.href = '{{ uninstall_compatibility }}'
+            }
+        }
+        
+    })
+
+
+    $('body').on('click', '#save_and_stay', function(){
+
+        $('.summernote').each( function() {
+            $(this).val($(this).code());
+        });
+        $.ajax( {
+            type: 'post',
+            url: $('#form').attr('action') + '&save',
+            data: $('#form').serialize(),
+            beforeSend: function() {
+                $('#form').fadeTo('slow', 0.5);
+            },
+            complete: function() {
+                $('#form').fadeTo('slow', 1);    
+            },
+            success: function( response ) {
+                console.log( response );
+            }
+        }); 
+    });
+});
+
+
+$('#button-filter').on('click', function() {
+
+    url = '{{module_link}}';
+    $('#filter input, #filter select').each(function(index){
+        var value = $(this).val()
+        var name = $(this).attr('name')
+        if(value && value != '*') { url += '&' + name + '=' + encodeURIComponent(value); }
+    })
+    
+    location = url;
+});
+
+$('input[name=\'filter_code\'], input[name=\'filter_trigger\'], input[name=\'filter_action\']').autocomplete({
+    'source': function(request, response) {
+        that = this;
+        $.ajax({
+            url: '{{autocomplete}}&'+ $(this).attr('name')+'='+ encodeURIComponent(request),
+            dataType: 'json',           
+            success: function(json) {
+                response($.map(json, function(item) {
+                    return {
+                        label: item[$(that).attr('data-item')],
+                        value: item['event_id']
+                    }
+                }));
+            }
+        });
+    },
+    'select': function(item) {
+        $(this).val(item['label']);
+    }   
+});
+
+$('.date').datetimepicker({
+    pickTime: false
+});
+
+$(document).on('click', '.action', function() {
+    var that = this;
+    var $event_id = $(that).data('event_id');
+    $.ajax({
+        url: $(that).attr('href'),
+        dataType: 'json',
+        success: function(json) {
+            if(json['enabled']){
+                $('#event_id_'+$event_id).find('.enable').hide();
+                $('#event_id_'+$event_id).find('.disable').css('display', 'inline-block');
+            }else{
+                $('#event_id_'+$event_id).find('.enable').css('display', 'inline-block');
+                $('#event_id_'+$event_id).find('.disable').hide();
+            }
+        }
+    });
+    
+    return false;
+});
+$(document).on('click', '.create', function(){
+    var that = this;
+    $('#myModal').remove();
+    var html = $('#modal').html();
+    var json = {
+        event_id: 0,
+        code: '',
+        trigger: '',
+        action: '',
+        save: '{{ create }}'
+    }
+
+    //templating like handlebars
+    var re = /\[\[([^\]\]]+)?\]\]/g, match;
+    while(match = re.exec(html)) {
+        html = html.replace(match[0], json[match[1]])
+    }
+
+    $('body').append(html);
+    $('#myModal').modal('show')
+    
+    return false;
+
+})
+
+$(document).on('click', '.delete', function(){
+    var that = this;
+
+    var data = $('#form-event').serialize();
+
+    $.ajax({
+        url: '{{ delete }}',
+        type: 'post',
+        data: data,
+        dataType: 'json',
+        success: function(json) {
+            if(json['deleted']){
+                location.reload();
+            }else{
+                console.log('error!');
+            }
+        }
+    });
+
+    
+    return false;
+
+})
+
+
+$(document).on('click', '.edit', function() {
+    var that = this;
+    var $event_id = $(that).data('event_id');
+    $('#myModal').remove();
+
+    $.ajax({
+        url: $(that).attr('href'),
+        type: 'get',
+        data: '',
+        dataType: 'json',
+        success: function(json) {
+            var html = $('#modal').html();
+
+            //templating like handlebars
+            var re = /\[\[([^\]\]]+)?\]\]/g, match;
+            while(match = re.exec(html)) {
+                
+                html = html.replace(match[0], json[match[1]])
+            }
+
+            $('body').append(html);
+            $('#myModal').modal('show')
+        }
+    });
+    
+    return false;
+});
+
+$(document).on('click', '.save', function() {
+    var that = this;
+    var $event_id = $(that).data('event_id');
+    var $data = $('#event_form').serialize();
+
+    $.ajax({
+        url: $(that).attr('href'),
+        type: 'post',
+        data: $data,
+        dataType: 'json',
+        success: function(json) {
+            console.log(json);
+            $('#myModal').modal('hide');
+            if(json['status'] == 1) {
+                json['text_status'] = 'enabled';
+            }else{
+                json['text_status'] = '';
+            }
+            var html = $('#event_item').html();
+
+            //templating like handlebars
+            var re = /\[\[([^\]\]]+)?\]\]/g, match;
+            while(match = re.exec(html)) {
+                html = html.replace(match[0], json[match[1]])
+            }
+
+            if($event_id == 0){
+                $('#form-event tbody').prepend(html);
+            }else{
+                $('#event_id_'+$event_id).html($(html).html());
+            }
+
+            
+
+        }
+    });
+    
+    return false;
+});
+
+//--></script>
+{{footer}}

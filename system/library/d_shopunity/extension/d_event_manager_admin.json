@@ -32,14 +32,15 @@
         "url": "https://shopunity.net/"
     },
     "required": {
-        "d_shopunity": ">=3.0.41",
-        "d_event_manager":">=2.0.0"
+        "d_bootstrap_switch": ">=3.3.5",
+        "d_bootstrap_extra": ">=1.0.1",
+        "d_event_manager":">=2.0.0",
+        "d_twig_manager":">=1.5.0"
     },
     "files": [
         "system/library/d_shopunity/extension/d_event_manager_admin.json",
 
         "admin/controller/extension/module/d_event_manager.php",
-        "admin/language/english/module/d_event_manager.php",
         "admin/language/en-gb/module/d_event_manager.php",
         "admin/view/template/extension/module/d_event_manager.tpl",
 

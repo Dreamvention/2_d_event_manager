@@ -12,7 +12,13 @@ class ModelExtensionModuleDEventManager extends Model {
 	 **/
 
 	public function getEvents($data = array()) {
-		$sql = "SELECT * FROM `" . DB_PREFIX . "event` ";
+		$sql = "SELECT ";
+
+        if(!empty($data['unique'])){
+            $sql .= " DISTINCT ";
+        }
+
+        $sql .= " * FROM `" . DB_PREFIX . "event` ";
 
 		$implode = array();
 
@@ -40,10 +46,15 @@ class ModelExtensionModuleDEventManager extends Model {
 			$sql .= " WHERE " . implode(" AND ", $implode);
 		}
 
+        if(!empty($data['unique'])){
+            $sql .= " GROUP BY code ";
+        }
+
 		$sort_data = array(
 			'code',
 			'trigger',
 			'action',
+            'sort_order',
 			'status',
 			'date_added'
 		);
@@ -51,7 +62,7 @@ class ModelExtensionModuleDEventManager extends Model {
 		if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
 			$sql .= " ORDER BY `" . $data['sort'] . "`";
 		} else {
-			$sql .= " ORDER BY `code`";
+			$sql .= " ORDER BY `sort_order`";
 		}
 
 		if (isset($data['order']) && ($data['order'] == 'DESC')) {
@@ -112,19 +123,22 @@ class ModelExtensionModuleDEventManager extends Model {
 	}
 
 	public function updateEvent($event_id, $data){
-
+        if(!isset($data['sort_order'])){
+            $data['sort_order'] = 0;
+        }
 		$this->db->query("UPDATE " . DB_PREFIX . "event SET 
 			`code` = '" . $this->db->escape($data['code'])."',
 			`trigger` = '" . $this->db->escape($data['trigger'])."',
 			`action` = '" . $this->db->escape($data['action'])."',
-			`status` = '". (int)$data['status']."'
+			`status` = '". (int)$data['status']."',
+            `sort_order` = '". (int)$data['sort_order']."'
 			WHERE event_id = '" . (int)$event_id . "'");
 
 		return $this->getEventById($event_id);
 	}
 
-	public function addEvent($code, $trigger, $action, $status = 1) {
-		$this->db->query("INSERT INTO `" . DB_PREFIX . "event` SET `code` = '" . $this->db->escape($code) . "', `trigger` = '" . $this->db->escape($trigger) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `date_added` = now()");
+	public function addEvent($code, $trigger, $action, $status = 1, $sort_order = 0) {
+		$this->db->query("INSERT INTO `" . DB_PREFIX . "event` SET `code` = '" . $this->db->escape($code) . "', `trigger` = '" . $this->db->escape($trigger) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `sort_order` = '" . (int)$sort_order . "', `date_added` = now()");
 	
 		return $this->db->getLastId();
 	}
@@ -132,7 +146,11 @@ class ModelExtensionModuleDEventManager extends Model {
 	public function deleteEvent($code) {
 		//if you have several events under one code - they will all be deleted. 
 		//please use deleteEventById.
-		if(VERSION > '2.0.0.0'){
+
+        if(VERSION >= '3.0.0.0'){
+            $this->load->model('setting/event');
+            return $this->model_setting_event->deleteEventByCode($code);
+		}elseif(VERSION > '2.0.0.0'){
 			$this->load->model('extension/event');
 			return $this->model_extension_event->deleteEvent($code);
 		}else{
@@ -147,14 +165,27 @@ class ModelExtensionModuleDEventManager extends Model {
 		$this->db->query("DELETE FROM `" . DB_PREFIX . "event` WHERE `event_id` = '" . (int)$event_id . "'");
 	}
 
+    public function deleteEventByCode($code) {
+        $this->db->query("DELETE FROM `" . DB_PREFIX . "event` WHERE `code` = '" . $this->db->escape($code) . "'");
+    }
+
 	public function getEventById($event_id) {
 		$event = $this->db->query("SELECT * FROM `" . DB_PREFIX . "event` WHERE `event_id` = '" . $this->db->escape($event_id) ."'");
 		
 		return $event->row;
 	}
 
+    public function getEventByCode($code) {
+        $query = $this->db->query("SELECT DISTINCT * FROM `" . DB_PREFIX . "event` WHERE `code` = '" . $this->db->escape($code) . "' LIMIT 1");
+
+        return $query->row;
+    }
+
 	public function enableEvent($event_id) {
-		if(VERSION > '2.3.0.0'){
+		if(VERSION >= '3.0.0.0'){
+            $this->load->model('setting/event');
+            return $this->model_setting_event->enableEvent($event_id);
+        }elseif(VERSION > '2.3.0.0'){
 			$this->load->model('extension/event');
 			return $this->model_extension_event->enableEvent($event_id);	
 		}else{
@@ -164,7 +195,10 @@ class ModelExtensionModuleDEventManager extends Model {
 	}
 	
 	public function disableEvent($event_id) {
-		if(VERSION > '2.3.0.0'){
+		if(VERSION >= '3.0.0.0'){
+            $this->load->model('setting/event');
+            return $this->model_setting_event->disableEvent($event_id);
+        }elseif(VERSION > '2.3.0.0'){
 			$this->load->model('extension/event');
 			return $this->model_extension_event->disableEvent($event_id);
 		}else{
@@ -180,6 +214,7 @@ class ModelExtensionModuleDEventManager extends Model {
 		  `trigger` text NOT NULL,
 		  `action` text NOT NULL,
 		  `status` tinyint(1) NOT NULL,
+          `sort_order` int(3) NOT NULL,
 		  `date_added` datetime NOT NULL,
 		  PRIMARY KEY (`event_id`)
 		) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
@@ -194,6 +229,10 @@ class ModelExtensionModuleDEventManager extends Model {
 		if(!in_array('status', $columns)){
 			 $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD status int( 1 ) NOT NULL default '1'");
 		}
+
+        if(!in_array('sort_order', $columns)){
+             $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD `sort_order` int(3) NOT NULL");
+        }
 
 		if(!in_array('date_added', $columns)){
 			 $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD `date_added` datetime NOT NULL");
@@ -219,6 +258,8 @@ class ModelExtensionModuleDEventManager extends Model {
 
     public function installCompatibility(){
 
+        $this->installDatabase();
+
         if(VERSION >= '2.3.0.0'){
             return true;
         }
@@ -239,7 +280,6 @@ class ModelExtensionModuleDEventManager extends Model {
             }
         }
 
-        $this->installDatabase();
         $this->model_extension_d_opencart_patch_modification->setModification('d_event_manager.xml', 1);
         $this->model_extension_d_opencart_patch_modification->refreshCache();
 
@@ -284,6 +324,48 @@ class ModelExtensionModuleDEventManager extends Model {
 	}
 
 
+    private $subversions = array('lite', 'light', 'free');
+    /*
+    *   Return name of config file.
+    */
+    public function getConfigFileName($codename){
+        
+        if(isset($this->request->post['config'])){
+            return $this->request->post['config'];
+        }
+
+        $setting = $this->config->get($codename.'_setting');
+
+        if(isset($setting['config'])){
+            return $setting['config'];
+        }
+
+        $full = DIR_SYSTEM . 'config/'. $codename . '.php';
+        if (file_exists($full)) {
+            return $codename;
+        } 
+
+        foreach ($this->subversions as $subversion){
+            if (file_exists(DIR_SYSTEM . 'config/'. $codename . '_' . $subversion . '.php')) {
+                return $codename . '_' . $subversion;
+            }
+        }
+        
+        return false;
+    }
+
+    /*
+    *   Return list of config files that contain the codename of the module.
+    */
+    public function getConfigFileNames($codename){
+        $files = array();
+        $results = glob(DIR_SYSTEM . 'config/'. $codename .'*');
+        foreach($results as $result){
+            $files[] = str_replace('.php', '', str_replace(DIR_SYSTEM . 'config/', '', $result));
+        }
+        return $files;
+    }
+
 
 
 	/*-------------------------------------------------------------------------DEPRICATED
@@ -322,46 +404,7 @@ class ModelExtensionModuleDEventManager extends Model {
 		}
 	}
 
-	/*
-	*	Return name of config file.
-	*/
-	public function getConfigFile($id, $sub_versions){
-		
-		if(isset($this->request->post['config'])){
-			return $this->request->post['config'];
-		}
-
-		$setting = $this->config->get($id.'_setting');
-
-		if(isset($setting['config'])){
-			return $setting['config'];
-		}
-
-		$full = DIR_SYSTEM . 'config/'. $id . '.php';
-		if (file_exists($full)) {
-			return $id;
-		} 
-
-		foreach ($sub_versions as $lite){
-			if (file_exists(DIR_SYSTEM . 'config/'. $id . '_' . $lite . '.php')) {
-				return $id . '_' . $lite;
-			}
-		}
-		
-		return false;
-	}
-
-	/*
-	*	Return list of config files that contain the id of the module.
-	*/
-	public function getConfigFiles($id){
-		$files = array();
-		$results = glob(DIR_SYSTEM . 'config/'. $id .'*');
-		foreach($results as $result){
-			$files[] = str_replace('.php', '', str_replace(DIR_SYSTEM . 'config/', '', $result));
-		}
-		return $files;
-	}
+	
 
 	/*
 	*	Get config file values and merge with config database values
