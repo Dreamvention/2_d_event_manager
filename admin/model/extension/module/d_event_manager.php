@@ -38,9 +38,6 @@ class ModelExtensionModuleDEventManager extends Model {
             $implode[] = "`status` = '" . (int)$data['filter_status'] . "'";
         }
 
-        if (!empty($data['filter_date_added'])) {
-            $implode[] = "DATE(`date_added`) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
-        }
 
         if ($implode) {
             $sql .= " WHERE " . implode(" AND ", $implode);
@@ -55,8 +52,7 @@ class ModelExtensionModuleDEventManager extends Model {
             'trigger',
             'action',
             'sort_order',
-            'status',
-            'date_added'
+            'status'
         );
 
         if (isset($data['sort']) && in_array($data['sort'], $sort_data)) {
@@ -109,10 +105,6 @@ class ModelExtensionModuleDEventManager extends Model {
             $implode[] = "`status` = '" . (int)$data['filter_status'] . "'";
         }
 
-        if (!empty($data['filter_date_added'])) {
-            $implode[] = "DATE(`date_added`) = DATE('" . $this->db->escape($data['filter_date_added']) . "')";
-        }
-
         if ($implode) {
             $sql .= " WHERE " . implode(" AND ", $implode);
         }
@@ -138,7 +130,7 @@ class ModelExtensionModuleDEventManager extends Model {
     }
 
     public function addEvent($code, $trigger, $action, $status = 1, $sort_order = 0) {
-        $this->db->query("INSERT INTO `" . DB_PREFIX . "event` SET `code` = '" . $this->db->escape($code) . "', `trigger` = '" . $this->db->escape($trigger) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `sort_order` = '" . (int)$sort_order . "', `date_added` = now()");
+        $this->db->query("INSERT INTO `" . DB_PREFIX . "event` SET `code` = '" . $this->db->escape($code) . "', `trigger` = '" . $this->db->escape($trigger) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `sort_order` = '" . (int)$sort_order . "'");
     
         return $this->db->getLastId();
     }
@@ -215,7 +207,6 @@ class ModelExtensionModuleDEventManager extends Model {
           `action` text NOT NULL,
           `status` tinyint(1) NOT NULL,
           `sort_order` int(3) NOT NULL,
-          `date_added` datetime NOT NULL,
           PRIMARY KEY (`event_id`)
         ) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;");
 
@@ -234,10 +225,6 @@ class ModelExtensionModuleDEventManager extends Model {
              $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD `sort_order` int(3) NOT NULL");
         }
 
-        if(!in_array('date_added', $columns)){
-             $this->db->query("ALTER TABLE `" . DB_PREFIX . "event` ADD `date_added` datetime NOT NULL");
-        }
-
     }
 
     public function isCompatible(){
@@ -248,6 +235,8 @@ class ModelExtensionModuleDEventManager extends Model {
             }
             return true;
         }
+
+        $this->load->model('extension/d_opencart_patch/modification');
         
         $compatibility = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         if($compatibility){
