@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager_admin",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
     "index": "extension/module/d_event_manager",
@@ -60,7 +60,11 @@
 
     ],
     "changelog": [
-    	{
+        {
+            "version":"1.0.1",
+            "change": "Bug fix"
+        },
+        {
             "version":"1.0.0",
             "change": "Initial commit"
         }

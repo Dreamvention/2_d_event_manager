@@ -252,7 +252,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         $data['compatibility'] = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         $data['compatibility_required'] = false;
-        if(VERSION < '3.0.0.0'){
+        if(VERSION < '2.3.0.0'){
             $data['compatibility_required'] = true;
         }
         $data['tests'] = array();
