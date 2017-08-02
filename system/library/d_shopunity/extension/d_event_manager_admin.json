@@ -33,10 +33,10 @@
         "url": "https://shopunity.net/licenses/free"
     },
     "install": {
-        "url": "extension/module/install&extension=d_event_manager"
+        "url": "extension/extension/module/install&extension=d_event_manager"
     },
     "uninstall": {
-        "url": "extension/module/uninstall&extension=d_event_manager"
+        "url": "extension/extension/module/uninstall&extension=d_event_manager"
     },
     "support": {
         "email": "support@shopunity.com",
