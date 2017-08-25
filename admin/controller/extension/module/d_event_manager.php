@@ -79,6 +79,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $this->document->addStyle('view/stylesheet/d_bootstrap_extra/bootstrap.css');
         $this->document->addScript('view/javascript/d_bootstrap_switch/js/bootstrap-switch.min.js');
         $this->document->addStyle('view/javascript/d_bootstrap_switch/css/bootstrap-switch.min.css');
+        $this->document->addScript('view/javascript/d_bootstrap_tagsinput/bootstrap-tagsinput.js');
+        $this->document->addStyle('view/javascript/d_bootstrap_tagsinput/bootstrap-tagsinput.css');
         
         // Add more styles, links or scripts to the project is necessary
         $url_params = array();

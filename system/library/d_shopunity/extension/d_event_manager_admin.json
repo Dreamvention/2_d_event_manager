@@ -46,7 +46,8 @@
         "d_bootstrap_switch": ">=3.3.5",
         "d_bootstrap_extra": ">=1.0.1",
         "d_event_manager":">=1.2.0",
-        "d_twig_manager":">=1.5.0"
+        "d_twig_manager":">=1.5.0",
+        "d_bootstrap_tagsinput ":">=0.8.0" 
     },
     "files": [
         "system/library/d_shopunity/extension/d_event_manager_admin.json",
