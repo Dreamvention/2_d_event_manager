@@ -77,6 +77,9 @@
             $this->registry->get('config')->load('d_event_manager');
             $d_event_manager = $this->registry->get('config')->get('d_event_manager_setting');
         }
+        if(!$d_event_manager['skipped_models']){
+            $d_event_manager['skipped_models'][] = 'total';
+        }
         $found = false;
         foreach ($d_event_manager['skipped_models'] as $skipped_model) {
             if (strpos($class, $skipped_model) !== false) {
