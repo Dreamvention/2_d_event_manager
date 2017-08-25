@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "2.0.3",
+    "version": "2.1.0",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "author": {
@@ -28,9 +28,15 @@
     },
     "files": [
         "system/library/d_shopunity/extension/d_event_manager.json",
-        "admin/model/extension/module/d_event_manager.php"
+        "admin/model/extension/module/d_event_manager.php",
+
+        "system/config/d_event_manager.php"
     ],
     "changelog": [
+        {
+            "version":"2.1.0",
+            "change":"Added config"
+        },
         {
             "version":"2.0.3",
             "change":"Removed date_added"

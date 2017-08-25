@@ -54,6 +54,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         $this->load->language($this->route);
         $this->load->model('extension/module/d_event_manager');
+        $this->load->config('d_event_manager');
         $this->load->model('setting/setting');
         $this->load->model('extension/d_opencart_patch/setting');
         $this->load->model('extension/d_opencart_patch/modification');
