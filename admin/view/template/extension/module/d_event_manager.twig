@@ -8,6 +8,7 @@
                 
                 <a data-toggle="tooltip" title="{{ button_create }}" class="btn btn-primary create"><i class="fa fa-plus"></i></a>
                 <a data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger delete"><i class="fa fa-trash-o"></i></a>
+                <a data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary save"><i class="fa fa-save"></i></a>
                 <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
             </div>
             <h1>{{ heading_title }} {{ version }}</h1>
@@ -188,8 +189,15 @@
                                     <div class="col-sm-10">                                     
                                         <input type="hidden" name="compatibility" value="0" />
                                         <input type="checkbox" name="compatibility" class="switcher" data-label-text="{{ text_enabled }}" id="input_compatibility" {% if compatibility %} checked="checked" {% endif %} value="1" />
+                                    </div>
+                                </div><!-- //compatibility -->
+
+                                <div class="form-group">
+                                    <label class="col-sm-2 control-label" for="input_skipped_models">{{ entry_skipped_models}} </label>
+                                    <div class="col-sm-10">                                     
+                                        <input type="text" class="form-control" name="{{codename}}_setting[skipped_models]" value="{{ setting.skipped_models }}" />
                                         
-                                        <div class="bs-callout bs-callout-info m-t">{{ help_compatibility }} </div>
+                                        <div class="bs-callout bs-callout-info m-t">{{ help_skipped_models }} </div>
                                     </div>
                                 </div><!-- //compatibility -->
                             {% endif %} 
@@ -331,6 +339,10 @@
 <script type="text/javascript"><!--
 
     $(function () {
+
+    $(document).on('click', '.save', function(){
+        $("#form").submit();
+    })
 
     //checkbox
     $(".switcher[type='checkbox']").bootstrapSwitch({

@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager_admin",
-    "version": "1.0.1",
+    "version": "1.1.0",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
     "index": "extension/module/d_event_manager",
@@ -60,6 +60,10 @@
 
     ],
     "changelog": [
+        {
+            "version":"1.1.0",
+            "change": "Added support for skipped models"
+        },
         {
             "version":"1.0.1",
             "change": "Bug fix"

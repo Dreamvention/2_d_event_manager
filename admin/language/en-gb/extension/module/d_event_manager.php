@@ -42,7 +42,8 @@ $_['text_radio_0']              = 'No';
 
 //field
 $_['entry_compatibility']       = 'Activate compatibility for 2.2.0.0 and under';
-$_['help_compatibility']        = '<h4>Model Total are not supported</h4><p>Because Model/Total uses references, and proxy/callback can not support references, events for this model will not work. For the rest of the models the events do work.</p>';
+$_['entry_skipped_models']      = 'Set model that will be ignored by the event manager';
+$_['help_skipped_models']       = '<h4>Model Total are not supported</h4><p>Because Model/Total uses references, and proxy/callback can not support references, events for this model will not work so it is omoted from the event manager cycle. You can add more models separated by comma.</p>';
 $_['entry_test_toggle']         = 'Test the status of events';
 $_['entry_test']                = 'List of available tests';
 $_['text_install']              = 'Install';
@@ -67,7 +68,7 @@ $_['tab_setting']               = 'Settings';
 
 $_['text_success']              = 'You have successfuly modifive event manager';
 $_['error_failed_test_install'] = 'Oops! Before you can run tests you must turn on the compatiblity for opencart version 2.2.0.0 and below.';
-
+$_['success_twig_compatible']   = 'Success: Twig support enabled. You can not edit Event manager!';
 
 //update
 $_['entry_update']              = 'Your version is %s';
@@ -76,76 +77,3 @@ $_['success_no_update']         = 'Super! You have the latest version.';
 $_['warning_new_update']        = 'Wow! There is a new version available for download.';
 $_['error_update']              = 'Sorry! Something went wrong. If this repeats, contact the support please.';
 $_['error_failed']              = 'Oops! We could not connect to the server. Please try again later.';
-$_['success_twig_compatible']   = 'Twig installed. You can now go to Event Manager';
-//debug
-$_['tab_debug']                 = 'Debug';
-$_['entry_debug']               = 'Debug';
-$_['entry_debug_file']          = 'Debug file';
-$_['success_clear_debug_file']  = 'Debug file cleared successfuly.';
-
-//support
-$_['tab_support']               = 'Support';
-$_['text_support']              = 'Support';
-$_['entry_support']             = 'Support';
-$_['button_support_email']      = 'support';
-
-//instruction
-$_['tab_instruction']           = 'Instructions';
-$_['text_instruction']          = '';
-$_['text_instruction_old']          = '<div class="row">
-    <div class="col-md-6">
-    <h2>Lorem Ipsum is simply</h2>
-    <p><img src="'.HTTPS_SERVER.'view/image/d_event_manager/d_event_manager_1.png" class="img-thumbnail img-responsive" /></p>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-    <div class="bs-callout bs-callout-warning"><h4>Attention!</h4><p>If you get an error from google, or a white screen- please check that you compleated all the steps.</p></div>
-    <ol>
-        <li>Lorem ipsum dolor sit amet</li>
-        <li>Consectetur adipiscing elit</li>
-        <li>Integer molestie lorem at massa</li>
-        <li>Facilisis in pretium nisl aliquet</li>
-        <li>Nulla volutpat aliquam velit</li>
-    </ol>
-    </div>
-    <div class="col-md-6">
-    <h2>Lorem Ipsum is simply</h2>
-    <p><img src="'.HTTPS_SERVER.'view/image/d_event_manager/d_event_manager_1.png" class="img-thumbnail img-responsive"/></p>
-    <p>Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.</p>
-    <blockquote>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer posuere erat a ante.</p>
-        <footer>Someone famous in <cite title="Source Title">Source Title</cite></footer>
-    </blockquote>
-        <ul class="nav nav-tabs">
-            <li class="active"><a href="#google_plus"  data-toggle="tab"><i class="fa fa-google-plus"></i> Google+</a></li>
-            <li><a href="#facebook"  data-toggle="tab"><i class="fa fa-facebook"></i> Facebook</a></li>
-            <li><a href="#twitter"  data-toggle="tab"><i class="fa fa-twitter"></i> Twitter</a></li>
-        </ul>
-        <div class="tab-content">
-            <div id="google_plus" class="tab-pane active">
-                <div class="tab-body">
-                    <h3>google+</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer</p>
-                </div>
-            </div>
-            <div id="facebook" class="tab-pane">
-                <div class="tab-body">
-                    <h3>facebook</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer</p>
-                </div>
-            </div>
-            <div id="twitter" class="tab-pane">
-                <div class="tab-body">
-                    <h3>twitter</h3>
-                    <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer</p>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-';
-
-$_['text_not_found'] = '<div class="jumbotron">
-          <h1>Please install Shopunity</h1>
-          <p>Before you can use this module you will need to install Shopunity. Simply download the archive for your version of opencart and install it view Extension Installer or unzip the archive and upload all the files into your root folder from the UPLOAD folder.</p>
-          <p><a class="btn btn-primary btn-lg" href="https://shopunity.net/download" target="_blank">Download</a></p>
-        </div>';
-?>

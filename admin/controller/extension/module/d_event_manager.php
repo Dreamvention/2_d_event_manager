@@ -34,18 +34,25 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename);
         }
 
-        $this->load->language($this->route);
-
         if($this->d_twig_manager){
             $this->load->model('extension/module/d_twig_manager');
             if(!$this->model_extension_module_d_twig_manager->isCompatible()){
                 $this->model_extension_module_d_twig_manager->installCompatibility(); 
-                $this->session->data['success'] = $this->language->get('success_twig_compatible');
-                $this->load->model('extension/d_opencart_patch/url');
-                $this->response->redirect($this->model_extension_d_opencart_patch_url->link('marketplace/extension', 'type=module'));
             } 
         }
 
+        if($this->d_twig_manager){
+            $this->load->model('extension/module/d_twig_manager');
+            if(!$this->model_extension_module_d_twig_manager->isCompatible()){
+                $this->model_extension_module_d_twig_manager->installCompatibility();
+                $this->load->language($this->route);
+                $this->session->data['success'] = $this->language->get('success_twig_compatible');
+                $this->load->model('extension/d_opencart_patch/url');
+                $this->response->redirect($this->model_extension_d_opencart_patch_url->getExtensionLink('module'));
+            } 
+        }
+
+        $this->load->language($this->route);
         $this->load->config($this->codename);
         $this->load->model('extension/module/d_event_manager');
         $this->load->model('setting/setting');
@@ -59,10 +66,13 @@ class ControllerExtensionModuleDEventManager extends Controller {
         //save post
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 
+            if(VERSION < '3.0.0.0'){
+                $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
+            }
             $this->model_setting_setting->editSetting($this->codename, $this->request->post, $this->store_id);
             $this->session->data['success'] = $this->language->get('text_success');
 
-            $this->response->redirect($this->model_extension_d_opencart_patch_url->link('marketplace/extension'));
+            $this->response->redirect($this->model_extension_d_opencart_patch_url->getExtensionLink('module'));
         }
 
         // styles and scripts
@@ -123,7 +133,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['text_edit'] = $this->language->get('text_edit');
         
         // Variable
-        $data['id'] = $this->codename;
+        $data['codename'] = $this->codename;
         $data['route'] = $this->route;
         $data['version'] = $this->extension['version'];
         $data['token'] =  $this->model_extension_d_opencart_patch_user->getToken();
@@ -177,7 +187,8 @@ class ControllerExtensionModuleDEventManager extends Controller {
         
         // Entry
         $data['entry_compatibility'] = $this->language->get('entry_compatibility');
-        $data['help_compatibility'] = $this->language->get('help_compatibility');
+        $data['entry_skipped_models'] = $this->language->get('entry_skipped_models');
+        $data['help_skipped_models'] = $this->language->get('help_skipped_models');
         $data['entry_test_toggle'] = $this->language->get('entry_test_toggle');
         $data['entry_test'] = $this->language->get('entry_test');
         $data['text_install'] = $this->language->get('text_install');
@@ -214,7 +225,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['install_compatibility'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/install_compatibility', $url);
         $data['uninstall_compatibility'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/uninstall_compatibility', $url);
         $data['autocomplete'] = $this->model_extension_d_opencart_patch_url->ajax($this->route.'/autocomplete');
-        $data['cancel'] = $this->model_extension_d_opencart_patch_url->link('marketplace/extension', 'type=module');
+        $data['cancel'] = $this->model_extension_d_opencart_patch_url->getExtensionLink('module');
         
         //instruction
         $data['tab_instruction'] = $this->language->get('tab_instruction');
@@ -248,7 +259,16 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $data['stores'] = $this->model_extension_d_opencart_patch_store->getAllStores();
 
         //get setting
-        $data['setting'] = $this->model_extension_d_opencart_patch_setting->getSetting($this->codename);
+        $setting = $this->model_setting_setting->getSetting($this->codename, $this->store_id);
+        if($setting){
+            $data['setting'] = $setting['d_event_manager_setting'] + $this->config->get($this->codename.'_setting');
+        }else{
+            $data['setting'] = $this->config->get($this->codename.'_setting');
+        }
+        
+        if(VERSION < '3.0.0.0'){
+            $data['setting']['skipped_models'] = implode(",", $data['setting']['skipped_models']);
+        }
 
         $data['compatibility'] = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         $data['compatibility_required'] = false;
@@ -273,51 +293,15 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'language_after' => false);
             $data['tests'] = array_merge($data['tests'], $this->config->get('d_event_manager'));
         }
-        
-        //select
-        $data['selects'] = array('option_1', 'option_2', 'option_3');
-
-        //radio
-        $data['radios'] = array('1', '0');
-        foreach($data['radios'] as $radio){
-            $data['text_radio_'.$radio] = $this->language->get('text_radio_'.$radio);
-        }
-
-        //image
-        $this->load->model('tool/image');
-        if (isset($this->request->post[$this->codename.'_setting']['image']) && is_file(DIR_IMAGE . $this->request->post[$this->codename.'_setting']['image'])) {
-            $data['image'] = $this->model_tool_image->resize($this->request->post[$this->codename.'_setting']['image'], 100, 100);
-        } elseif (isset($data['setting']['image']) && is_file(DIR_IMAGE . $data['setting']['image'])) {
-            $data['image'] = $this->model_tool_image->resize($data['setting']['image'], 100, 100);
-        } else {
-            $data['image'] = $this->model_tool_image->resize('no_image.png', 100, 100);
-        }
-
-        $data['placeholder'] = $this->model_tool_image->resize('no_image.png', 100, 100);
-
-        //debug
-        if(isset($data['setting']['debug'])){
-            //get debug file
-            $data['debug_log'] = $this->model_extension_module_d_event_manager->getFileContents(DIR_LOGS.$data['setting']['debug_file']);
-            $data['debug_file'] = $data['setting']['debug_file'];
-        }
-        
     
-        //Customer
-        if (isset($this->request->post['selected'])) {
-            $data['selected'] = (array)$this->request->post['selected'];
-        } else {
-            $data['selected'] = array();
-        }
-
         $filter_code = (isset($this->request->get['filter_code'])) ? $this->request->get['filter_code'] : null;
         $filter_trigger = (isset($this->request->get['filter_trigger'])) ? $this->request->get['filter_trigger'] : null;
         $filter_action = (isset($this->request->get['filter_action'])) ? $this->request->get['filter_action'] : null;
         $filter_status = (isset($this->request->get['filter_status'])) ? $this->request->get['filter_status'] : null;
         $filter_date_added = (isset($this->request->get['filter_date_added'])) ? $this->request->get['filter_date_added'] : null;
         
-        $sort = (isset($this->request->get['sort'])) ? $this->request->get['sort'] : 'code';
-        $order = (isset($this->request->get['order'])) ? $this->request->get['order'] : 'ASC';
+        $sort = (isset($this->request->get['sort'])) ? $this->request->get['sort'] : '';
+        $order = (isset($this->request->get['order'])) ? $this->request->get['order'] : '';
         $page = (isset($this->request->get['page'])) ? $this->request->get['page'] : 1;
 
         $data['events'] = array();
@@ -358,10 +342,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
         }
 
         //sort
-        if ($order == 'ASC') {
-            $url_params['order'] = 'DESC';
-        } else {
-            $url_params['order'] = 'ASC';
+        if($sort){
+            if ($order == 'ASC') {
+                $url_params['order'] = 'DESC';
+            } else {
+                $url_params['order'] = 'ASC';
+            }
         }
         unset($url_params['sort']);
         $url = ((!empty($url_params)) ? '&' : '' ) . http_build_query($url_params);
@@ -424,7 +410,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         $data['breadcrumbs'][] = array(
             'text'      => $this->language->get('text_module'),
-            'href'      => $this->model_extension_d_opencart_patch_url->link('marketplace/extension', 'type=module')
+            'href'      => $this->model_extension_d_opencart_patch_url->getExtensionLink('module')
             );
 
         $data['breadcrumbs'][] = array(
@@ -776,9 +762,11 @@ class ControllerExtensionModuleDEventManager extends Controller {
             return false;
         }
 
-        $this->load->model('extension/module/d_event_manager');
-        $this->model_extension_module_d_event_manager->installDatabase();
-
+        if(file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_event_manager.json')){
+            $this->load->model('extension/module/d_event_manager');
+            $this->model_extension_module_d_event_manager->installDatabase();
+        }
+        
         if($this->d_shopunity){
             $this->load->model('extension/d_shopunity/mbooth');
             $this->model_extension_d_shopunity_mbooth->installDependencies($this->codename);  
@@ -980,4 +968,3 @@ class ControllerExtensionModuleDEventManager extends Controller {
         $this->response->setOutput(json_encode($json));
     }
 }
-?>
