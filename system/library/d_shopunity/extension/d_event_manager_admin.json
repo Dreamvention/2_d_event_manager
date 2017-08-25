@@ -54,9 +54,7 @@
 
         "admin/controller/extension/module/d_event_manager.php",
         "admin/language/en-gb/extension/module/d_event_manager.php",
-        "admin/view/template/extension/module/d_event_manager.twig",
-
-        "system/config/d_event_manager.php"
+        "admin/view/template/extension/module/d_event_manager.twig"
 
     ],
     "changelog": [
