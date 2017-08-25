@@ -53,7 +53,6 @@ class ControllerExtensionModuleDEventManager extends Controller {
         }
 
         $this->load->language($this->route);
-        $this->load->config($this->codename);
         $this->load->model('extension/module/d_event_manager');
         $this->load->model('setting/setting');
         $this->load->model('extension/d_opencart_patch/setting');
@@ -248,25 +247,22 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $data[$this->codename.'_status'] = $this->config->get($this->codename.'_status');
         }
 
-            
-        //get config 
-        $this->config_file = $this->model_extension_module_d_event_manager->getConfigFileName($this->codename);
-        $data['config'] = $this->config_file;
-        $data['config_files'] = $this->model_extension_module_d_event_manager->getConfigFileNames($this->codename);
-
         //get store
         $data['store_id'] = $this->store_id;
         $data['stores'] = $this->model_extension_d_opencart_patch_store->getAllStores();
 
+        if(VERSION < '2.3.0.0'){
+            $this->load->config('d_event_manager');
+        }
         //get setting
         $setting = $this->model_setting_setting->getSetting($this->codename, $this->store_id);
         if($setting){
-            $data['setting'] = $setting['d_event_manager_setting'] + $this->config->get($this->codename.'_setting');
+            $data['setting'] = $setting['d_event_manager_setting'] + $this->config->get('d_event_manager_setting');
         }else{
-            $data['setting'] = $this->config->get($this->codename.'_setting');
+            $data['setting'] = $this->config->get('d_event_manager_setting');
         }
         
-        if(VERSION < '3.0.0.0'){
+        if(VERSION < '2.3.0.0'){
             $data['setting']['skipped_models'] = implode(",", $data['setting']['skipped_models']);
         }
 
