@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.2.3",
+    "version": "1.3.0",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions.",
     "author": {
@@ -37,6 +37,7 @@
         "system/mbooth/extension/d_event_manager.json",
         "system/library/d_shopunity/extension/d_event_manager.json",
         "system/library/d_shopunity/install/d_event_manager.xml",
+        "system/config/d_event_manager.php",
         "system/d_event_manager.ocmod.xml",
         "admin/model/extension/module/d_event_manager.php",
         "admin/model/module/d_event_manager.php",
@@ -46,6 +47,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "version":"1.3.0",
+            "change":"Added skipped models"
+        },
         {
             "version":"1.2.3",
             "change":"Removed date_added"
