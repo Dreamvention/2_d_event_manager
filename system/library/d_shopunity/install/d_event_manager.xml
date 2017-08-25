@@ -72,7 +72,19 @@
             <search><![CDATA[$this->registry->set('model_' . str_replace('/', '_', $model), new $class($this->registry));]]></search>
             <add position="replace"><![CDATA[
         //d_event_manager.xml proxy
-        if(strpos($class, 'total') === false){
+        $d_event_manager = $this->registry->get('config')->get('d_event_manager_setting');
+        if(!$d_event_manager){
+            $this->registry->get('config')->load('d_event_manager');
+            $d_event_manager = $this->registry->get('config')->get('d_event_manager_setting');
+        }
+        $found = false;
+        foreach ($d_event_manager['skipped_models'] as $skipped_model) {
+            if (strpos($class, $skipped_model) !== false) {
+                $found = true;
+            }
+        }
+        
+        if($found == false){
             $proxy = new d_event_manager\Proxy();
             foreach (get_class_methods($class) as $method) {
                 $proxy->{$method} = $this->load->callback($this->registry, $model . '/' . $method);
