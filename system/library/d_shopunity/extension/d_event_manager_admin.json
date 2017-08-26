@@ -1,10 +1,10 @@
 {
     "codename": "d_event_manager_admin",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
-    "index": "module/d_event_manager",
-    "readme": "system/mbooth/readme/d_event_manager.md",
+    "index": "extension/module/d_event_manager",
+    "readme": "system/mbooth/readme/d_event_manager_admin.md",
     "author": {
         "name": "Shopunity",
         "email": "info@shopunity.com",
@@ -12,14 +12,20 @@
     },
     "opencart_version": [
         "2.0.0.0",
-        "2.0.1.1",
+        "2.0.1.0",
         "2.0.1.1",
         "2.0.2.0",
         "2.0.3.1",
         "2.1.0.1",
         "2.1.0.2",
         "2.2.0.0",
-        "2.3.0.2"
+        "2.3.0.0",
+        "2.3.0.1",
+        "2.3.0.2",
+        "3.0.0.0",
+        "3.0.1.1",
+        "3.0.1.2",
+        "3.0.2.0"
     ],
     "type": "module",
     "license": {
@@ -27,32 +33,41 @@
         "url": "https://shopunity.net/licenses/free"
     },
     "install": {
-        "url": "extension/module/install&extension=d_event_manager"
+        "url": "extension/extension/module/install&extension=d_event_manager"
     },
     "uninstall": {
-        "url": "extension/module/uninstall&extension=d_event_manager"
+        "url": "extension/extension/module/uninstall&extension=d_event_manager"
     },
     "support": {
         "email": "support@shopunity.com",
         "url": "https://shopunity.net/"
     },
     "required": {
-        "d_shopunity": ">=3.0.41",
-        "d_event_manager":">=1.2.0"
+        "d_bootstrap_switch": ">=3.3.5",
+        "d_bootstrap_extra": ">=1.0.1",
+        "d_event_manager":">=1.2.0",
+        "d_twig_manager":">=1.5.0",
+        "d_bootstrap_tagsinput":">=0.8.0" 
     },
     "files": [
         "system/library/d_shopunity/extension/d_event_manager_admin.json",
+        "system/library/d_shopunity/readme/d_event_manager_admin.md",
 
-        "admin/controller/module/d_event_manager.php",
-        "admin/language/english/module/d_event_manager.php",
-        "admin/language/en-gb/module/d_event_manager.php",
-        "admin/view/template/module/d_event_manager.tpl",
-
-        "system/config/d_event_manager.php"
+        "admin/controller/extension/module/d_event_manager.php",
+        "admin/language/en-gb/extension/module/d_event_manager.php",
+        "admin/view/template/extension/module/d_event_manager.twig"
 
     ],
     "changelog": [
-    	{
+        {
+            "version":"1.1.0",
+            "change": "Added support for skipped models"
+        },
+        {
+            "version":"1.0.1",
+            "change": "Bug fix"
+        },
+        {
             "version":"1.0.0",
             "change": "Initial commit"
         }
