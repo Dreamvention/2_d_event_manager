@@ -35,7 +35,7 @@
     "changelog": [
         {
             "version":"2.1.0",
-            "change":"Added config"
+            "change":"Added config only for tests"
         },
         {
             "version":"2.0.3",
