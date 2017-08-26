@@ -72,7 +72,6 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 }else{
                     $this->request->post[$this->codename.'_setting']['skipped_models'] = array();
                 }
-                
                 if(!in_array('total', $this->request->post[$this->codename.'_setting']['skipped_models'])){
                     $this->request->post[$this->codename.'_setting']['skipped_models'][] = 'total';
                 }
