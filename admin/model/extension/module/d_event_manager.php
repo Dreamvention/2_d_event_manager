@@ -130,6 +130,11 @@ class ModelExtensionModuleDEventManager extends Model {
     }
 
     public function addEvent($code, $trigger, $action, $status = 1, $sort_order = 0) {
+        //fix conflict
+        if(VERSION >= '2.3.0.0' && VERSION < '3.0.0.0'){
+            $this->installDatabase();
+        }
+
         $this->db->query("INSERT INTO `" . DB_PREFIX . "event` SET `code` = '" . $this->db->escape($code) . "', `trigger` = '" . $this->db->escape($trigger) . "', `action` = '" . $this->db->escape($action) . "', `status` = '" . (int)$status . "', `sort_order` = '" . (int)$sort_order . "'");
     
         return $this->db->getLastId();

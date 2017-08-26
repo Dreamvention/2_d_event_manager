@@ -67,11 +67,16 @@ class ControllerExtensionModuleDEventManager extends Controller {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 
             if(VERSION < '3.0.0.0'){
-                $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
-
-                if(empty($this->request->post[$this->codename.'_setting']['skipped_models'])){
+                if($this->request->post[$this->codename.'_setting']['skipped_models']){
+                    $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
+                }else{
+                    $this->request->post[$this->codename.'_setting']['skipped_models'] = array();
+                }
+                
+                if(!in_array('total', $this->request->post[$this->codename.'_setting']['skipped_models'])){
                     $this->request->post[$this->codename.'_setting']['skipped_models'][] = 'total';
                 }
+
             }
             $this->model_setting_setting->editSetting($this->codename, $this->request->post, $this->store_id);
             $this->session->data['success'] = $this->language->get('text_success');
