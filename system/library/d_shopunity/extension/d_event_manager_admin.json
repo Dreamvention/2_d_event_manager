@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager_admin",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
     "index": "extension/module/d_event_manager",
@@ -59,6 +59,10 @@
 
     ],
     "changelog": [
+        {
+            "version":"1.1.1",
+            "change": "Twig manager bug fix"
+        },
         {
             "version":"1.1.0",
             "change": "Added support for skipped models"

@@ -37,13 +37,6 @@ class ControllerExtensionModuleDEventManager extends Controller {
         if($this->d_twig_manager){
             $this->load->model('extension/module/d_twig_manager');
             if(!$this->model_extension_module_d_twig_manager->isCompatible()){
-                $this->model_extension_module_d_twig_manager->installCompatibility(); 
-            } 
-        }
-
-        if($this->d_twig_manager){
-            $this->load->model('extension/module/d_twig_manager');
-            if(!$this->model_extension_module_d_twig_manager->isCompatible()){
                 $this->model_extension_module_d_twig_manager->installCompatibility();
                 $this->load->language($this->route);
                 $this->session->data['success'] = $this->language->get('success_twig_compatible');
