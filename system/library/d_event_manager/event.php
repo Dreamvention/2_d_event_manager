@@ -44,7 +44,8 @@ class Event {
 	public function trigger($event, array $args = array()) {
         
 		foreach ($this->data as $trigger => $actions) {
-            if(preg_match('/view\/[^*][^theme]/', $trigger) && strpos($event, 'catalog') != false){
+
+            if(preg_match('/view\/[^*][^theme]/', $trigger) && !defined('HTTP_CATALOG')){
                 $trigger = str_replace('view/', 'view/*/', $trigger);
             }
 
