@@ -289,7 +289,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <a type="button" class="btn btn-primary save" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
+            <a type="button" class="btn btn-primary save-event" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -518,7 +518,7 @@ $(document).on('click', '.edit', function() {
     return false;
 });
 
-$(document).on('click', '.save', function() {
+$(document).on('click', '.save-event', function() {
     var that = this;
     var $event_id = $(that).data('event_id');
     var $data = $('#event_form').serialize();
