@@ -37,13 +37,6 @@ class ControllerExtensionModuleDEventManager extends Controller {
         if($this->d_twig_manager){
             $this->load->model('extension/module/d_twig_manager');
             if(!$this->model_extension_module_d_twig_manager->isCompatible()){
-                $this->model_extension_module_d_twig_manager->installCompatibility(); 
-            } 
-        }
-
-        if($this->d_twig_manager){
-            $this->load->model('extension/module/d_twig_manager');
-            if(!$this->model_extension_module_d_twig_manager->isCompatible()){
                 $this->model_extension_module_d_twig_manager->installCompatibility();
                 $this->load->language($this->route);
                 $this->session->data['success'] = $this->language->get('success_twig_compatible');
@@ -67,9 +60,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 
             if(VERSION < '3.0.0.0'){
-                $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
-
-                if(empty($this->request->post[$this->codename.'_setting']['skipped_models'])){
+                if($this->request->post[$this->codename.'_setting']['skipped_models']){
+                    $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
+                }else{
+                    $this->request->post[$this->codename.'_setting']['skipped_models'] = array();
+                }
+                if(!in_array('total', $this->request->post[$this->codename.'_setting']['skipped_models'])){
                     $this->request->post[$this->codename.'_setting']['skipped_models'][] = 'total';
                 }
             }
@@ -337,7 +333,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'action'         => $result['action'],
                 'sort_order'     => $result['sort_order'],
                 'status'         => (isset($result['status'])) ? $result['status'] : 1,
-                'date_added'     => (isset($result['date_added'])) ? date($this->language->get('date_format_short'), strtotime($result['date_added'])) : '',
+                //'date_added'     => (isset($result['date_added'])) ? date($this->language->get('date_format_short'), strtotime($result['date_added'])) : '',
                 'enable'         => $enable,
                 'disable'        => $disable,
                 'edit'           => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $result['event_id'] . $url)
@@ -531,7 +527,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'action'        => $result['action'],
                 'status'        => $result['status'],
                 'sort_order'    => $result['sort_order'],
-                'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+                // 'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
                 'enable'        => $enable,
                 'disable'       => $disable,
                 'edit'          => $this->model_extension_d_opencart_patch_url->ajax($this->route.'/edit', 'event_id=' . $result['event_id']),
@@ -579,7 +575,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'action'        => $event['action'],
                 'status'        => $event['status'],
                 'sort_order'    => $event['sort_order'],
-                'date_added'    => date($this->language->get('date_format_short'), time()),
+                // 'date_added'    => date($this->language->get('date_format_short'), time()),
                 'enable'        => $enable,
                 'disable'       => $disable,
                 'edit'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $event['event_id']),
@@ -654,7 +650,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                     'action'        => $event['action'],
                     'status'        => $event['status'],
                     'sort_order'    => $event['sort_order'],
-                    'date_added'    => date($this->language->get('date_format_short'), strtotime($event['date_added'])),
+                    //'date_added'    => date($this->language->get('date_format_short'), strtotime($event['date_added'])),
                     'enable'        => $enable,
                     'disable'       => $disable,
                     'edit'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $event['event_id']),
