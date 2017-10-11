@@ -293,7 +293,7 @@
         <operation error="skip" info="add event support 2.2.0.0 and below">
             <search><![CDATA[foreach ($this->data as $key => $value) {]]></search>
             <add position="after"><![CDATA[
-            if(preg_match('/view\/[^*][^theme]/', $key) && !defined('HTTP_CATALOG')){
+            if(preg_match('/view\/[^*][^theme]/', $key) && !defined('HTTP_CATALOG') && strpos($key, 'before') == false){
                 $key = str_replace('view/', 'view/*/', $key);
             }
             ]]></add>
@@ -304,7 +304,7 @@
         <operation error="skip" info="add event support 2.3.0.2 and below">
             <search><![CDATA[foreach ($this->data as $trigger => $actions) {]]></search>
             <add position="after"><![CDATA[
-            if(preg_match('/view\/[^*][^theme]/', $trigger) && !defined('HTTP_CATALOG')){
+            if(preg_match('/view\/[^*][^theme]/', $trigger) && !defined('HTTP_CATALOG') && strpos($trigger, 'before') == false){
                 $trigger = str_replace('view/', 'view/*/', $trigger);
             }
             ]]></add>
