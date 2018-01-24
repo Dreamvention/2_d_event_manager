@@ -300,6 +300,16 @@
         </operation>
     </file>
 
+    <file path="system/engine/loader.php">
+        <operation error="skip" info="add event support for 2.3.0.0 fix">
+            <search><![CDATA[if (!$output) {]]></search>
+            <add position="after" index="2"><![CDATA[
+            //d_event_manager.xml fix
+            if (!$output) {
+            ]]></add>
+        </operation>
+    </file>
+
     <file path="system/engine/event.php">
         <operation error="skip" info="add event support 2.3.0.2 and below">
             <search><![CDATA[foreach ($this->data as $trigger => $actions) {]]></search>

@@ -31,18 +31,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         if($this->d_shopunity){
             $this->load->model('extension/d_shopunity/mbooth');
-            $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename);
+            $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename.'_admin');
         }
 
         if($this->d_twig_manager){
             $this->load->model('extension/module/d_twig_manager');
-            if(!$this->model_extension_module_d_twig_manager->isCompatible()){
-                $this->model_extension_module_d_twig_manager->installCompatibility();
-                $this->load->language($this->route);
-                $this->session->data['success'] = $this->language->get('success_twig_compatible');
-                $this->load->model('extension/d_opencart_patch/url');
-                $this->response->redirect($this->model_extension_d_opencart_patch_url->getExtensionLink('module'));
-            } 
+            $this->model_extension_module_d_twig_manager->installCompatibility();
         }
 
         $this->load->language($this->route);
@@ -768,7 +762,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         
         if($this->d_shopunity){
             $this->load->model('extension/d_shopunity/mbooth');
-            $this->model_extension_d_shopunity_mbooth->installDependencies($this->codename);  
+            $this->model_extension_d_shopunity_mbooth->installDependencies($this->codename.'_admin');  
         }
 
         if(file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_twig_manager.json')){
