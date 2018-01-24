@@ -31,18 +31,12 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
         if($this->d_shopunity){
             $this->load->model('extension/d_shopunity/mbooth');
-            $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename);
+            $this->model_extension_d_shopunity_mbooth->validateDependencies($this->codename.'_admin');
         }
 
         if($this->d_twig_manager){
             $this->load->model('extension/module/d_twig_manager');
-            if(!$this->model_extension_module_d_twig_manager->isCompatible()){
-                $this->model_extension_module_d_twig_manager->installCompatibility();
-                $this->load->language($this->route);
-                $this->session->data['success'] = $this->language->get('success_twig_compatible');
-                $this->load->model('extension/d_opencart_patch/url');
-                $this->response->redirect($this->model_extension_d_opencart_patch_url->getExtensionLink('module'));
-            } 
+            $this->model_extension_module_d_twig_manager->installCompatibility();
         }
 
         $this->load->language($this->route);
@@ -59,7 +53,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         //save post
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 
-            if(VERSION < '3.0.0.0'){
+            if(VERSION < '2.3.0.0'){
                 if($this->request->post[$this->codename.'_setting']['skipped_models']){
                     $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
                 }else{
@@ -265,13 +259,15 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $data['setting'] = $this->config->get('d_event_manager_setting');
         }
         
+        $data['conflict_models'] = false;
         if(VERSION < '2.3.0.0'){
             $data['setting']['skipped_models'] = implode(",", $data['setting']['skipped_models']);
+            $data['conflict_models'] = true;
         }
 
         $data['compatibility'] = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         $data['compatibility_required'] = false;
-        if(VERSION < '2.3.0.0'){
+        if(VERSION < '3.0.0.0'){
             $data['compatibility_required'] = true;
         }
         $data['tests'] = array();
@@ -527,7 +523,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'action'        => $result['action'],
                 'status'        => $result['status'],
                 'sort_order'    => $result['sort_order'],
-                //'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
+                // 'date_added'    => date($this->language->get('date_format_short'), strtotime($result['date_added'])),
                 'enable'        => $enable,
                 'disable'       => $disable,
                 'edit'          => $this->model_extension_d_opencart_patch_url->ajax($this->route.'/edit', 'event_id=' . $result['event_id']),
@@ -575,7 +571,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
                 'action'        => $event['action'],
                 'status'        => $event['status'],
                 'sort_order'    => $event['sort_order'],
-                //'date_added'    => date($this->language->get('date_format_short'), time()),
+                // 'date_added'    => date($this->language->get('date_format_short'), time()),
                 'enable'        => $enable,
                 'disable'       => $disable,
                 'edit'          => $this->model_extension_d_opencart_patch_url->link($this->route.'/edit', 'event_id=' . $event['event_id']),
@@ -768,7 +764,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         
         if($this->d_shopunity){
             $this->load->model('extension/d_shopunity/mbooth');
-            $this->model_extension_d_shopunity_mbooth->installDependencies($this->codename);  
+            $this->model_extension_d_shopunity_mbooth->installDependencies($this->codename.'_admin');  
         }
 
         if(file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_twig_manager.json')){
