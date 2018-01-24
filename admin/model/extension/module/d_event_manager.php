@@ -238,7 +238,6 @@ class ModelExtensionModuleDEventManager extends Model {
             if(VERSION < '3.0.0.0'){
                 $this->installDatabase();
             }
-            return true;
         }
 
         $this->load->model('extension/d_opencart_patch/modification');
@@ -257,7 +256,7 @@ class ModelExtensionModuleDEventManager extends Model {
 
         $this->installDatabase();
 
-        if(VERSION >= '2.3.0.0'){
+        if(VERSION >= '3.0.0.0'){
             return true;
         }
 
@@ -285,7 +284,7 @@ class ModelExtensionModuleDEventManager extends Model {
 
     public function uninstallCompatibility(){
 
-        if(VERSION >= '2.3.0.0'){
+        if(VERSION >= '3.0.0.0'){
             return true;
         }
 

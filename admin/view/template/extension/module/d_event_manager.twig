@@ -191,7 +191,8 @@
                                         <input type="checkbox" name="compatibility" class="switcher" data-label-text="{{ text_enabled }}" id="input_compatibility" {% if compatibility %} checked="checked" {% endif %} value="1" />
                                     </div>
                                 </div><!-- //compatibility -->
-
+                            {% endif %}
+                            {% if conflict_models %}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label" for="input_skipped_models">{{ entry_skipped_models}} </label>
                                     <div class="col-sm-10">                                     
@@ -289,7 +290,7 @@
           </div>
           <div class="modal-footer">
             <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <a type="button" class="btn btn-primary save" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
+            <a type="button" class="btn btn-primary save-event" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
           </div>
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
@@ -518,7 +519,7 @@ $(document).on('click', '.edit', function() {
     return false;
 });
 
-$(document).on('click', '.save', function() {
+$(document).on('click', '.save-event', function() {
     var that = this;
     var $event_id = $(that).data('event_id');
     var $data = $('#event_form').serialize();

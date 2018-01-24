@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager_admin",
-    "version": "1.1.2",
+    "version": "1.1.3",
     "name": "Event Manager Admin",
     "description": "The administration panel for events",
     "index": "extension/module/d_event_manager",
@@ -59,6 +59,10 @@
 
     ],
     "changelog": [
+        {
+            "version":"1.1.3",
+            "change": "Add support for event compativibility to 2.3.0.0"
+        },
         {
             "version":"1.1.2",
             "change": "Fix date_added bug"

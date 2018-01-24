@@ -41,7 +41,7 @@ $_['text_radio_1']              = 'Yes';
 $_['text_radio_0']              = 'No';
 
 //field
-$_['entry_compatibility']       = 'Activate compatibility for 2.2.0.0 and under';
+$_['entry_compatibility']       = 'Activate compatibility for 2.3.0.0 and under';
 $_['entry_skipped_models']      = 'Set model that will be ignored by the event manager';
 $_['help_skipped_models']       = '<h4>Model Total are not supported</h4><p>Because Model/Total uses references, and proxy/callback can not support references, events for this model will not work so it is omoted from the event manager cycle. You can add more models separated by comma.</p>';
 $_['entry_test_toggle']         = 'Test the status of events';
@@ -67,7 +67,7 @@ $_['tab_event']                 = 'Events';
 $_['tab_setting']               = 'Settings';
 
 $_['text_success']              = 'You have successfuly modifive event manager';
-$_['error_failed_test_install'] = 'Oops! Before you can run tests you must turn on the compatiblity for opencart version 2.2.0.0 and below.';
+$_['error_failed_test_install'] = 'Oops! Before you can run tests you must turn on the compatiblity for opencart version 2.3.0.0 and below.';
 $_['success_twig_compatible']   = 'Success: Twig support enabled. You can not edit Event manager!';
 
 //update

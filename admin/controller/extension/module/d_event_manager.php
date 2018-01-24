@@ -53,7 +53,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
         //save post
         if (($this->request->server['REQUEST_METHOD'] == 'POST') && $this->validate()) {
 
-            if(VERSION < '3.0.0.0'){
+            if(VERSION < '2.3.0.0'){
                 if($this->request->post[$this->codename.'_setting']['skipped_models']){
                     $this->request->post[$this->codename.'_setting']['skipped_models'] = explode(",", $this->request->post[$this->codename.'_setting']['skipped_models']);
                 }else{
@@ -259,13 +259,15 @@ class ControllerExtensionModuleDEventManager extends Controller {
             $data['setting'] = $this->config->get('d_event_manager_setting');
         }
         
+        $data['conflict_models'] = false;
         if(VERSION < '2.3.0.0'){
             $data['setting']['skipped_models'] = implode(",", $data['setting']['skipped_models']);
+            $data['conflict_models'] = true;
         }
 
         $data['compatibility'] = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
         $data['compatibility_required'] = false;
-        if(VERSION < '2.3.0.0'){
+        if(VERSION < '3.0.0.0'){
             $data['compatibility_required'] = true;
         }
         $data['tests'] = array();
