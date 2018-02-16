@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "1.3.4",
+    "version": "1.3.5",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions.",
     "author": {
@@ -47,6 +47,10 @@
         "system/library/d_event_manager"
     ],
     "changelog": [
+        {
+            "version":"1.3.5",
+            "change":"Fix for old php versions"
+        },
         {
             "version":"1.3.4",
             "change":"Added support for new route value in after in catalog"
