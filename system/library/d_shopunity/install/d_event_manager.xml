@@ -28,6 +28,8 @@
     public function _controller($route, $args = array()) {
             ]]></add>
         </operation>
+    </file>
+    <file path="system/engine/loader.php">
         <operation error="skip" info="add event support 2.1.0.0 - controller has $data instead or $args">
             <search><![CDATA[public function controller($route, $data = array()) {]]></search>
             <add position="replace"><![CDATA[
@@ -54,6 +56,8 @@
     public function _model($model) {
             ]]></add>
         </operation>
+    </file>
+    <file path="system/engine/loader.php">
         <operation error="skip" info="add event support 2.1.0.0 - model has an extra $data arg">
             <search><![CDATA[public function model($model, $data = array()) {]]></search>
             <add position="replace"><![CDATA[
