@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "2.1.0",
+    "version": "2.1.1",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "author": {
@@ -33,6 +33,10 @@
         "system/config/d_event_manager.php"
     ],
     "changelog": [
+        {
+            "version":"2.1.1",
+            "change":"Bugfix in admin model event"
+        },
         {
             "version":"2.1.0",
             "change":"Added config only for tests"
