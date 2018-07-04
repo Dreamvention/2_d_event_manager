@@ -282,6 +282,23 @@ class ModelExtensionModuleDEventManager extends Model {
         return true;
     }
 
+    public function updateCompatibility(){
+
+        $d_opencart_patch = (file_exists(DIR_SYSTEM.'library/d_shopunity/extension/d_opencart_patch.json'));
+        if(!$d_opencart_patch){
+            return false;
+        }
+
+        $this->installDatabase();
+
+        $this->load->model('extension/d_opencart_patch/modification');
+        $this->model_extension_d_opencart_patch_modification->setModification('d_event_manager.xml', 0);
+        $this->model_extension_d_opencart_patch_modification->setModification('d_event_manager.xml', 1);
+        $this->model_extension_d_opencart_patch_modification->refreshCache();
+
+        return true;
+    }
+
     public function uninstallCompatibility(){
 
         if(VERSION >= '3.0.0.0'){
