@@ -131,7 +131,7 @@ class ModelExtensionModuleDEventManager extends Model {
     public function addEvent($code, $trigger, $action, $status = 1, $sort_order = 0) {
 
         //fix conflict
-        if(VERSION >= '2.3.0.0' && VERSION < '3.0.0.0'){
+        if(VERSION < '3.0.0.0'){
             $this->installDatabase();
         }
         
