@@ -234,12 +234,10 @@ class ModelExtensionModuleDEventManager extends Model {
 
     public function isCompatible(){
 
-        if(VERSION >= '2.3.0.0'){
-            if(VERSION < '3.0.0.0'){
-                $this->installDatabase();
-            }
+        if(VERSION < '3.0.0.0'){
+            $this->installDatabase();
         }
-
+        
         $this->load->model('extension/d_opencart_patch/modification');
         
         $compatibility = $this->model_extension_d_opencart_patch_modification->getModificationByName('d_event_manager');
