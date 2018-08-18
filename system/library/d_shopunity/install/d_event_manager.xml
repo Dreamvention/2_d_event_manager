@@ -199,7 +199,7 @@
 
             $this->registry->get('load')->controller($route);
             $output = $this->registry->get('response')->getOutput();
-            if ($output) return;
+            if ($output) $action = null;
         }
             ]]></add>
         </operation>
