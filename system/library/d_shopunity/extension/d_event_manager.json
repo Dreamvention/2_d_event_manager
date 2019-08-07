@@ -1,6 +1,6 @@
 {
     "codename": "d_event_manager",
-    "version": "2.1.2",
+    "version": "2.1.3",
     "name": "Event Manager",
     "description": "Manage your events and add Event support to old OC versions",
     "author": {
@@ -8,13 +8,7 @@
         "email": "info@dreamvention.com",
         "url": "https://dreamvention.com"
     },
-    "opencart_version": [
-        "3.0.0.0",
-        "3.0.1.1",
-        "3.0.1.2",
-        "3.0.2.0",
-        "3.0.3.1"
-    ],
+    "opencart_version": "3-4",
     "type": "library",
     "license": {
         "type": "free",
@@ -34,6 +28,10 @@
         "system/config/d_event_manager.php"
     ],
     "changelog": [
+        {
+            "version":"2.1.3",
+            "change":"sem var"
+        },
         {
             "version":"2.1.2",
             "change":"Added support OC v3.0.3.1"
