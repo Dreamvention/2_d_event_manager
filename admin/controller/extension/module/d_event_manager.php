@@ -493,7 +493,7 @@ class ControllerExtensionModuleDEventManager extends Controller {
 
             
         }else{
-            $json['enabled'] = ture;
+            $json['enabled'] = true;
         }
 
         $this->response->addHeader('Content-Type: application/json');
