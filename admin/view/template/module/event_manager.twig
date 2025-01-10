@@ -1,154 +1,147 @@
-{# location: admin/view #}
-
-{{ header }} {{ column_left }} 
+{{ header }} {{ column_left }}
 <div id="content">
     <div class="page-header">
         <div class="container-fluid">
-            <div class="form-inline pull-right">
-                
+            <div class="form-inline float-end">
                 <a data-toggle="tooltip" title="{{ button_create }}" class="btn btn-primary create"><i class="fa fa-plus"></i></a>
-                <a data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger delete"><i class="fa fa-trash-o"></i></a>
+                <a data-toggle="tooltip" title="{{ button_delete }}" class="btn btn-danger delete"><i class="far fa-trash-alt"></i></a>
                 <a data-toggle="tooltip" title="{{ button_save }}" class="btn btn-primary save"><i class="fa fa-save"></i></a>
-                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-default"><i class="fa fa-reply"></i></a>
+                <a href="{{ cancel }}" data-toggle="tooltip" title="{{ button_cancel }}" class="btn btn-light"><i class="fa fa-reply"></i></a>
             </div>
             <h1>{{ heading_title }} {{ version }}</h1>
             <ul class="breadcrumb">
-                {% for breadcrumb in breadcrumbs %} 
-                    <li><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
-                {% endfor %} 
+                {% for breadcrumb in breadcrumbs %}
+                    <li class="breadcrumb-item"><a href="{{ breadcrumb.href }}">{{ breadcrumb.text }}</a></li>
+                {% endfor %}
             </ul>
         </div>
     </div>
     <div class="container-fluid">
-        {% if error.warning %} 
-            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error.warning }} 
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
+        {% if error.warning %}
+            <div class="alert alert-danger"><i class="fa fa-exclamation-circle"></i> {{ error.warning }}
+			    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+		    </div>
+        {% endif %}
+        {% if success %}
+            <div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> {{ success }}
+			    <button type="button" class="btn-close float-end" data-bs-dismiss="alert"></button>
+		    </div>
+        {% endif %}
+        {% if (setup == 1) %}
+        <div class="card card-default">
+            <div class="card-header">
+                <h3 class="panel-title"><i class="fas fa-pencil-alt"></i> {{ text_edit }}</h3>
             </div>
-        {% endif %} 
-        {% if success %} 
-            <div class="alert alert-success"><i class="fa fa-exclamation-circle"></i> {{ success }} 
-                <button type="button" class="close" data-dismiss="alert">&times;</button>
-            </div>
-        {% endif %} 
-        
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                <h3 class="panel-title"><i class="fa fa-pencil"></i> {{ text_edit }} </h3>
-            </div>
-            <div class="panel-body">
-                
-                <ul class="nav nav-tabs">
-                    <li class="active"><a href="#tab_event" data-toggle="tab">
-                        <span class="fa fa-plug"></span> 
-                        {{ tab_event }} 
-                    </a></li>
-
-                    <li><a href="#tab_setting" data-toggle="tab">
-                        <span class="fa fa-cog"></span> 
-                        {{ tab_setting }} 
-                    </a></li>
-                    
+            <div class="card-body">
+                <ul class="nav nav-tabs" id="myTab" role="tablist">
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link active" id="home-tab" data-bs-toggle="tab" data-bs-target="#home" type="button" role="tab" aria-controls="home" aria-selected="true"><h5><span class="fa fa-plug"> {{ tab_event }}</span></h5></button>
+                    </li>
+                    <li class="nav-item" role="presentation">
+                        <button class="nav-link" id="profile-tab" data-bs-toggle="tab" data-bs-target="#profile" type="button" role="tab" aria-controls="profile" aria-selected="false"><h5><span class="fa fa-cog"> {{ tab_setting }}</span></h5></button>
+                    </li>
                 </ul>
-
-                <div class="tab-content">
-                    <div class="tab-pane active" id="tab_event" >
-                        <div class="tab-body">
-                            <div id="filter" class="well">
+                <div class="tab-content" id="myTabContent">
+                    <div class="tab-pane fade show active" id="home" role="tabpanel" aria-labelledby="home-tab">
+                    <!--tab start 1 !-->
+                    <div class="tab-body">
+                            <div id="filter" class="card">
                                 <div class="row">
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label class="control-label" for="input-code">{{ entry_code }}</label>
+                                            <label class="form-label" for="input-code">{{ entry_code }}</label>
                                             <input type="text" name="filter_code" value="{{ filter_code }}" placeholder="{{ entry_code }}" id="input-code" class="form-control" data-item="code"/>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label class="control-label" for="input-trigger">{{ entry_trigger }}</label>
+                                            <label class="form-label" for="input-trigger">{{ entry_trigger }}</label>
                                             <input type="text" name="filter_trigger" value="{{ filter_trigger }}" placeholder="{{ entry_trigger }}" id="input-trigger" class="form-control" data-item="trigger"/>
                                         </div>
-                                        
+
                                     </div>
                                     <div class="col-sm-3">
                                         <div class="form-group">
-                                            <label class="control-label" for="input-event-action">{{ entry_action }}</label>
+                                            <label class="form-label" for="input-event-action">{{ entry_action }}</label>
                                             <input type="text" name="filter_action" value="{{ filter_action }}" placeholder="{{ entry_action }}" id="input-event-action" class="form-control" data-item="action"/>
                                         </div>
                                     </div>
                                     <div class="col-sm-3">
+
                                         <div class="form-group">
-                                            <label class="control-label" for="input-status">{{ entry_status }}</label>
+                                            <label class="form-label" for="input-status">{{ entry_status }}</label>
                                             <select name="filter_status" id="input-status" class="form-control">
                                                 <option value="*"></option>
-                                                {% if filter_status %} 
+                                                {% if filter_status %}
                                                     <option value="1" selected="selected">{{ text_enabled }} </option>
-                                                {% else %}   
+                                                {% else %}
                                                     <option value="1">{{ text_enabled }} </option>
                                                 {% endif %}
                                                 {% if not filter_status and filter_status is not null %}
                                                     <option value="0" selected="selected">{{ text_disabled}} </option>
-                                                {% else %}   
+                                                {% else %}
                                                     <option value="0">{{ text_disabled }} </option>
                                                 {% endif %}
                                             </select>
                                         </div>
-                                        <button type="button" id="button-filter" class="btn btn-primary pull-right"><i class="fa fa-search"></i> {{ button_filter }} </button>
+                                        <button type="button" id="button-filter" class="btn btn-primary float-end"><i class="fa fa-search"></i> {{ button_filter }} </button>
                                     </div>
                                 </div>
                             </div>
                             <form action="{{ delete }}" method="post" enctype="multipart/form-data" id="form-event">
-                                <div class="table-responsive">
+                                <div style="overflow-x: scroll;" class="table-responsive">
                                     <table class="table table-bordered table-hover">
                                         <thead>
                                         <tr>
                                             <td style="width: 1px;" class="text-center"><input type="checkbox" onclick="$('input[name*=\'event_id\']').prop('checked', this.checked);" /></td>
                                             <td class="text-left">
-                                                {% if sort == 'code' %} 
+                                                {% if sort == 'code' %}
                                                     <a href="{{ sort_code }}" class="{{ order|lower }}">{{ column_code }} </a>
                                                 {% else %}
                                                     <a href="{{ sort_code }}">{{ column_code }} </a>
-                                                {% endif %} 
+                                                {% endif %}
                                             </td>
                                             <td class="text-left">
-                                                {% if sort == 'trigger' %} 
+                                                {% if sort == 'trigger' %}
                                                     <a href="{{ sort_trigger }}" class="{{ order|lower }}">{{ column_trigger }} </a>
-                                                {% else %}   
+                                                {% else %}
                                                     <a href="{{ sort_trigger }}">{{ column_trigger }} </a>
                                                 {% endif %}
                                             </td>
                                             <td class="text-left">
-                                                {% if sort == 'action' %} 
+                                                {% if sort == 'action' %}
                                                     <a href="{{ sort_action }}" class="{{ order|lower }}">{{ column_action }} </a>
                                                 {% else %}
                                                     <a href="{{ sort_action }}">{{ column_action }} </a>
                                                 {% endif %}
                                             </td>
                                             <td class="text-left">
-                                                {% if sort ==  'status' %} 
+                                                {% if sort ==  'status' %}
                                                     <a href="{{ sort_status }}" class="{{ order|lower }}">{{ column_status }} </a>
                                                 {% else %}
                                                     <a href="{{ sort_status }}">{{ column_status }} </a>
                                                 {% endif %}
                                             </td>
                                             <td class="text-left">
-                                                {% if sort == 'sort_order' %} 
+                                                {% if sort == 'sort_order' %}
                                                     <a href="{{ sort_sort_order }}" class="{{ order|lower }}">{{ column_sort_order }} </a>
                                                 {% else %}
                                                     <a href="{{ sort_sort_order }}">{{ column_sort_order }} </a>
-                                                {% endif %} 
+                                                {% endif %}
                                             </td>
                                             <td class="text-right">{{ column_action }} </td>
                                         </tr>
                                         </thead>
                                         <tbody>
-                                        {% if events %} 
-                                            {% for event in events %} 
+                                        {% if events %}
+                                            {% for event in events %}
                                             <tr id="event_id_{{ event.event_id }}" {% if event.status %} class="enabled" {% endif %} ''>
                                                 <td class="text-center">
                                                     {% if event.event_id in selected|keys %}
                                                         <input type="checkbox" name="event_id[]" value="{{ event.event_id}}" checked="checked" />
-                                                    {% else %}   
+                                                    {% else %}
                                                         <input type="checkbox" name="event_id[]" value="{{ event.event_id }}" />
-                                                    {% endif %} 
+                                                    {% endif %}
                                                 </td>
                                                 <td class="text-left">{{ event.code }} </td>
                                                 <td class="text-left">{{ event.trigger }} </td>
@@ -158,17 +151,17 @@
                                                     <span class="label label-danger enable" >{{ text_disabled }} </span>
                                                 </td>
                                                 <td class="text-left">{{ event.sort_order }} </td>
-                                                <td class="text-right">
-                                                    <a href="{{ event.enable }}" data-toggle="tooltip" title="{{ button_enable }}" data-event_id="{{ event.event_id }}" class="btn btn-success action enable"><i class="fa fa-thumbs-o-up"></i></a>
-                                                    <a href="{{ event.disable }}" data-toggle="tooltip" title="{{ button_disable }}" data-event_id="{{ event.event_id }}" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
-                                                    <a href="{{ event.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
+                                                <td class="text-end">
+                                                    <a href="{{ event.enable }}" data-toggle="tooltip" title="{{ button_enable }}" data-event_id="{{ event.event_id }}" class="btn btn-success action enable"><i class="fas fa-plus-circle"></i></a>
+                                                    <a href="{{ event.disable }}" data-toggle="tooltip" title="{{ button_disable }}" data-event_id="{{ event.event_id }}" class="btn btn-danger action disable"><i class="fas fa-minus-circle"></i></a>
+                                                    <a href="{{ event.edit }}" data-toggle="tooltip" title="{{ button_edit }}" class="btn btn-primary edit"><i class="fas fa-pencil-alt"></i></a></td>
                                                 </tr>
                                              {% endfor %}
-                                         {% else %}   
+                                         {% else %}
                                             <tr>
                                                 <td class="text-center" colspan="8">{{ text_no_results }} </td>
                                             </tr>
-                                        {% endif %} 
+                                        {% endif %}
                                         </tbody>
                                     </table>
                                 </div>
@@ -178,62 +171,132 @@
                                 <div class="col-sm-6 text-right">{{ results }} </div>
                             </div>
                         </div>
+                    <!--tab end 1   !-->
                     </div>
-                    <div class="tab-pane" id="tab_setting" >
-                        <div class="tab-body">
+                    <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+                    <!--tab start 2 !-->
+                    <div class="tab-body">
                             <form action="{{ action }}" method="post" enctype="multipart/form-data" id="form" class="form-horizontal">
-                            
-                            {% if compatibility_required %}
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="input_compatibility">{{ entry_compatibility}} </label>
-                                    <div class="col-sm-10">                                     
-                                        <input type="hidden" name="compatibility" value="0" />
-                                        <input type="checkbox" name="compatibility" class="switcher" data-label-text="{{ text_enabled }}" id="input_compatibility" {% if compatibility %} checked="checked" {% endif %} value="1" />
-                                    </div>
-                                </div><!-- //compatibility -->
-                            {% endif %}
                             {% if conflict_models %}
                                 <div class="form-group">
                                     <label class="col-sm-2 control-label" for="input_skipped_models">{{ entry_skipped_models}} </label>
-                                    <div class="col-sm-10">                                     
+                                    <div class="col-sm-10">
                                         <input type="text" class="form-control" data-role="tagsinput" name="{{codename}}_setting[skipped_models]" value="{{ setting.skipped_models }}" />
-                                        
                                         <div class="bs-callout bs-callout-info m-t">{{ help_skipped_models }} </div>
                                     </div>
-                                </div><!-- //compatibility -->
-                            {% endif %} 
-
-                            <div class="form-group">
-                                <label class="col-sm-2 control-label" for="input_test">{{ entry_test_toggle }} </label>
-                                <div class="col-sm-10">
-                                    {% if not tests %}
-                                        <a class="btn btn-primary" href="{{ install_test}}">{{ text_install }} </a> 
-                                    {% else %}  
-                                        <a class="btn btn-danger" href="{{ uninstall_test }}">{{ text_uninstall }} </a>
+                                </div>
+                            {% endif %}
+                            <div class="row justify-content-start">
+                                <div class="col-1"></div>
+                                <div class="col-2">
+                                     <label class="form-label" for="input_test">{{ entry_test_toggle }} </label>
+                                </div>
+                                <div class="col-1">
+                                     {% if not tests %}
+                                        <a class="btn btn-primary" id="install-btn" href="{{ install_test}}">{{ text_install }} </a>
+                                    {% else %}
+                                        <a class="btn btn-danger" id="install-btn" href="{{ uninstall_test }}">{{ text_uninstall }} </a>
                                     {% endif %}
                                 </div>
-                            </div><!-- //text -->
+                            </div>
                             {% if tests %}
-                                <div class="form-group">
-                                    <label class="col-sm-2 control-label" for="input_test">{{ entry_test }} </label>
-                                    <div class="col-sm-10 tests">
-                                        {% for test, result in tests %} 
-                                            <div class="{{ test }}  failed">
-                                                <div class="alert alert-success">{{ test }} <div class="pull-right"><span class="label label-success">passed</span></div></div>
-                                                <div class="alert alert-danger">{{ test }} <div class="pull-right"><span class="label label-danger">failed</span></div></div>
-                                            </div>
-                                        {% endfor %}
+                                <div class="form-group" id="tests_event">
+                                    <div class="row justify-content-start">
+                                        <div class="col-1"></div>
+                                        <label class="col-sm-2 form-label" for="input_test">{{ entry_test }} </label>
+                                        <div class="col-9 tests">
+                                            {% for test, result in tests %}
+                                                <div class="{{ test }}  failed">
+                                                    <div class="alert alert-success">{{ test }} <div class="float-end"><span class="label label-success">passed</span></div></div>
+                                                    <div class="alert alert-danger" id="test-error">{{ test }} <div class="float-end"><span class="label label-danger">passed</span></div></div>
+                                                </div>
+                                            {% endfor %}
+                                        </div>
                                     </div>
-                                </div><!-- //test -->
-                            {% endif %} 
+                                </div>
+                            {% endif %}
                             </form>
                         </div>
+                    <!--tab end 2   !-->
                     </div>
                 </div>
             </div>
         </div>
+        {% else %}
+            <div class="welcome">
+              <div class="welcome-into">
+                <div class="welcome-into-logo">
+                  <img src= "{{ icon_image }}">
+                </div>
+                <div class="welcome-into-heading">{{ title_setup }}</div>
+                <div class="welcome-into-text">{{ text_setup }}</div>
+                <div class="welcome-into-start">
+                  <a class="btn btn-primary btn-lg setup">Setup</a>
+              </div>
+            </div>
+        {% endif %}
     </div>
 </div>
+<template id="modal">
+    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
+      <div class="modal-dialog" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h4 class="modal-title">Edit event [[code]]</h4>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+          </div>
+          <div class="modal-body">
+            <form id="event_form" class="form-horizontal">
+                <div class="form-group">
+                    <div class="row justify-content-start" id="event-form">
+                        <div class="col-2">
+                            <label class="form-label" for="input_text">{{ entry_code }} </label>
+                        </div>
+                        <div class="col-10">
+                            <input type="text" name="code" value="[[code]]" placeholder="{{ entry_code }}" id="input-width" class="form-control" />
+                        </div>
+                    </div>
+                </div><!-- //text -->
+                <div class="form-group">
+                    <div class="row justify-content-start" id="event-form">
+                        <div class="col-2">
+                            <label class="form-label" for="input_text">{{ entry_trigger }} </label>
+                        </div>
+                        <div class="col-10">
+                            <input type="text" name="trigger" value="[[trigger]]" placeholder="{{ entry_trigger }}" id="input-width" class="form-control" />
+                        </div>
+                    </div>
+                </div><!-- //text -->
+                <div class="form-group">
+                    <div class="row justify-content-start" id="event-form">
+                        <div class="col-2">
+                            <label class="form-label" for="input_action">{{ entry_action }} </label>
+                        </div>
+                        <div class="col-10">
+                            <input type="text" name="action" value="[[action]]" placeholder="{{ entry_action }}" id="input-width" class="form-control" />
+                        </div>
+                    </div>
+                </div><!-- //text -->
+                <div class="form-group">
+                    <div class="row justify-content-start" id="event-form">
+                        <div class="col-2">
+                            <label class="form-label" for="input_action">{{ entry_sort_order}} </label>
+                        </div>
+                        <div class="col-10">
+                            <input type="text" name="sort_order" value="[[sort_order]]" placeholder="{{ entry_sort_order }}" id="input-width" class="form-control" />
+                        </div>
+                    </div>
+                </div><!-- //text -->
+            </form>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-light" data-bs-dismiss="modal">Close</button>
+            <a type="button" class="btn btn-primary save-event" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
+          </div>
+        </div>
+      </div>
+    </div>
+</template>
 <template id="event_item">
     <tr id="event_id_{{ event.event_id }}" class="[[text_status]]">
         <td class="text-center flash"><input type="checkbox" name="event_id[]" value="[[event_id]]" /></td>
@@ -245,58 +308,36 @@
             <span class="label label-danger enable">{{ text_disabled }} </span>
         </td>
         <td class="text-left flash">[[sort_order]]</td>
-        <td class="text-right flash">
-            <a href="[[enable]]" data-toggle="tooltip" title="{{ button_enable }}" data-event_id="[[event_id]]" class="btn btn-success action enable" ><i class="fa fa-thumbs-o-up"></i></a>
-            <a href="[[disable]]" data-toggle="tooltip" title="{{ button_disable }}" data-event_id="[[event_id]]" class="btn btn-danger action disable"><i class="fa fa-thumbs-o-down"></i></a>
-            <a href="[[edit]]" data-toggle="tooltip" title="{{ button_edit }}" data-event_id="[[event_id]]" class="btn btn-primary edit"><i class="fa fa-pencil"></i></a></td>
+        <td class="text-end flash">
+            <a href="[[enable]]" data-toggle="tooltip" title="{{ button_enable }}" data-event_id="[[event_id]]" class="btn btn-success action enable" ><i class="fas fa-plus-circle"></i></a>
+            <a href="[[disable]]" data-toggle="tooltip" title="{{ button_disable }}" data-event_id="[[event_id]]" class="btn btn-danger action disable"><i class="fas fa-minus-circle"></i></a>
+            <a href="[[edit]]" data-toggle="tooltip" title="{{ button_edit }}" data-event_id="[[event_id]]" class="btn btn-primary edit"><i class="fas fa-pencil-alt"></i></a></td>
         </tr>
 </template>
-<template id="modal">
-    <div id="myModal" class="modal fade" tabindex="-1" role="dialog">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-            <h4 class="modal-title">Edit event [[code]]</h4>
-          </div>
-          <div class="modal-body">
-            <form id="event_form" class="form-horizontal">
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="input_text">{{ entry_code }} </label>
-                    <div class="col-sm-10">
-                        <input type="text" name="code" value="[[code]]" placeholder="{{ entry_code }}" id="input-width" class="form-control" />
-                    </div>
-                </div><!-- //text -->
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="input_text">{{ entry_trigger }} </label>
-                    <div class="col-sm-10">
-                        <input type="text" name="trigger" value="[[trigger]]" placeholder="{{ entry_trigger }}" id="input-width" class="form-control" />
-                    </div>
-                </div><!-- //text -->
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="input_action">{{ entry_action }} </label>
-                    <div class="col-sm-10">
-                        <input type="text" name="action" value="[[action]]" placeholder="{{ entry_action }}" id="input-width" class="form-control" />
-                    </div>
-                </div><!-- //text -->
-                <div class="form-group">
-                    <label class="col-sm-2 control-label" for="input_action">{{ entry_sort_order}} </label>
-                    <div class="col-sm-10">
-                        <input type="text" name="sort_order" value="[[sort_order]]" placeholder="{{ entry_sort_order }}" id="input-width" class="form-control" />
-                    </div>
-                </div><!-- //text -->
-                
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
-            <a type="button" class="btn btn-primary save-event" href="[[save]]" data-event_id="[[event_id]]">Save changes</a>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal -->
-</template>
 <style>
+    #tests_event{
+        margin-top: 20px;
+    }
+    .modal-content{
+        width: 130%;
+    }
+    #event-form{
+        padding: 10px;
+    }
+    #filter{
+        height: 150px;
+        background-color: #f5f5f5;
+        border: 1px solid #e3e3e3;
+        margin-bottom: 20px;
+        padding: 19px;
+    }
+    #button-filter{
+        margin-top: 15px;
+    }
+    #install-btn{
+        margin-left: -100px;
+        margin-top: -9px;
+    }
     .action{
         display: inline-block;
     }
@@ -309,35 +350,90 @@
     .enabled .enable{
         display: none
     }
+    .welcome{
+      background: url("{{ background_image }}");
+      background-position: bottom;
+      background-repeat: repeat-x;
+      background-size: 50%;
+      min-height: 780px;
+      padding-top: 50px;
+      padding-bottom: 125px;
+    }
+    .welcome-into{
+        text-align: center;
+        max-width: 500px;
+        margin: auto;
+    }
+    .welcome-into-logo{
+        padding-bottom: 15px;
+    }
+    .welcome-into-heading{
+        font-size: 30px;
+        font-weight: bold;
+        padding-bottom: 15px;
+    }
+    .welcome-into-text{
+        font-size: 18px;
+        padding-bottom: 30px;
+    }
+    .welcome-into-start{
+        padding-bottom: 30px;
+    }
+    .welcome-features{
+        padding: 30px;
+    }
+    .welcome-features-icon{
+        padding: 20px;
+        height: 130px;
+        text-align: center;
+    }
+    .welcome-features-text{
+        text-align: center;
+        font-weight: bold;
+        font-size: 16px;
+    }
 
     @-webkit-keyframes flash {
-       
+
         50% {
             background-color: rgba(0,100,0,0.1);
         }
-       
+
         100% {
             background-color: rgba(0,100,0,0);
         }
     }
-        
+
     .flash {
         -webkit-animation-name: flash;
         -webkit-animation-duration: 2000ms;
         -webkit-animation-iteration-count: 1;
         -webkit-animation-timing-function: ease-in-out;
-    }  
+    }
+    #test-error{
+        color: #2e6d2e;
+        background-color: #dbf0db;
+        border-color: #c9e9c9;
+    }
     .tests .alert-danger{
-        display: none
+        display: none;
+        margin-left: -100px;
+    }
+    .tests .alert-success{
+        margin-left: -100px;
     }
     .failed .alert-success{
-        display: none
+        display: none;
     }
     .failed .alert-danger{
         display: block
-    }  
+    }
 </style>
-<script type="text/javascript"><!--
+<script type="text/javascript">
+
+    $(document).on('click', '.setup', function(){
+    window.location.href = '{{setup_link}}';
+    })
 
     $(function () {
 
@@ -345,27 +441,12 @@
         $("#form").submit();
     })
 
-    //checkbox
-    $(".switcher[type='checkbox']").bootstrapSwitch({
-        'onColor': 'success',
-        'onText': '{{ text_yes }}',
-        'offText': '{{ text_no }}',
-        onSwitchChange: function(event, state){
-            if(state){
-                window.location.href = '{{ install_compatibility }}'
-            }else{
-                window.location.href = '{{ uninstall_compatibility }}'
-            }
-        }
-        
-    })
-
-
     $('body').on('click', '#save_and_stay', function(){
 
         $('.summernote').each( function() {
             $(this).val($(this).code());
         });
+
         $.ajax( {
             type: 'post',
             url: $('#form').attr('action') + '&save',
@@ -374,12 +455,13 @@
                 $('#form').fadeTo('slow', 0.5);
             },
             complete: function() {
-                $('#form').fadeTo('slow', 1);    
+                $('#form').fadeTo('slow', 1);
             },
             success: function( response ) {
                 console.log( response );
-            }
-        }); 
+            },
+
+        });
     });
 });
 
@@ -392,7 +474,7 @@ $('#button-filter').on('click', function() {
         var name = $(this).attr('name')
         if(value && value != '*') { url += '&' + name + '=' + encodeURIComponent(value); }
     })
-    
+
     location = url;
 });
 
@@ -401,7 +483,7 @@ $('input[name=\'filter_code\'], input[name=\'filter_trigger\'], input[name=\'fil
         that = this;
         $.ajax({
             url: '{{autocomplete}}&'+ $(this).attr('name')+'='+ encodeURIComponent(request),
-            dataType: 'json',           
+            dataType: 'json',
             success: function(json) {
                 response($.map(json, function(item) {
                     return {
@@ -414,11 +496,7 @@ $('input[name=\'filter_code\'], input[name=\'filter_trigger\'], input[name=\'fil
     },
     'select': function(item) {
         $(this).val(item['label']);
-    }   
-});
-
-$('.date').datetimepicker({
-    pickTime: false
+    }
 });
 
 $(document).on('click', '.action', function() {
@@ -428,6 +506,7 @@ $(document).on('click', '.action', function() {
         url: $(that).attr('href'),
         dataType: 'json',
         success: function(json) {
+            console.log(json)
             if(json['enabled']){
                 $('#event_id_'+$event_id).find('.enable').hide();
                 $('#event_id_'+$event_id).find('.disable').css('display', 'inline-block');
@@ -437,7 +516,7 @@ $(document).on('click', '.action', function() {
             }
         }
     });
-    
+
     return false;
 });
 $(document).on('click', '.create', function(){
@@ -461,7 +540,7 @@ $(document).on('click', '.create', function(){
 
     $('body').append(html);
     $('#myModal').modal('show')
-    
+
     return false;
 
 })
@@ -485,11 +564,9 @@ $(document).on('click', '.delete', function(){
         }
     });
 
-    
     return false;
 
 })
-
 
 $(document).on('click', '.edit', function() {
     var that = this;
@@ -507,30 +584,33 @@ $(document).on('click', '.edit', function() {
             //templating like handlebars
             var re = /\[\[([^\]\]]+)?\]\]/g, match;
             while(match = re.exec(html)) {
-                
+
                 html = html.replace(match[0], json[match[1]])
             }
 
             $('body').append(html);
             $('#myModal').modal('show')
+        },
+        error: function(json) {
+            console.log(json);
         }
     });
-    
+
     return false;
 });
 
 $(document).on('click', '.save-event', function() {
+
     var that = this;
     var $event_id = $(that).data('event_id');
     var $data = $('#event_form').serialize();
-
+    console.log($data)
     $.ajax({
         url: $(that).attr('href'),
         type: 'post',
         data: $data,
         dataType: 'json',
         success: function(json) {
-            console.log(json);
             $('#myModal').modal('hide');
             if(json['status'] == 1) {
                 json['text_status'] = 'enabled';
@@ -541,23 +621,26 @@ $(document).on('click', '.save-event', function() {
 
             //templating like handlebars
             var re = /\[\[([^\]\]]+)?\]\]/g, match;
+
             while(match = re.exec(html)) {
                 html = html.replace(match[0], json[match[1]])
             }
 
             if($event_id == 0){
+
                 $('#form-event tbody').prepend(html);
             }else{
+
                 $('#event_id_'+$event_id).html($(html).html());
             }
-
-            
-
+        },
+        error: function(json) {
+             console.log(json);
         }
     });
-    
+
     return false;
 });
 
-//--></script>
+</script>
 {{footer}}

@@ -1,8 +1,4 @@
 <?php
-/*
- *  location: admin/language
- */
-
 //heading
 $_['heading_title']             = '<span style="color:#449DD0; font-weight:bold">Event Manager</span><span style="font-size:12px; color:#999"> by <a href="http://www.opencart.com/index.php?route=extension/extension&filter_username=Dreamvention" style="font-size:1em; color:#999" target="_blank">Dreamvention</a></span>';
 $_['heading_title_main']        = 'Event Manager';
@@ -35,6 +31,10 @@ $_['entry_color']               = 'Color';
 $_['entry_image']               = 'Image';
 $_['entry_textarea']            = 'Textarea';
 
+//setup
+$_['success_setup']             = 'Success: You have now setup Admin menu. You can see the new options on the left';
+$_['title_setup']               = 'Event Manager for Opencart';
+$_['text_setup']                = 'Now you can manage your Opencart Events. I am sure you all have heard that opencart Added events to alter its output without using VQmod/OCmod. This is a very nice feature, yet it is thought to be quite new and a bit complicated. Probably because of no admin panel and little to no documentation.';
 
 //radio
 $_['text_radio_1']              = 'Yes';
@@ -52,7 +52,6 @@ $_['text_uninstall']            = 'Uninstall';
 //button
 $_['button_save_and_stay']      = 'Save and stay';
 $_['button_create']             = 'Create new event';
-
 
 //success
 $_['success_modifed']           = 'Success: You have modified module eBay featured!';
